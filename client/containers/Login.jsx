@@ -1,39 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { switchAuth, setEmail, setPassword, setUsername} from '../reducers/authReducer.js'
-
+import {
+  switchAuth,
+  setEmail,
+  setPassword,
+  setUsername,
+} from '../reducers/authReducer.js';
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const login = useSelector((state) => state.login)
-
+  const login = useSelector((state) => state.login);
 
   useEffect(() => {
     async function verifySession() {
       const response = await fetch('/users');
       if (response.status === 200) {
-        navigate('/main')
+        navigate('/main');
       }
     }
     verifySession();
-  }, [])
+  }, []);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     const loginEndpoint = `/users/${login.authType}`;
-    const username = login.username
-    const password = login.password
+    const username = login.username;
+    const password = login.password;
     let confirmPassword;
-    if (login.authType === 'signup') confirmPassword = e.target.confirmPassword.value
-  }
+    if (login.authType === 'signup')
+      confirmPassword = e.target.confirmPassword.value;
+    console.log(username, password);
+  };
 
-
-  if (authType === 'login') {
+  if (login.authType === 'login') {
     return (
       <>
+        <h1>hello world</h1>
         <div className='login-container'>
           <form action='' className='submit-form'>
             <input
@@ -41,21 +46,21 @@ const Login = () => {
               className='username'
               placeholder='username'
               autoComplete='off'
-              onChange={() => (setUsername = e.target.value)}
+              onChange={(e) => dispatch(setUsername(e.target.value))}
             />
             <br />
             <input
-              type='text'
+              type='password'
               className='password'
               placeholder='password'
               autoComplete='off'
-              onChange={() => (setPassword = e.target.value)}
+              onChange={(e) => dispatch(setPassword(e.target.value))}
             />
             <button
               id='login'
               className='loginBtns'
               type='submit'
-              onClick={() => dispatch(handleFormSubmit())}
+              onClick={(e) => handleFormSubmit(e)}
             >
               Login
             </button>
@@ -63,7 +68,7 @@ const Login = () => {
               id='signup'
               className='loginBtns'
               type='submit'
-              onClick={() => dispatch(handleFormSubmit())}
+              onClick={() => dispatch(switchAuth())}
             >
               Sign Up
             </button>
@@ -74,6 +79,7 @@ const Login = () => {
   } else {
     return (
       <>
+        <h1>Sign Up</h1>
         <div className='login-container'>
           <form action='' className='submit-form'>
             <input
@@ -104,7 +110,6 @@ const Login = () => {
       </>
     );
   }
-  
 };
 
 export default Login;

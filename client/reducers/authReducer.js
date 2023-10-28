@@ -38,6 +38,5 @@ export const loginSlice = createSlice({
   },
 });
 
-export const { switchAuth, setUsername, setPassword, setEmail } =
-  authReducer.actions;
+export const { switchAuth, setUsername, setPassword, setEmail } = loginSlice.actions;
 export default loginSlice.reducer;

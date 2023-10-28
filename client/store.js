@@ -10,7 +10,7 @@
  */
 
 import { configureStore } from '@reduxjs/toolkit';
-import loginReducer from './reducers/authReducer'
+import loginReducer from './reducers/authReducer.js'
 
 const store = configureStore({
   reducer: {
