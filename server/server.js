@@ -2,17 +2,17 @@
 const express = require('express');
 const app = express();
 const userRoutes = require('./routes/userRoutes');
+const metricsRoutes = require('./routes/metricsRoutes');
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/api/users', userRoutes);
+// get, set user data in db
+app.use('/users', userRoutes);
+// get metrics from prometheus server
+app.use('/metrics', metricsRoutes);
 
-//Handle undefined routes
-app.use('*', (req,res) => {
-  res.status(404).send('Page not found.');
-});
-
-//Global error handler
+// global error handler
 app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
