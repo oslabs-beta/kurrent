@@ -1,12 +1,25 @@
+/*
+ * *************************************
+ *
+ * @module  Login.jsx
+ * @author MichaelNewbold, jensenrs
+ * @date 10/28/2023
+ * @description Login container
+ *
+ * ************************************
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import '../scss/login.scss';
 
 import {
   switchAuth,
   setEmail,
   setPassword,
   setUsername,
+  setPassMatch,
 } from '../reducers/authReducer.js';
 
 const Login = () => {
@@ -30,21 +43,34 @@ const Login = () => {
     const username = login.username;
     const password = login.password;
     let confirmPassword;
-    if (login.authType === 'signup')
-      confirmPassword = e.target.confirmPassword.value;
-    console.log(username, password);
+    if (login.authType === 'login') {
+      try {
+        const response = await fetch(loginEndpoint, {
+          method: 'POST',
+          body: JSON.stringify({
+            username,
+            password,
+          }),
+          headers: {
+            
+          }
+        });
+      } catch (error) {
+        return `Error in loginn attempt. Check usename or password. ${error}`;
+      }
+    }
   };
 
   if (login.authType === 'login') {
     return (
       <>
-        <h1>hello world</h1>
+        <h1 className='kurrentTitle'>Kurrent</h1>
         <div className='login-container'>
           <form action='' className='submit-form'>
             <input
               type='text'
-              className='username'
-              placeholder='username'
+              className='username/email'
+              placeholder='username / email'
               autoComplete='off'
               onChange={(e) => dispatch(setUsername(e.target.value))}
             />
@@ -60,7 +86,7 @@ const Login = () => {
               id='login'
               className='loginBtns'
               type='submit'
-              onClick={(e) => handleFormSubmit(e)}
+              onClick={(e) => handleFormSubmit(e.target.value)}
             >
               Login
             </button>
@@ -75,35 +101,49 @@ const Login = () => {
           </form>
         </div>
       </>
-    ); // {the && operator here makes it so that the following JSX is only added if the expression is truthy}
-    // {conditional && JSX to render}
-    // {login.auth === 'login' && Log In}
+    );
   } else {
     return (
       <>
-        <h1>Sign Up</h1>
+        <h1 className='signUpTitle'>Sign Up</h1>
         <div className='login-container'>
           <form action='' className='submit-form'>
             <input
               type='text'
               className='username'
-              placeholder='username'
+              placeholder='email'
               autoComplete='off'
-              onChange={() => (setUsername = e.target.value)}
+              onChange={(e) => dispatch(setEmail(e.target.value))}
             />
             <br />
             <input
               type='text'
+              className='username'
+              placeholder='username'
+              autoComplete='off'
+              onChange={(e) => dispatch(setUsername(e.target.value))}
+            />
+            <br />
+            <input
+              type='password'
               className='password'
               placeholder='password'
               autoComplete='off'
-              onChange={() => (setPassword = e.target.value)}
+              onChange={(e) => dispatch(setPassword(e.target.value))}
+            />
+            <input
+              type='password'
+              className='password'
+              placeholder='confirm password'
+              autoComplete='off'
+              onChange={(e) => dispatch(setPassMatch(e.target.value))}
             />
             <button
               id='login'
               className='loginBtns'
               type='submit'
               onClick={() => dispatch(handleFormSubmit())}
+              disabled={!login.passMatch}
             >
               Create Account
             </button>
