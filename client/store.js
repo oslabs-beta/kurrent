@@ -10,11 +10,13 @@
  */
 
 import { configureStore } from '@reduxjs/toolkit';
-import loginReducer from './reducers/authReducer.js'
+import loginReducer from './reducers/authReducer.js';
+import dashReducer from './reducers/dashReducer.js';
 
 const store = configureStore({
   reducer: {
-    login: loginReducer
+    login: loginReducer,
+    dashboard: dashReducer
   },
 });
 

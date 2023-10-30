@@ -27,15 +27,16 @@ const Login = () => {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
 
-  // useEffect(() => {
-  //   async function verifySession() {
-  //     const response = await fetch('/users');
-  //     if (response.status === 200) {
-  //       navigate('/main');
-  //     }
-  //   }
-  //   verifySession();
-  // }, []);
+  useEffect(() => {
+    async function verifySession() {
+      const response = await fetch('/api/users');
+      if (response.status === 200) {
+        navigate('/main');
+      }
+    }
+    verifySession();
+    navigate('/main')
+  }, []);
 
   let userExists = false;
 

@@ -10,11 +10,12 @@ import store from './store.js';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <Dashboard />,
+    // element: <App />,
   },
   {
-    path: '/main',
-    element: <Dashboard />,
+    // path: '/main',
+    // element: <Dashboard />,
   },
 ]);
 
