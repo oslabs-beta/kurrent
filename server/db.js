@@ -1,5 +1,6 @@
 // db.js
 const { Pool } = require('pg');
+require('dotenv').config();
 // I used this query to create table
 // CREATE TABLE users (
 //     user_id serial PRIMARY KEY,
@@ -9,7 +10,7 @@ const { Pool } = require('pg');
 // );
 
 const pool = new Pool({
-  connectionString: 'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij',
+  connectionString: process.env.POSTGRES,
 });
 
 module.exports = pool;

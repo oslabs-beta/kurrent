@@ -3,10 +3,11 @@ const bcrypt = require('bcrypt');
 
 const registerUser = async (req, res) => {
   const { username, password, email } = req.body;
-
   try {
     // Check if the username already exists
-    const user = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+    const user = await pool.query('SELECT * FROM users WHERE username = $1', [
+      username,
+    ]);
 
     if (user.rows.length > 0) {
       return res.status(400).json({ error: 'Username already exists' });
@@ -22,7 +23,7 @@ const registerUser = async (req, res) => {
       [username, hashedPassword, email]
     );
 
-    res.json(newUser.rows[0]);
+    return res.status(201).json(newUser.rows[0]);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });
@@ -33,22 +34,21 @@ const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const user = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-
+    const user = await pool.query('SELECT * FROM users WHERE username = $1', [
+      username,
+    ]);
     if (user.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
     const hashedPassword = user.rows[0].password;
-
     // Compare the provided password with the stored hashed password
     const passwordMatch = await bcrypt.compare(password, hashedPassword);
 
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
-
-    res.json({ message: 'Login successful' });
+    return res.status(201).json({ message: 'Login successful' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Server error' });

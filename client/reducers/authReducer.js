@@ -9,7 +9,6 @@
  * ************************************
  */
 
-import * as types from '../constants/actionTypes';
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -25,7 +24,7 @@ export const loginSlice = createSlice({
   initialState,
   reducers: {
     switchAuth: (state) => {
-      state.authType === 'login' ? state.authType = 'signup' : state.authType = 'login';
+      state.authType === 'login' ? state.authType = 'register' : state.authType = 'login';
     },
     setUsername: (state, action) => {
       state.username = action.payload;

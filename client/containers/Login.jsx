@@ -27,40 +27,47 @@ const Login = () => {
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
 
-  useEffect(() => {
-    async function verifySession() {
-      const response = await fetch('/users');
-      if (response.status === 200) {
-        navigate('/main');
-      }
-    }
-    verifySession();
-  }, []);
+  // useEffect(() => {
+  //   async function verifySession() {
+  //     const response = await fetch('/users');
+  //     if (response.status === 200) {
+  //       navigate('/main');
+  //     }
+  //   }
+  //   verifySession();
+  // }, []);
+
+  let userExists = false;
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const loginEndpoint = `/users/${login.authType}`;
-    const username = login.username;
-    const password = login.password;
-    let confirmPassword;
-    if (login.authType === 'login') {
+    userExists = false;
+    const loginEndpoint = `/api/users/${login.authType}`;
+    const postBody = {};
+    postBody.username = login.username;
+    postBody.password = login.password;
+    if (login.authType === 'register') {
+      if (login.username === '') {
+        postBody.username = login.email.split('@')[0];
+      }
+      postBody.email = login.email;
+    }
+    if (login.passMatch || login.authType === 'login') {
       try {
         const response = await fetch(loginEndpoint, {
           method: 'POST',
-          body: JSON.stringify({
-            username,
-            password,
-          }),
+          body: JSON.stringify(postBody),
           headers: {
             'Content-Type': 'application/json',
           },
         });
         if (response.status === 201) {
           navigate('/main');
-        } else {
+        } else if (response.status === 400) {
+          userExists = true;
         }
       } catch (error) {
-        return `Error in loginn attempt. Check usename or password. ${error}`;
+        return `Error in login attempt. Check usename or password. ${error}`;
       }
     }
   };
@@ -90,7 +97,7 @@ const Login = () => {
               id='login'
               className='loginBtns'
               type='submit'
-              onClick={(e) => handleFormSubmit(e.target.value)}
+              onClick={handleFormSubmit}
             >
               Login
             </button>
@@ -125,10 +132,11 @@ const Login = () => {
             <input
               type='text'
               className='username'
-              placeholder='username'
+              placeholder='username (optional)'
               autoComplete='off'
               onChange={(e) => dispatch(setUsername(e.target.value))}
             />
+            {userExists && <p>User already exists</p>}
             <br />
             <input
               type='password'
@@ -148,7 +156,7 @@ const Login = () => {
               id='login'
               className='loginBtns'
               type='submit'
-              onClick={() => dispatch(handleFormSubmit())}
+              onClick={handleFormSubmit}
               disabled={!login.passMatch}
             >
               Create Account

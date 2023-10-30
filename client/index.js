@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import App from './App.jsx';
-import Main from './containers/Main.jsx';
+import Dashboard from './Dashboard.jsx';
 import store from './store.js';
 
 const router = createBrowserRouter([
@@ -14,7 +14,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/main',
-    element: <Main />,
+    element: <Dashboard />,
   },
 ]);
 
