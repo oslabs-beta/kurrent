@@ -24,38 +24,24 @@ ChartJS.register(
   PointElement
 );
 
-const Metrics = () => {
-  const data = {
-    labels: ['Mon', 'Tues', 'Wed'],
-    datasets: [
-      {
-        label: '369',
-        data: [3, 6, 9],
-        backgroundColor: 'aqua',
-        borderColor: 'black',
-        borderWidth: 1,
-      },
-      {
-        label: '333',
-        data: [2, 4, 7],
-        backgroundColor: 'marine',
-        borderColor: 'black',
-        borderWidth: 1,
-      },
-    ],
-  };
+const loading = {
+  labels: [],
+  datasets: [
+    {
+      label: 'Loading',
+      data: [],
+      backgroundColor: 'rgba(255,0,0)',
+      borderColor: 'rgba(255,0,0)',
+      borderWidth: 2,
+      pointRadius: 4,
+      pointBackgroundColor: 'rgba(255,0,0)',
+    },
+  ],
+};
 
-  const dataPie = {
-    labels: ['One', 'Two', 'Three'],
-    datasets: [
-      {
-        data: [3, 6, 9],
-        backgroundColor: ['aqua', 'bloodorange', 'purple'],
-      },
-    ],
-  };
+const Metrics = () => {
   const labels = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const dataLine = {
+  const bytesIn = {
     labels: labels,
     datasets: [
       {
@@ -72,24 +58,16 @@ const Metrics = () => {
     ],
   };
 
-  const options = {};
-  const lineOptions = {
-    plugins: {
-      legend: true,
-    },
-  };
+  const lineOptions = {};
   return (
     <>
       <div>
         Metrics:
-        <div>
-          <Bar id='BarChart' data={data} options={options}></Bar>
-        </div>
-        <div>
-          <Pie data={dataPie} options={options}></Pie>
-        </div>
-        <div>
-          <Line data={dataLine} options={lineOptions}></Line>
+        <div id='metricsContainer'>
+          <Line data={bytesIn} options={lineOptions}></Line>
+          {/* <Line data={bytesOut} options={lineOptions}></Line> */}
+          {/* <Line data={cpu} options={lineOptions}></Line> */}
+          {/* <Line data={ram} options={lineOptions}></Line> */}
         </div>
       </div>
     </>

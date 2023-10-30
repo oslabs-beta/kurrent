@@ -12,6 +12,7 @@ const User = () => {
   const dispatch = useDispatch();
   const username = document.cookie.username;
   const clusters = useSelector((state) => state.dashboard.clusters);
+  const adding = useSelector((state) => state.dashboard.addingCluster)
 
   useEffect(() => {
     async function clusterFetch() {
@@ -27,16 +28,24 @@ const User = () => {
   return (
     <>
       <div>{  /* username */} username here</div>
-      <form>
-      <input
-              type='text'
-              className='port'
-              placeholder='Add a port'
-              autoComplete='off'
-              onChange={(e) => dispatch(setAddCluster(e.target.value))}
-            />
-            <button id='add-port' className='button1' type='submit'> </button>
-      </form>
+      {!adding && <button onClick={() => dispatch(setAddCluster(true))}>Add a Cluster</button>}
+      {adding && <form>
+        <input
+          type='text'
+          name='portName'
+          className='port'
+          placeholder='Port Nickname'
+          autoComplete='off'
+          />
+        <br />
+        <input type='text'
+          name='portNum'
+          className='port'
+          placeholder='Port Number'
+          autoComplete='off'/>
+        <br />
+        <button id='add-port' className='button1' type='submit'>Add</button>
+      </form>}
     </>
   );
 };

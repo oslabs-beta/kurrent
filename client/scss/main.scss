@@ -3,15 +3,15 @@ nav {
   justify-content: space-between;
   height: 60px;
   border: 1px solid black;
-  margin-bottom: 5%;
+  margin-bottom: 1%;
   align-items: center;
 }
 
-.user-info { 
+.user-info {
   grid-area: menu;
 }
-.cluster-nav { 
-  grid-area: header; 
+.cluster-nav {
+  grid-area: header;
 }
 .metrics {
   grid-area: main;
@@ -19,9 +19,9 @@ nav {
 
 .main-grid {
   display: grid;
-  grid-template-areas: 
-  'menu header'
-  'menu main';
+  grid-template-areas:
+    'menu header'
+    'menu main';
   gap: 10px;
   background-color: burlywood;
   padding: 10px;
@@ -35,3 +35,4 @@ nav {
     font-size: 30px;
   }
 }
+

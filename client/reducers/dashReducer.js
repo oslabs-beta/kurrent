@@ -32,7 +32,7 @@ export const dashboardSlice = createSlice({
       state.clusterView = action.payload;
     },
     setAddCluster: (state, action) => {
-      action.payload === 'open' ? addingCluster = true : addingCluster = false;
+      state.addingCluster = action.payload
     },
   },
 });
