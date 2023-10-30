@@ -75,7 +75,9 @@ const Login = () => {
           </form>
         </div>
       </>
-    );
+    ); // {the && operator here makes it so that the following JSX is only added if the expression is truthy}
+    // {conditional && JSX to render}
+    // {login.auth === 'login' && Log In}
   } else {
     return (
       <>
