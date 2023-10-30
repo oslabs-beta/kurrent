@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 const userRoutes = require('./routes/userRoutes');
+const metricsRoutes = require('./routes/metricsRoutes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
