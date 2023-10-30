@@ -52,15 +52,19 @@ const Login = () => {
             password,
           }),
           headers: {
-            
-          }
+            'Content-Type': 'application/json',
+          },
         });
+        if (response.status === 201) {
+          navigate('/main');
+        } else {
+        }
       } catch (error) {
         return `Error in loginn attempt. Check usename or password. ${error}`;
       }
     }
   };
-
+  //login page
   if (login.authType === 'login') {
     return (
       <>
@@ -102,7 +106,9 @@ const Login = () => {
         </div>
       </>
     );
-  } else {
+  }
+  //signup page
+  else {
     return (
       <>
         <h1 className='signUpTitle'>Sign Up</h1>
