@@ -1,3 +1,44 @@
-body {
-  background-color: rgb(207, 207, 207);
+.kurrentTitle {
+  font-size: 3rem;
+  display: flex;
+  justify-content: center;
+}
+.signUpTitle {
+  font-size: 3rem;
+  display: flex;
+  justify-content: center;
+}
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.password {
+  margin-bottom: 4%;
+  margin-top: 0.5%;
+}
+#signup:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+#signup {
+  display: block;
+  font-size: 1rem;
+  text-align: center;
+}
+#login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  width: 60%;
+  height: 2rem;
+}
+#signUpForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 50vw;
+  margin: auto;
 }

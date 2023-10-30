@@ -69,7 +69,7 @@ const Login = () => {
           <form action='' className='submit-form'>
             <input
               type='text'
-              className='username/email'
+              className='username'
               placeholder='username / email'
               autoComplete='off'
               onChange={(e) => dispatch(setUsername(e.target.value))}
@@ -90,14 +90,14 @@ const Login = () => {
             >
               Login
             </button>
-            <button
+            <a
               id='signup'
               className='loginBtns'
               type='submit'
               onClick={() => dispatch(switchAuth())}
             >
-              Sign Up
-            </button>
+              Don't have an Account?
+            </a>
           </form>
         </div>
       </>
@@ -107,7 +107,7 @@ const Login = () => {
       <>
         <h1 className='signUpTitle'>Sign Up</h1>
         <div className='login-container'>
-          <form action='' className='submit-form'>
+          <form action='' className='submit-form' id='signUpForm'>
             <input
               type='text'
               className='username'
