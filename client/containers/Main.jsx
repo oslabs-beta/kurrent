@@ -23,17 +23,18 @@ const Main = () => {
     <>
       <nav>
         <h1>Kurrent</h1>
-        <button onClick={ handleLogout }>Sign Out</button>
+        <button onClick={handleLogout}>Sign Out</button>
       </nav>
       <div className='main-grid'>
         <div className='user-info'>
           <User />
         </div>
-        <div>
-          {<ClusterNav className="cluster-nav"/>}
-        </div>
-        <div className='metrics'>
-          <Metrics/>
+        <div>{<ClusterNav className='cluster-nav' />}</div>
+        <div className='metricsCont'>
+          <h3>Metrics</h3>
+          <div className='metrics'>
+            <Metrics />
+          </div>
         </div>
       </div>
     </>

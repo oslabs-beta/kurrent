@@ -24,11 +24,12 @@ nav {
 
 .user-info {
   grid-area: menu;
+  width: 20%;
 }
 .cluster-nav {
   grid-area: header;
 }
-.metrics {
+.metricsCont {
   grid-area: main;
 }
 
@@ -38,6 +39,7 @@ nav {
     'menu header'
     'menu main';
   gap: 5px;
+  padding: 0;
   background-color: $darkBlue;
 }
 
@@ -45,16 +47,15 @@ nav {
   div {
     background-color: $medDarkBlue;
     text-align: center;
-    font-size: 30px;
+    font-size: 40px;
     border-radius: 24px;
   }
 }
 #clusterButtonContainer {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
   padding: 0;
-  
 }
 
 #clusterButtons {
@@ -75,6 +76,18 @@ nav {
   border-color: #f6f6ee;
   border-width: 0;
 }
+.metrics {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  grid-template-rows: 50% 50%;
+  gap: 10px;
+}
+.lineMetric {
+  background-color: black;
+}
 
-// #clusterUserName {
-// }
+h3 {
+  margin: 0;
+  margin-top: 1%;
+  font-size: 2rem;
+}

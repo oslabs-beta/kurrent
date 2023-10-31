@@ -94,25 +94,34 @@ const Metrics = () => {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ]);
   const [bytesOutData, setBytesOutData] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newBytesInValue = Math.floor(Math.random() * 100);
-      setBytesInData([...bytesInData.slice(1), newBytesInValue]);
-    }, 100);
-    return () => clearInterval(interval);
-  });
+  const [cpuValue, setCpuValue] = useState([
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ]);
+  const [ramValue, setRamValue] = useState([
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ]);
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
-  //     const newBytesInData = []
-  //     bytesInData.forEach((byte) => newBytesInData.push(byte + 1)) ;
-  //     setBytesInData([...bytesInData.slice(1), newBytesInData])
+  //     const newBytesInValue = Math.floor(Math.random() * 100);
+  //     const newBytesOutValue = Math.floor(Math.random() * 100);
+  //     const newCpuValue = Math.floor(Math.random() * 100);
+  //     const newRamValue = Math.floor(Math.random() * 100);
+  //     setBytesInData([...bytesInData.slice(1), newBytesInValue]);
+  //     setBytesOutData([...bytesOutData.slice(1), newBytesOutValue]);
+  //     setCpuValue([...cpuValue.slice(1), newCpuValue]);
+  //     setRamValue([...ramValue.slice(1), newRamValue]);
   //   }, 500);
-  //   interval();
-  // }, []);
+  //   return () => clearInterval(interval);
+  // });
 
   const bytesIn = {
     labels,
@@ -135,9 +144,37 @@ const Metrics = () => {
         label: 'Bytes Out',
         data: bytesOutData,
         fill: true,
-        borderColor: 'maroon',
-        tension: 0.1,
-        backgroundColor: 'maroon',
+        borderColor: 'white',
+        tension: 0.4,
+        backgroundColor: 'white',
+        labelColor: 'black',
+      },
+    ],
+  };
+  const cpu = {
+    labels,
+    datasets: [
+      {
+        label: 'CPU Usage',
+        data: cpuValue,
+        fill: true,
+        borderColor: 'white',
+        tension: 0.4,
+        backgroundColor: 'white',
+        labelColor: 'black',
+      },
+    ],
+  };
+  const ram = {
+    labels,
+    datasets: [
+      {
+        label: 'Ram Usage',
+        data: ramValue,
+        fill: true,
+        borderColor: 'white',
+        tension: 0.4,
+        backgroundColor: 'white',
         labelColor: 'black',
       },
     ],
@@ -147,6 +184,7 @@ const Metrics = () => {
     scales: {
       y: { beginAtZero: true },
     },
+    responsive: false,
     animation: false,
     elements: {
       point: {
@@ -159,16 +197,10 @@ const Metrics = () => {
   };
   return (
     <>
-      <div>
-        Metrics:
-        <div id='metricsContainer'>
-          {/* <canvas id='bytesInMetrics'></canvas> */}
-          <Line data={bytesIn} options={lineOptions}></Line>
-          <Line data={bytesOut} options={lineOptions}></Line>
-          {/* <Line data={cpu} options={lineOptions}></Line> */}
-          {/* <Line data={ram} options={lineOptions}></Line> */}
-        </div>
-      </div>
+      <Line className='lineMetric' data={bytesIn} options={lineOptions}></Line>
+      <Line className='lineMetric' data={bytesOut} options={lineOptions}></Line>
+      <Line className='lineMetric' data={cpu} options={lineOptions}></Line>
+      <Line className='lineMetric' data={ram} options={lineOptions}></Line>
     </>
   );
 };
