@@ -22,3 +22,6 @@ coverage/
 
 # env file
 .env
+
+# prometheus folder
+prometheus/

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import User from '../components/User.jsx';
 import Metrics from '../components/Metrics.jsx';
-// import ClusterNav from '../components/ClusterNav.jsx'
+import ClusterNav from '../components/ClusterNav.jsx'
 import '../scss/main.scss';
 
 const Main = () => {
@@ -30,8 +30,7 @@ const Main = () => {
           <User />
         </div>
         <div>
-          <p>hello</p>
-          {/* <ClusterNav className="cluster-nav"/> */}
+          {<ClusterNav className="cluster-nav"/>}
         </div>
         <div className='metrics'>
           <Metrics/>
