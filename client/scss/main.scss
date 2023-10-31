@@ -5,13 +5,21 @@ $medDarkBlue: #4e5fba;
 $lightDarkBlue: #7791dc;
 $lightBlue: #a0c3ff;
 
+html {
+  background-color: $darkBlue;
+  font-family: 'Rubik', sans-serif;
+  margin: 0;
+  padding: 0;
+}
 nav {
   display: flex;
   justify-content: space-between;
   height: 60px;
-  border: 1px solid black;
+  border-bottom: 1px solid black;
   margin-bottom: 1%;
   align-items: center;
+  width: 100%;
+  font-size: 2.5rem;
 }
 
 .user-info {
@@ -29,20 +37,44 @@ nav {
   grid-template-areas:
     'menu header'
     'menu main';
-  gap: 10px;
-  background-color: burlywood;
-  padding: 10px;
+  gap: 5px;
+  background-color: $darkBlue;
 }
 
 .main-grid {
   div {
-    background-color: blanchedalmond;
+    background-color: $medDarkBlue;
     text-align: center;
-    padding: 20px 0;
     font-size: 30px;
+    border-radius: 24px;
   }
 }
-
-.metricsContainer {
-  width: 50px;
+#clusterButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  
 }
+
+#clusterButtons {
+  height: 3rem;
+  width: 100%;
+  font-size: 1rem;
+  margin: 5px;
+  color: #252d98;
+  background-color: #f6f6ee;
+  box-shadow: 1px 1px 5px #252d98;
+  border-radius: 24px;
+  border-color: #f6f6ee;
+}
+#clusterButtons:hover {
+  background-color: $darkBlue;
+  color: #f6f6ee;
+  box-shadow: 1px 1px 8px $darkBlue;
+  border-color: #f6f6ee;
+  border-width: 0;
+}
+
+// #clusterUserName {
+// }

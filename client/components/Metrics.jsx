@@ -21,7 +21,7 @@ ChartJS.register(
   Legend,
   ArcElement,
   LineElement,
-  PointElement,
+  PointElement
 );
 
 const Metrics = () => {
@@ -101,8 +101,7 @@ const Metrics = () => {
     const interval = setInterval(() => {
       const newBytesInValue = Math.floor(Math.random() * 100);
       setBytesInData([...bytesInData.slice(1), newBytesInValue]);
-    }, 200);
-
+    }, 100);
     return () => clearInterval(interval);
   });
 
@@ -122,9 +121,10 @@ const Metrics = () => {
         label: 'Bytes In',
         data: bytesInData,
         fill: false,
-        borderColor: 'maroon',
-        backgroundColor: 'maroon',
+        borderColor: 'white',
+        backgroundColor: 'white',
         tension: 0.4,
+        labelColor: 'black',
       },
     ],
   };
@@ -137,7 +137,8 @@ const Metrics = () => {
         fill: true,
         borderColor: 'maroon',
         tension: 0.1,
-        backgroundColor: 'maroon'
+        backgroundColor: 'maroon',
+        labelColor: 'black',
       },
     ],
   };
@@ -151,6 +152,9 @@ const Metrics = () => {
       point: {
         radius: 0,
       },
+    },
+    legend: {
+      fontColor: 'black',
     },
   };
   return (

@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   setAddCluster,
   setClusters,
-  setCurrentCluster
+  setCurrentCluster,
 } from '../reducers/dashReducer.js';
 
 const User = () => {
   const dispatch = useDispatch();
   const username = document.cookie.username;
   const clusters = useSelector((state) => state.dashboard.clusters);
-  const adding = useSelector((state) => state.dashboard.addingCluster)
+  const adding = useSelector((state) => state.dashboard.addingCluster);
 
   const clusterFetch = async () => {
     const response = await fetch(`/api/users/${username}`);
@@ -20,7 +20,7 @@ const User = () => {
       const savedPorts = response.json();
       dispatch(setClusters(savedPorts));
     }
-  }
+  };
 
   useEffect(() => clusterFetch(), [clusters]);
 
@@ -36,48 +36,61 @@ const User = () => {
           number,
         }),
         headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      if (response.status === 201) dispatch(setAddCluster(false))
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.status === 201) dispatch(setAddCluster(false));
     } catch (err) {
-      console.err('Error during port addition: ', err)
+      console.err('Error during port addition: ', err);
     }
-  }
+  };
 
   const clusterButtons = [];
-  clusters.forEach(cluster => {
+  clusters.forEach((cluster) => {
     clusterButtons.push(
-    <>
-    <br/>
-    <button onClick={() => dispatch(setCurrentCluster(cluster))}>Port { cluster }</button>
-    </>
-  )})
+      <>
+        <br />
+        <button onClick={() => dispatch(setCurrentCluster(cluster))}>
+          Port {cluster}
+        </button>
+      </>
+    );
+  });
 
   return (
     <>
-      <div>{  /* username */} username here</div>
-      {!adding && <button onClick={() => dispatch(setAddCluster(true))}>Add a Cluster</button>}
-      {adding && <form onSubmit={handleFromSubmit}>
-      <label>Port Nickname:</label>
-        <input
-          type='text'
-          name='portName'
-          className='port'
-          placeholder='optional'
-          autoComplete='off'
+      <div id='clusterUserName'>{/* username */} username here</div>
+      {!adding && (
+        <button id='addCluster' onClick={() => dispatch(setAddCluster(true))}>
+          Add a Cluster
+        </button>
+      )}
+      {adding && (
+        <form onSubmit={handleFromSubmit}>
+          <label>Port Nickname:</label>
+          <input
+            type='text'
+            name='portName'
+            className='port'
+            placeholder='optional'
+            autoComplete='off'
           />
-        <br />
-        <label>Port Number:</label>
-        <input type='text'
-          name='portNum'
-          className='port'
-          placeholder='required'
-          autoComplete='off'/>
-        <br />
-        <button id='add-port' className='button1' type='submit'>Add</button>
-        <button onClick={() => dispatch(setAddCluster(false))}>Cancel</button>
-      </form>}
+          <br />
+          <label>Port Number:</label>
+          <input
+            type='text'
+            name='portNum'
+            className='port'
+            placeholder='required'
+            autoComplete='off'
+          />
+          <br />
+          <button id='add-port' className='button1' type='submit'>
+            Add
+          </button>
+          <button onClick={() => dispatch(setAddCluster(false))}>Cancel</button>
+        </form>
+      )}
       {clusterButtons}
     </>
   );
