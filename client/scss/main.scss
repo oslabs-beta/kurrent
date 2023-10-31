@@ -1,0 +1,44 @@
+//Custom Colors:
+$lightWhite: #f6f6ee;
+$darkBlue: #252d98;
+$medDarkBlue: #4e5fba;
+$lightDarkBlue: #7791dc;
+$lightBlue: #a0c3ff;
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  height: 60px;
+  border: 1px solid black;
+  margin-bottom: 1%;
+  align-items: center;
+}
+
+.user-info {
+  grid-area: menu;
+}
+.cluster-nav {
+  grid-area: header;
+}
+.metrics {
+  grid-area: main;
+}
+
+.main-grid {
+  display: grid;
+  grid-template-areas:
+    'menu header'
+    'menu main';
+  gap: 10px;
+  background-color: burlywood;
+  padding: 10px;
+}
+
+.main-grid {
+  div {
+    background-color: blanchedalmond;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 30px;
+  }
+}
