@@ -21,12 +21,57 @@ ChartJS.register(
   Legend,
   ArcElement,
   LineElement,
-  PointElement
+  PointElement,
 );
 
 const Metrics = () => {
   const [labels, setLabels] = useState([
-    '-15s',
+    '-30s',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
     '',
     '',
     '',
@@ -44,34 +89,55 @@ const Metrics = () => {
   ]);
 
   const [bytesInData, setBytesInData] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ]);
   const [bytesOutData, setBytesOutData] = useState([
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newBytesInValue = Math.floor(Math.random() * 100);
+      setBytesInData([...bytesInData.slice(1), newBytesInValue]);
+    }, 200);
+
+    return () => clearInterval(interval);
+  });
+
   // useEffect(() => {
   //   const interval = setInterval(() => {
-  //     const newBytesInValue = bytesInMetrics;
-  //     const newBytesOutValue = bytesOutMetrics;
-  //     setBytesInData([...bytesInData.slice(1), newBytesInValue]);
-  //     setBytesOutData([...bytesOutData.slice(1), newBytesOutValue]);
-  //   }, 1000);
-
-  //   return () => clearInterval(interval);
-  // });
-
-  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+  //     const newBytesInData = []
+  //     bytesInData.forEach((byte) => newBytesInData.push(byte + 1)) ;
+  //     setBytesInData([...bytesInData.slice(1), newBytesInData])
+  //   }, 500);
+  //   interval();
+  // }, []);
 
   const bytesIn = {
     labels,
     datasets: [
       {
         label: 'Bytes In',
-        data: data,
+        data: bytesInData,
+        fill: false,
+        borderColor: 'maroon',
+        backgroundColor: 'maroon',
+        tension: 0.4,
+      },
+    ],
+  };
+  const bytesOut = {
+    labels,
+    datasets: [
+      {
+        label: 'Bytes Out',
+        data: bytesOutData,
         fill: true,
         borderColor: 'maroon',
         tension: 0.1,
+        backgroundColor: 'maroon'
       },
     ],
   };
@@ -80,15 +146,21 @@ const Metrics = () => {
     scales: {
       y: { beginAtZero: true },
     },
+    animation: false,
+    elements: {
+      point: {
+        radius: 0,
+      },
+    },
   };
   return (
     <>
       <div>
         Metrics:
         <div id='metricsContainer'>
-          <canvas id='bytesInMetrics'></canvas>
-          {/* <Line data={bytesIn} options={lineOptions}></Line> */}
-          {/* <Line data={bytesOut} options={lineOptions}></Line> */}
+          {/* <canvas id='bytesInMetrics'></canvas> */}
+          <Line data={bytesIn} options={lineOptions}></Line>
+          <Line data={bytesOut} options={lineOptions}></Line>
           {/* <Line data={cpu} options={lineOptions}></Line> */}
           {/* <Line data={ram} options={lineOptions}></Line> */}
         </div>
