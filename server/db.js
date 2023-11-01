@@ -9,10 +9,8 @@ const { Pool } = require('pg');
 //     email VARCHAR(255),
 //     service_addresses VARCHAR(255)[] 
 // );
-
-const pool = new Pool({
-  connectionString: process.env.POSTGRES,
-});
+const myURI = 'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij'
+const pool = new Pool({connectionString: myURI});
 
 // Attempt to connect to the database using the connection pool.
 pool.connect()
