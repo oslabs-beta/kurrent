@@ -10,11 +10,11 @@ const ClusterNav = () => {
   const dispatch = useDispatch();
 
   return (
-    <>
-      <button onClick={() => dispatch(setView('summary'))}>Cluster Overview</button>
-      <button onClick={() => dispatch(setView('producers'))}>Producers</button>
-      <button onClick={() => dispatch(setView('consumers'))}>Consumers</button>
-    </>
+    <div id='clusterButtonContainer'>
+      <button id='clusterButtons' onClick={() => dispatch(setView('summary'))}>Cluster Overview</button>
+      <button id='clusterButtons' onClick={() => dispatch(setView('producers'))}>Producers</button>
+      <button id='clusterButtons' onClick={() => dispatch(setView('consumers'))}>Consumers</button>
+    </div>
   );
 };
 
