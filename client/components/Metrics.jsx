@@ -263,10 +263,12 @@ const Metrics = () => {
 
   const lineOptions = {
     scales: {
-      y: { beginAtZero: true },
+      y: { ticks: { color: '#black' } },
+      x: { ticks: { color: '#black' } },
     },
-    responsive: false,
-    animation: false,
+    responsive: true,
+    animation: { duration: 1000 },
+    maintainAspectRatio: false,
     elements: {
       point: {
         radius: 0,
@@ -283,48 +285,72 @@ const Metrics = () => {
     case 'summary':
       return (
         <>
-          <Line
-            className='lineMetric'
-            data={bytesIn}
-            options={lineOptions}
-          ></Line>
-          <Line
-            className='lineMetric'
-            data={bytesOut}
-            options={lineOptions}
-          ></Line>
-          <Line className='lineMetric' data={cpu} options={lineOptions}></Line>
-          <Line className='lineMetric' data={ram} options={lineOptions}></Line>
+          <div className='lineMetricBox'>
+            <Line
+              className='lineMetric'
+              data={bytesIn}
+              options={lineOptions}
+            ></Line>
+          </div>
+          <div className='lineMetricBox'>
+            <Line
+              className='lineMetric'
+              data={bytesOut}
+              options={lineOptions}
+            ></Line>
+          </div>
+          <div className='lineMetricBox'>
+            <Line
+              className='lineMetric'
+              data={cpu}
+              options={lineOptions}
+            ></Line>
+          </div>
+          <div className='lineMetricBox'>
+            <Line
+              className='lineMetric'
+              data={ram}
+              options={lineOptions}
+            ></Line>
+          </div>
         </>
       );
     case 'producers':
       return (
         <>
-          <Line
-            className='lineMetric'
-            data={reqPro}
-            options={lineOptions}
-          ></Line>
-          <Line
-            className='lineMetric'
-            data={msgPro}
-            options={lineOptions}
-          ></Line>
+          <div className='lineMetricBox'>
+            <Line
+              className='lineMetric'
+              data={reqPro}
+              options={lineOptions}
+            ></Line>
+          </div>
+          <div className='lineMetricBox'>
+            <Line
+              className='lineMetric'
+              data={msgPro}
+              options={lineOptions}
+            ></Line>
+          </div>
         </>
       );
     case 'consumers':
       return (
         <>
-          <Line
-            className='lineMetric'
-            data={reqCons}
-            options={lineOptions}
-          ></Line>
-          <Line
-            className='lineMetric'
-            data={fails}
-            options={lineOptions}
-          ></Line>
+          <div className='lineMetricBox'>
+            <Line
+              className='lineMetric'
+              data={reqCons}
+              options={lineOptions}
+            ></Line>
+          </div>
+          <div className='lineMetricBox'>
+            <Line
+              className='lineMetric'
+              data={fails}
+              options={lineOptions}
+            ></Line>
+          </div>
         </>
       );
   }

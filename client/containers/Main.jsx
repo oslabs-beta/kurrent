@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import User from '../components/User.jsx';
 import Metrics from '../components/Metrics.jsx';
-import ClusterNav from '../components/ClusterNav.jsx'
+import ClusterNav from '../components/ClusterNav.jsx';
 import '../scss/main.scss';
 
 const Main = () => {
@@ -15,9 +15,9 @@ const Main = () => {
         navigate('/');
       }
     } catch (err) {
-      console.log('error: ', err)
+      console.log('error: ', err);
     }
-  }
+  };
 
   return (
     <>
@@ -29,7 +29,9 @@ const Main = () => {
         <div className='user-info'>
           <User />
         </div>
-        <div>{<ClusterNav className='cluster-nav' />}</div>
+        <div className='cluster-nav'>
+          <ClusterNav />
+        </div>
         <div className='metricsCont'>
           <h3>Metrics</h3>
           <div className='metrics'>
