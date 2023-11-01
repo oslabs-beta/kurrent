@@ -1,27 +1,17 @@
 // db.js
 const { Pool } = require('pg');
 
-// I used this query to create table
+// This SQL query is used to create a 'users' table in the database.
 // CREATE TABLE users (
 //     user_id serial PRIMARY KEY,
 //     username VARCHAR(255) NOT NULL,
 //     password VARCHAR(255) NOT NULL,
 //     email VARCHAR(255),
-//     service_addresses text[][]
-// );
-
-//I used this query to create sessions
-// CREATE TABLE sessions (
-//   session_id serial PRIMARY KEY,
-//   user_id INT REFERENCES users(user_id),
-//   session_token VARCHAR(255) NOT NULL,
-//   created_at timestamp NOT NULL,
-//   last_active timestamp NOT NULL,
-//   active BOOLEAN DEFAULT true
+//     service_addresses VARCHAR(255)[] 
 // );
 
 const pool = new Pool({
-  connectionString: 'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij',
+  connectionString: process.env.POSTGRES,
 });
 
 // Attempt to connect to the database using the connection pool.
@@ -31,6 +21,7 @@ pool.connect()
   })
   .catch((error) => {
     console.log('Database connection error: ', error);
-  });
+  })
 
+// Export the 'pool' object to make it available for other parts of your application that require database access.
 module.exports = pool;

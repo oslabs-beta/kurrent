@@ -1,6 +1,6 @@
 # General
 .DS_Store
-
+prometheus/
 # dependencies
 node_modules/
 
