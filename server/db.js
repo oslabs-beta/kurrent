@@ -1,13 +1,13 @@
-// Import the 'Pool' object from the 'pg' library, which is used to manage PostgreSQL database connections.
+// db.js
 const { Pool } = require('pg');
 
-// This SQL query is used to create a 'users' table in the database.
+// I used this query to create table
 // CREATE TABLE users (
 //     user_id serial PRIMARY KEY,
 //     username VARCHAR(255) NOT NULL,
 //     password VARCHAR(255) NOT NULL,
 //     email VARCHAR(255),
-//     service_addresses VARCHAR(255)[] 
+//     service_addresses text[][]
 // );
 
 const pool = new Pool({
@@ -21,7 +21,6 @@ pool.connect()
   })
   .catch((error) => {
     console.log('Database connection error: ', error);
-  })
+  });
 
-// Export the 'pool' object to make it available for other parts of your application that require database access.
 module.exports = pool;

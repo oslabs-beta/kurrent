@@ -1,12 +1,11 @@
 const pool = require('../db');
 const bcrypt = require('bcrypt');
+const express = require('express');
+const session = require('express-session');
 
-const registerUser = async (req, res) => {
-  console.log('Request Body:', req.body); 
+
+const registerUser = async (req, res, next) => {
   const { username, password, email } = req.body;
-  // console.log('Username:', username);
-  // console.log('Password:', password);
-  // console.log('Email:', email);
 
   try {
     // Check if the username already exists
@@ -18,11 +17,7 @@ const registerUser = async (req, res) => {
 
     // Hash the password before storing it in the database
     const saltRounds = 10; // You can adjust the number of salt rounds as needed
-    if (!password) {
-      return res.status(400).json({ error: 'Password is required' });
-    }
-    console.log('Password:', password);
-    console.log('Salt Rounds:', saltRounds);
+    console.log("Password:", password);
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Insert the new user into the database with the hashed password
@@ -33,12 +28,15 @@ const registerUser = async (req, res) => {
 
     res.json(newUser.rows[0]);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    return next({
+      log: 'Error in userController.registerUser middleware',
+      status: 500,
+      message: 'An error occurred during user registration.'
+    })
   }
 };
 
-const loginUser = async (req, res) => {
+const loginUser = async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
@@ -49,15 +47,17 @@ const loginUser = async (req, res) => {
     }
 
     const hashedPassword = user.rows[0].password;
-
-    // Compare the provided password with the stored hashed password
     const passwordMatch = await bcrypt.compare(password, hashedPassword);
 
     if (!passwordMatch) {
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    // If login is successful, include service_addresses in the response
+    // If login is successful, set session data
+    // req.session.username = username;
+    // req.session.loggedIn = true;
+
+    // Include service_addresses in the response
     const serviceAddresses = user.rows[0].service_addresses || [];
 
     res.json({
@@ -65,8 +65,11 @@ const loginUser = async (req, res) => {
       service_addresses: serviceAddresses,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    return next({
+      log: 'Error in userController.loginUser middleware',
+      status: 500,
+      message: { err: error }
+    })
   }
 };
 
@@ -103,34 +106,16 @@ const updateServiceAddresses = async (req, res) => {
 
     res.json(updatedUser.rows[0]);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    return next({
+      log: 'Error in userController.updateServiceAddresses  middleware',
+      status: 500,
+      message: { err: error }
+    })
   }
 };
 
-// const getServiceAddresses = async (req, res) => {
-//   const { username } = req.params;
 
-//   try {
-//     // Check if the user exists
-//     const user = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-
-//     if (user.rows.length === 0) {
-//       return res.status(404).json({ error: 'User not found' });
-//     }
-
-//     // Extract the service addresses
-//     const serviceAddresses = user.rows[0].service_addresses || [];
-
-//     res.json({ service_addresses: serviceAddresses });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// };
-
-
-module.exports = { registerUser, loginUser, updateServiceAddresses};
+module.exports = { registerUser, loginUser, updateServiceAddresses };
 
 // // controllers/userController.js
 // const pool = require('../db'); // You'll create the 'db.js' file to set up your database connection.
@@ -180,30 +165,3 @@ module.exports = { registerUser, loginUser, updateServiceAddresses};
 // };
 
 // module.exports = { registerUser, loginUser };
-
-
-// const loginUser = async (req, res) => {
-//   const { username, password } = req.body;
-
-//   try {
-//     const user = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-
-//     if (user.rows.length === 0) {
-//       return res.status(401).json({ error: 'Invalid username or password' });
-//     }
-
-//     const hashedPassword = user.rows[0].password;
-
-//     // Compare the provided password with the stored hashed password
-//     const passwordMatch = await bcrypt.compare(password, hashedPassword);
-
-//     if (!passwordMatch) {
-//       return res.status(401).json({ error: 'Invalid username or password' });
-//     }
-
-//     res.json({ message: 'Login successful' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// };
