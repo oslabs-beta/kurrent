@@ -35,7 +35,7 @@ const Login = () => {
       }
     }
     verifySession();
-    navigate('/main')
+    // navigate('/main')
   }, []);
 
   let userExists = false;
@@ -75,9 +75,9 @@ const Login = () => {
   //login page
   if (login.authType === 'login') {
     return (
-      <>
-        <h1 className='kurrentTitle'>Kurrent</h1>
+      <div className='loginPageContainer'>
         <div className='login-container'>
+          <h1 className='kurrentTitle'>Kurrent</h1>
           <form action='' className='submit-form'>
             <input
               type='text'
@@ -112,15 +112,15 @@ const Login = () => {
             </a>
           </form>
         </div>
-      </>
+      </div>
     );
   }
   //signup page
   else {
     return (
-      <>
-        <h1 className='signUpTitle'>Sign Up</h1>
-        <div className='login-container'>
+      <div className='loginPageContainer'>
+        <div className='signUp-container'>
+          <h1 className='signUpTitle'>Sign Up</h1>
           <form action='' className='submit-form' id='signUpForm'>
             <input
               type='text'
@@ -164,7 +164,7 @@ const Login = () => {
             </button>
           </form>
         </div>
-      </>
+      </div>
     );
   }
 };
