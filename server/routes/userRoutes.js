@@ -7,7 +7,7 @@ router.post('/register', userController.registerUser);
 router.post('/login', userController.loginUser);
 router.patch('/update-service-addresses/:username', userController.updateServiceAddresses);
 // Logout route
-router.post('/logout', userController.logout);
+router.get('/logout', userController.logout);
 
 module.exports = router;
 

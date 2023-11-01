@@ -130,9 +130,13 @@ function generateSessionToken() {
 
 const updateServiceAddresses = async (req, res, next) => {
   const { username } = req.params;
+  // const { username } = req.session.user
   const { service_addresses } = req.body;
 
   try {
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: 'You must be logged in...' });
+    }
     // Check if the user exists
     const userQuery = 'SELECT * FROM users WHERE username = $1';
     const userResult = await pool.query(userQuery, [username]);
