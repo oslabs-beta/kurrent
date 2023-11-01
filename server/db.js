@@ -10,6 +10,16 @@ const { Pool } = require('pg');
 //     service_addresses text[][]
 // );
 
+//I used this query to create sessions
+// CREATE TABLE sessions (
+//   session_id serial PRIMARY KEY,
+//   user_id INT REFERENCES users(user_id),
+//   session_token VARCHAR(255) NOT NULL,
+//   created_at timestamp NOT NULL,
+//   last_active timestamp NOT NULL,
+//   active BOOLEAN DEFAULT true
+// );
+
 const pool = new Pool({
   connectionString: 'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij',
 });

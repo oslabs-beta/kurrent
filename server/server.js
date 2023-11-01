@@ -6,12 +6,27 @@ const metricsRoutes = require('./routes/metricsRoutes');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
+// process.env['NODE_NO_WARNINGS'] = 1; // Suppress all Node.js warnings
+
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 // Use cookie-parser middleware to parse cookies
 app.use(cookieParser());
 
+const randomSecret = require('crypto').randomBytes(64).toString('hex');
+app.use(
+  session({
+    secret: randomSecret,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      secure: false, // Adjust to true in a production environment with HTTPS
+      httpOnly: true, // Make the cookie accessible only via HTTP requests (recommended)
+      path: '/', // Cookie is valid for all routes
+    },
+  })
+);
 
 
 // get, set user data in db
@@ -37,16 +52,3 @@ app.listen(PORT, () => {
 });
 
 
-// const randomSecret = require('crypto').randomBytes(64).toString('hex');
-// app.use(
-//   session({
-//     secret: randomSecret,
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: {
-//       secure: false, // Adjust to true in a production environment with HTTPS
-//       httpOnly: true, // Make the cookie accessible only via HTTP requests (recommended)
-//       path: '/', // Cookie is valid for all routes
-//     },
-//   })
-// );
