@@ -18,10 +18,12 @@ const { Pool } = require('pg');
 //   created_at timestamp NOT NULL,
 //   last_active timestamp NOT NULL,
 //   active BOOLEAN DEFAULT true
+
+//     email VARCHAR(255)
 // );
 
 const pool = new Pool({
-  connectionString: 'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij',
+  connectionString: process.env.POSTGRES,
 });
 
 // Attempt to connect to the database using the connection pool.

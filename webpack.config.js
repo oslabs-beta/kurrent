@@ -14,16 +14,8 @@ module.exports = {
       publicPath: '/',
     },
     proxy: {
-      '/home/**': {
+      '/**': {
         target: 'http://localhost:3000/',
-      },
-      '/database/**': {
-        target: 'http://localhost:3000/',
-        secure: false,
-      },
-      '/verifySession/**': {
-        target: 'http://localhost:3000/',
-        secure: false,
       },
     },
   },
