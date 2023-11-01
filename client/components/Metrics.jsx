@@ -140,10 +140,18 @@ const Metrics = () => {
   //     const newBytesOutValue = Math.floor(Math.random() * 100);
   //     const newCpuValue = Math.floor(Math.random() * 100);
   //     const newRamValue = Math.floor(Math.random() * 100);
+  //     const newTotalReqsPro = Math.floor(Math.random() * 100);
+  //     const newTotalMsg = Math.floor(Math.random() * 100);
+  //     const newTotalReqCon = Math.floor(Math.random() * 100);
+  //     const newTotalFail = Math.floor(Math.random() * 100);
   //     setBytesInData([...bytesInData.slice(1), newBytesInValue]);
   //     setBytesOutData([...bytesOutData.slice(1), newBytesOutValue]);
   //     setCpuValue([...cpuValue.slice(1), newCpuValue]);
   //     setRamValue([...ramValue.slice(1), newRamValue]);
+  //     setTotalReqsPro([...totalReqsPro.slice(1), newTotalReqsPro]);
+  //     setTotalMsg([...totalMsg.slice(1), newTotalMsg]);
+  //     setTotalReqCons([...totalReqCons.slice(1), newTotalReqCon]);
+  //     setTotalFail([...totalFail.slice(1), newTotalFail]);
   //   }, 500);
   //   return () => clearInterval(interval);
   // });
@@ -154,7 +162,7 @@ const Metrics = () => {
       {
         label: 'Bytes In',
         data: bytesInData,
-        fill: false,
+        fill: true,
         borderColor: 'white',
         backgroundColor: 'white',
         tension: 0.4,
