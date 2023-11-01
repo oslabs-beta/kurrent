@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
   PointElement,
+  Filler,
 } from 'chart.js';
 
 import { Bar, Chart, Line, Pie } from 'react-chartjs-2';
@@ -21,8 +22,12 @@ ChartJS.register(
   Legend,
   ArcElement,
   LineElement,
-  PointElement
+  PointElement,
+  Filler
 );
+
+import { setView } from '../reducers/dashReducer.js';
+import { useSelector } from 'react-redux';
 
 const Metrics = () => {
   const [labels, setLabels] = useState([
@@ -108,6 +113,26 @@ const Metrics = () => {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ]);
+  const [totalReqsPro, setTotalReqsPro] = useState([
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ]);
+  const [totalMsg, setTotalMsg] = useState([
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ]);
+  const [totalReqCons, setTotalReqCons] = useState([
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ]);
+  const [totalFail, setTotalFail] = useState([
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  ]);
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -179,6 +204,62 @@ const Metrics = () => {
       },
     ],
   };
+  const reqPro = {
+    labels,
+    datasets: [
+      {
+        label: 'Total Requests',
+        data: totalReqsPro,
+        fill: true,
+        borderColor: 'white',
+        tension: 0.4,
+        backgroundColor: 'white',
+        labelColor: 'black',
+      },
+    ],
+  };
+  const msgPro = {
+    labels,
+    datasets: [
+      {
+        label: 'Total Messages In',
+        data: totalMsg,
+        fill: true,
+        borderColor: 'white',
+        tension: 0.4,
+        backgroundColor: 'white',
+        labelColor: 'black',
+      },
+    ],
+  };
+  const reqCons = {
+    labels,
+    datasets: [
+      {
+        label: 'Total Requests',
+        data: totalReqCons,
+        fill: true,
+        borderColor: 'white',
+        tension: 0.4,
+        backgroundColor: 'white',
+        labelColor: 'black',
+      },
+    ],
+  };
+  const fails = {
+    labels,
+    datasets: [
+      {
+        label: 'Total Failed Requests',
+        data: totalFail,
+        fill: true,
+        borderColor: 'white',
+        tension: 0.4,
+        backgroundColor: 'white',
+        labelColor: 'black',
+      },
+    ],
+  };
 
   const lineOptions = {
     scales: {
@@ -195,14 +276,58 @@ const Metrics = () => {
       fontColor: 'black',
     },
   };
-  return (
-    <>
-      <Line className='lineMetric' data={bytesIn} options={lineOptions}></Line>
-      <Line className='lineMetric' data={bytesOut} options={lineOptions}></Line>
-      <Line className='lineMetric' data={cpu} options={lineOptions}></Line>
-      <Line className='lineMetric' data={ram} options={lineOptions}></Line>
-    </>
-  );
+
+  const dashboard = useSelector((state) => state.dashboard);
+
+  switch (dashboard.clusterView) {
+    case 'summary':
+      return (
+        <>
+          <Line
+            className='lineMetric'
+            data={bytesIn}
+            options={lineOptions}
+          ></Line>
+          <Line
+            className='lineMetric'
+            data={bytesOut}
+            options={lineOptions}
+          ></Line>
+          <Line className='lineMetric' data={cpu} options={lineOptions}></Line>
+          <Line className='lineMetric' data={ram} options={lineOptions}></Line>
+        </>
+      );
+    case 'producers':
+      return (
+        <>
+          <Line
+            className='lineMetric'
+            data={reqPro}
+            options={lineOptions}
+          ></Line>
+          <Line
+            className='lineMetric'
+            data={msgPro}
+            options={lineOptions}
+          ></Line>
+        </>
+      );
+    case 'consumers':
+      return (
+        <>
+          <Line
+            className='lineMetric'
+            data={reqCons}
+            options={lineOptions}
+          ></Line>
+          <Line
+            className='lineMetric'
+            data={fails}
+            options={lineOptions}
+          ></Line>
+        </>
+      );
+  }
 };
 
 export default Metrics;
