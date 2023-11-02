@@ -56,7 +56,7 @@ const User = () => {
       clusterButtons.push(
         <>
           <br />
-          <button onClick={() => dispatch(setCurrentCluster(cluster))} key={`port${idx}`}>
+          <button className='savedClusterBtn' onClick={() => dispatch(setCurrentCluster(cluster))} key={`port${idx}`}>
             Port {cluster}
           </button>
         </>

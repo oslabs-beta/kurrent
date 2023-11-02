@@ -109,6 +109,8 @@ h3 {
   margin: 0;
   font-size: 2rem;
   height: 7%;
+  color: $lightWhite;
+  text-shadow: 1px 1px 1px black, 0 0 2px;
 }
 .kurrentTitle2 {
   color: $lightWhite;
@@ -193,5 +195,31 @@ label {
   box-shadow: 1px 1px 5px #252d98;
   border-radius: 24px;
   border-color: #f6f6ee;
+  border: none;
+}
+.savedClusterBtn {
+  width: 90%;
+  height: 5%;
+  font-size: 1.2rem;
+  text-wrap: wrap;
+  margin: 5px;
+  color: #252d98;
+  background-color: #f6f6ee;
+  box-shadow: 1px 1px 5px #252d98;
+  border-color: #f6f6ee;
+  border: none;
+  border-radius: 24px;
+}
+.savedClusterBtn:hover {
+  box-shadow: 2px 2px 10px black;
+  border-color: #f6f6ee;
+  border-width: 0;
+  border: none;
+}
+.savedClusterBtn:active {
+  box-shadow: 1px 1px 8px black;
+  box-shadow: inset 1px 1px 5px black;
+  border-color: #f6f6ee;
+  border-width: 0;
   border: none;
 }
