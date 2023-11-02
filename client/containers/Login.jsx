@@ -20,7 +20,12 @@ import {
   setPassword,
   setUsername,
   setPassMatch,
+  setIsLoggedIn,
 } from '../reducers/authReducer.js';
+
+import {
+  setClusters,
+} from '../reducers/dashReducer.js'
 
 const Login = () => {
   const navigate = useNavigate();
@@ -29,9 +34,10 @@ const Login = () => {
 
   useEffect(() => {
     async function verifySession() {
-      const response = await fetch('/api/users');
-      if (response.status === 200) {
-        navigate('/main');
+      const response = await fetch('/users');
+      if (response.status === 200 || response.status === 201) {
+        dispatch(setIsLoggedIn(true));
+        navigate('/');
       }
     }
     verifySession();
@@ -43,13 +49,14 @@ const Login = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     userExists = false;
-    const loginEndpoint = `/api/users/${login.authType}`;
+    const loginEndpoint = `/users/${login.authType}`;
     const postBody = {};
     postBody.username = login.username;
     postBody.password = login.password;
     if (login.authType === 'register') {
       if (login.username === '') {
         postBody.username = login.email.split('@')[0];
+        dispatch(setUsername(postBody.username))
       }
       postBody.email = login.email;
     }
@@ -62,8 +69,12 @@ const Login = () => {
             'Content-Type': 'application/json',
           },
         });
-        if (response.status === 201) {
-          navigate('/main');
+        const loginData = await response.json();
+        if (response.status === 200) {
+
+          dispatch(setClusters(loginData.service_addresses));
+          dispatch(setIsLoggedIn(true));
+          navigate('/');
         } else if (response.status === 400) {
           userExists = true;
         }
@@ -162,6 +173,14 @@ const Login = () => {
             >
               Create Account
             </button>
+            <a
+              id='routeLogin'
+              className='loginBtns'
+              type='submit'
+              onClick={() => dispatch(switchAuth())}
+            >
+              Back to Login
+            </a>
           </form>
         </div>
       </div>

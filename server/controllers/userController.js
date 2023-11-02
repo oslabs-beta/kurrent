@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const express = require('express');
 const session = require('express-session');
 
-
 const registerUser = async (req, res, next) => {
   const { username, password, email } = req.body;
 
@@ -21,15 +20,21 @@ const registerUser = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Insert the new user into the users table with the hashed password
-    const insertUserQuery = 'INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING user_id';
-    const insertUserResult = await pool.query(insertUserQuery, [username, hashedPassword, email]);
+    const insertUserQuery =
+      'INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING user_id';
+    const insertUserResult = await pool.query(insertUserQuery, [
+      username,
+      hashedPassword,
+      email,
+    ]);
     const userId = insertUserResult.rows[0].user_id;
 
     // Create a session token
     const sessionToken = generateSessionToken();
 
     // Insert the session data into the sessions table
-    const insertSessionQuery = 'INSERT INTO sessions (user_id, session_token, login_time) VALUES ($1, $2, $3)';
+    const insertSessionQuery =
+      'INSERT INTO sessions (user_id, session_token, login_time) VALUES ($1, $2, $3)';
     const currentDate = new Date();
     await pool.query(insertSessionQuery, [userId, sessionToken, currentDate]);
 
@@ -45,12 +50,11 @@ const registerUser = async (req, res, next) => {
     });
 
     res.status(201).json({ user_id: userId, username: username });
-
   } catch (error) {
     return next({
       log: 'Error in userController.registerUser middleware',
       status: 500,
-      message: 'An error occurred during user registration.'
+      message: 'An error occurred during user registration.',
     });
   }
 };
@@ -60,7 +64,7 @@ const loginUser = async (req, res, next) => {
 
   try {
     // Query the user by username to get the user_id
-    const userQuery = 'SELECT user_id, password FROM users WHERE username = $1';
+    const userQuery = 'SELECT user_id, password, service_addresses FROM users WHERE username = $1';
     const userResult = await pool.query(userQuery, [username]);
 
     if (userResult.rows.length === 0) {
@@ -84,9 +88,14 @@ const loginUser = async (req, res, next) => {
     console.log('Generated session token:', sessionToken);
 
     // Insert the session data into the sessions table
-    const insertSessionQuery = 'INSERT INTO sessions (user_id, session_token, login_time) VALUES ($1, $2, $3)';
+    const insertSessionQuery =
+      'INSERT INTO sessions (user_id, session_token, login_time) VALUES ($1, $2, $3)';
     const currentDate = new Date();
-    await pool.query(insertSessionQuery, [user.user_id, sessionToken, currentDate]);
+    await pool.query(insertSessionQuery, [
+      user.user_id,
+      sessionToken,
+      currentDate,
+    ]);
 
     // Create and set a session for the logged-in user
     req.session.user = {
@@ -119,19 +128,33 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-
-
-
 function generateSessionToken() {
   // Generate a random session token, you can use a library or custom logic here
   return require('crypto').randomBytes(32).toString('hex');
 }
 
+const verifySession = async (req, res, next) => {
+  try {
+    if (!req.session.user || !req.session.user.id) {
+      return res.status(401).json({ error: 'You must be logged in...' });
+    } else {
+      return res.status(200);
+    }
+  } catch (error) {
+    return next({
+      log: 'Error in userController.verifySession middleware',
+      status: 500,
+      message: 'An error occurred during verify session.',
+    });
+  }
+};
 
 const updateServiceAddresses = async (req, res, next) => {
-  const { username } = req.params;
+  const username = req.params.username;
+  // console.log(username);
   // const { username } = req.session.user
   const { service_addresses } = req.body;
+  // console.log(service_addresses);
 
   try {
     if (!req.session.user || !req.session.user.id) {
@@ -140,27 +163,34 @@ const updateServiceAddresses = async (req, res, next) => {
     // Check if the user exists
     const userQuery = 'SELECT * FROM users WHERE username = $1';
     const userResult = await pool.query(userQuery, [username]);
-
+    // console.log(userResult);
     if (userResult.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
     const existingAddresses = userResult.rows[0].service_addresses || [];
-
+    // console.log(existingAddresses);
     // Check for duplicates by comparing the addresses
-    const duplicateAddresses = service_addresses.filter((newAddress) =>
-      existingAddresses.some((existingAddress) => areServiceAddressesEqual(existingAddress, newAddress))
-    );
+    //------Removed to check for bug----------
+    // const duplicateAddresses = service_addresses.filter((newAddress) =>
+    //   existingAddresses.some((existingAddress) =>
+    //     areServiceAddressesEqual(existingAddress, newAddress)
+    //   )
+    // );
 
-    if (duplicateAddresses.length > 0) {
-      return res.status(400).json({ error: 'Service addresses already exist', duplicates: duplicateAddresses });
-    }
+    // if (duplicateAddresses.length > 0) {
+    //   return res.status(400).json({
+    //     error: 'Service addresses already exist',
+    //     duplicates: duplicateAddresses,
+    //   });
+    // }
 
     // Merge the new service addresses with the existing ones
     const updatedAddresses = existingAddresses.concat(service_addresses);
-
+    console.log(updatedAddresses);
     // Update the service_addresses array for the user in the database
-    const updateUserQuery = 'UPDATE users SET service_addresses = $1 WHERE username = $2';
+    const updateUserQuery =
+      'UPDATE users SET service_addresses = $1 WHERE username = $2';
     await pool.query(updateUserQuery, [updatedAddresses, username]);
 
     res.json({ message: 'Service addresses updated successfully' });
@@ -173,9 +203,27 @@ const updateServiceAddresses = async (req, res, next) => {
   }
 };
 
-function areServiceAddressesEqual(address1, address2) {
-  return address1[0] === address2[0] && address1[1] === address2[1];
-}
+const getAdresses = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+    //console.log(username);
+    const userQuery = 'SELECT * FROM users WHERE username = $1';
+    const userResult = await pool.query(userQuery, [username]);
+    const existingAddresses = userResult.rows[0].service_addresses || [];
+    // console.log(existingAddresses);
+    return res.status(200).json(existingAddresses);
+  } catch (error) {
+    return next({
+      log: 'Error in userController.getServiceAddresses middleware',
+      status: 500,
+      message: 'An error occurred getting service address.',
+    });
+  }
+};
+
+// function areServiceAddressesEqual(address1, address2) {
+//   return address1[0] === address2[0] && address1[1] === address2[1];
+// }
 // function areServiceAddressesEqual(address1, address2) {
 //   // Implement custom logic to compare service addresses
 //   // Return true if they are equal, otherwise return false
@@ -198,7 +246,9 @@ const logout = async (req, res, next) => {
         const sessionId = session.rows[0].session_id;
 
         // Delete the session record from the sessions table
-        await pool.query('DELETE FROM sessions WHERE session_id = $1', [sessionId]);
+        await pool.query('DELETE FROM sessions WHERE session_id = $1', [
+          sessionId,
+        ]);
 
         // Clear the session cookie to log the user out
         res.clearCookie('ssid'); // Replace 'ssid' with your session cookie name
@@ -221,15 +271,14 @@ const logout = async (req, res, next) => {
   }
 };
 
-
-module.exports = { registerUser, loginUser, updateServiceAddresses, logout };
-
-
-
-
-
-
-
+module.exports = {
+  registerUser,
+  loginUser,
+  updateServiceAddresses,
+  logout,
+  verifySession,
+  getAdresses,
+};
 
 // // controllers/userController.js
 // const pool = require('../db'); // You'll create the 'db.js' file to set up your database connection.
@@ -293,7 +342,7 @@ module.exports = { registerUser, loginUser, updateServiceAddresses, logout };
 //     }
 
 //     const existingAddresses = user.rows[0].service_addresses || [];
-    
+
 //     // Check for duplicates in the new service addresses
 //     const duplicateAddresses = service_addresses.filter((address) => existingAddresses.includes(address));
 

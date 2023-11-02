@@ -4,9 +4,9 @@ const { Pool } = require('pg');
 // I used this query to create table
 // CREATE TABLE users (
 //     user_id serial PRIMARY KEY,
-//     username VARCHAR(255) NOT NULL,
+//     email VARCHAR(255) NOT NULL,
+//     username VARCHAR(255),
 //     password VARCHAR(255) NOT NULL,
-//     email VARCHAR(255),
 //     service_addresses text[][]
 // );
 
@@ -15,16 +15,12 @@ const { Pool } = require('pg');
 //   session_id serial PRIMARY KEY,
 //   user_id INT REFERENCES users(user_id),
 //   session_token VARCHAR(255) NOT NULL,
-//   created_at timestamp NOT NULL,
-//   last_active timestamp NOT NULL,
-//   active BOOLEAN DEFAULT true
-
-//     email VARCHAR(255)
+//   login_time timestamp ,
 // );
 
-const pool = new Pool({
-  connectionString: process.env.POSTGRES,
-});
+const myURI =
+  'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij';
+const pool = new Pool({ connectionString: myURI });
 
 // Attempt to connect to the database using the connection pool.
 pool.connect()

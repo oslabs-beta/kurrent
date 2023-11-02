@@ -10,63 +10,69 @@ import {
 
 const User = () => {
   const dispatch = useDispatch();
-  const username = document.cookie.username;
+  const username = useSelector((state) => state.login.username);
   const clusters = useSelector((state) => state.dashboard.clusters);
   const adding = useSelector((state) => state.dashboard.addingCluster);
 
-  const clusterFetch = async () => {
-    const response = await fetch(`/api/users/${username}`);
-    if (response.status === 200) {
-      const savedPorts = response.json();
-      dispatch(setClusters(savedPorts));
-    }
-  };
-
-  useEffect(() => clusterFetch(), [clusters]);
+  // useEffect(() => {
+  //   const clusterFetch = async () => {
+  //     const response = await fetch(`/users/service-address${username}`);
+  //     if (response.status === 200) {
+  //       const savedPorts = await response.json();
+  //       console.log(savedPorts);
+  //       dispatch(setClusters(savedPorts));
+  //     }
+  //   };
+  //   clusterFetch();
+  // }, []);
 
   const handleFromSubmit = async (e) => {
     e.preventDefault();
     const nickname = e.target.portName.value;
-    const number = e.target.portNum.value;
+    const service_addresses = e.target.portNum.value;
     try {
-      const response = await fetch(`/api/users/${username}`, {
+      const response = await fetch(`/users/update-service-addresses${username}`, {
         method: 'PATCH',
         body: JSON.stringify({
           nickname,
-          number,
+          service_addresses,
         }),
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      if (response.status === 201) dispatch(setAddCluster(false));
+      if (response.status === 200) {
+        dispatch(setAddCluster(false));
+        dispatch(setClusters([...clusters, service_addresses]))
+      }
     } catch (err) {
       console.err('Error during port addition: ', err);
     }
   };
 
   const clusterButtons = [];
-  clusters.forEach((cluster) => {
-    clusterButtons.push(
-      <>
-        <br />
-        <button onClick={() => dispatch(setCurrentCluster(cluster))}>
-          Port {cluster}
-        </button>
-      </>
-    );
-  });
+  if (Array.isArray(clusters)){
+    clusters.forEach((cluster, idx) => {
+      clusterButtons.push(
+        <>
+          <br />
+          <button onClick={() => dispatch(setCurrentCluster(cluster))} key={`port${idx}`}>
+            Port {cluster}
+          </button>
+        </>
+      );
+    });}
 
   return (
     <>
-      <div id='clusterUserName'>{/* username */} username here</div>
+      <div id='clusterUserName'>{`${username}'s Cluster`}</div>
       {!adding && (
         <button id='addCluster' onClick={() => dispatch(setAddCluster(true))}>
           Add a Cluster
         </button>
       )}
       {adding && (
-        <form onSubmit={handleFromSubmit}>
+        <form className='addPortForm' onSubmit={handleFromSubmit}>
           <label>Port Nickname:</label>
           <input
             type='text'
@@ -88,7 +94,7 @@ const User = () => {
           <button id='add-port' className='button1' type='submit'>
             Add
           </button>
-          <button onClick={() => dispatch(setAddCluster(false))}>Cancel</button>
+          <button id='cancel-port' onClick={() => dispatch(setAddCluster(false))}>Cancel</button>
         </form>
       )}
       {clusterButtons}

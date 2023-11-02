@@ -6,8 +6,12 @@ $lightDarkBlue: #7791dc;
 $lightBlue: #a0c3ff;
 
 html {
-  background-color: $darkBlue;
+  background-color: lighten($darkBlue, 10%);
   font-family: 'Rubik', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+body {
   margin: 0;
   padding: 0;
 }
@@ -18,8 +22,13 @@ nav {
   border-bottom: 1px solid black;
   margin-bottom: 1%;
   align-items: center;
-  width: 100%;
+  width: 99%;
   font-size: 2.5rem;
+  padding-bottom: 0.3%;
+  padding-left: 0.3%;
+  padding-right: 0.3%;
+  padding-top: 0.3%;
+  background-color: $darkBlue;
 }
 
 .user-info {
@@ -39,7 +48,7 @@ nav {
     'menu main';
   gap: 5px;
   padding: 0;
-  background-color: $darkBlue;
+  background-color: lighten($darkBlue, 10%);
   max-width: 100%;
   height: 97%;
 }
@@ -69,13 +78,14 @@ nav {
   box-shadow: 1px 1px 5px #252d98;
   border-radius: 24px;
   border-color: #f6f6ee;
+  border: none;
 }
 #clusterButtons:hover {
-  background-color: $darkBlue;
-  color: #f6f6ee;
-  box-shadow: 1px 1px 8px $darkBlue;
+  box-shadow: 1px 1px 8px black;
+  box-shadow: inset 1px 1px 5px black;
   border-color: #f6f6ee;
   border-width: 0;
+  border: none;
 }
 .metrics {
   display: grid;
@@ -99,4 +109,89 @@ h3 {
   margin: 0;
   font-size: 2rem;
   height: 7%;
+}
+.kurrentTitle2 {
+  color: $lightWhite;
+  text-shadow: 1px 1px 1px black, 0 0 2px;
+  font-weight: 400;
+}
+#signOut {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 5%;
+  background-color: $lightWhite;
+  border-radius: 10px;
+  border: none;
+}
+#signOut:hover {
+  box-shadow: 1px 1px 8px black;
+  box-shadow: inset 1px 1px 5px black;
+  border-color: #f6f6ee;
+  border-width: 0;
+}
+#clusterUserName {
+  color: $lightWhite;
+  text-shadow: 1px 1px 2px black, 0 0 1em $lightDarkBlue, 0 0 0.1em black;
+  font-size: 1.4rem;
+}
+#addCluster {
+  height: 6%;
+  width: 75%;
+  font-size: 1rem;
+  margin: 5px;
+  color: #252d98;
+  background-color: #f6f6ee;
+  box-shadow: 1px 1px 5px #252d98;
+  border-radius: 24px;
+  border-color: #f6f6ee;
+  border: none;
+}
+#addCluster:hover {
+  box-shadow: 1px 1px 8px black;
+  box-shadow: inset 1px 1px 5px black;
+  border-color: #f6f6ee;
+  border-width: 0;
+  border: none;
+}
+.port {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 20%;
+}
+label {
+  margin-top: 5%;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  color: $lightWhite;
+  text-shadow: 1px 1px 2px black, 0 0 1em $lightDarkBlue, 0 0 0.1em black;
+  font-size: 1.4rem;
+  padding-left: 20%;
+}
+#add-port {
+  height: 10%;
+  width: 40%;
+  font-size: 1.3rem;
+  margin: 5px;
+  color: #252d98;
+  background-color: #f6f6ee;
+  box-shadow: 1px 1px 5px #252d98;
+  border-radius: 24px;
+  border-color: #f6f6ee;
+  border: none;
+}
+#cancel-port {
+  height: 10%;
+  width: 40%;
+  font-size: 1.3rem;
+  margin: 5px;
+  color: #252d98;
+  background-color: #f6f6ee;
+  box-shadow: 1px 1px 5px #252d98;
+  border-radius: 24px;
+  border-color: #f6f6ee;
+  border: none;
 }
