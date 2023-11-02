@@ -58,6 +58,16 @@ const registerUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   const { username, password } = req.body;
 
+  // Check if the user is already authenticated
+  if (req.session.user) {
+    // User is already logged in, send a response indicating that
+    return res.status(200).json({
+      message: 'User is already logged in',
+      username: req.session.user.username,
+    });
+  }
+
+
   try {
     // Query the user by username to get the user_id
     const userQuery = 'SELECT user_id, password FROM users WHERE username = $1';
