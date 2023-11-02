@@ -1,6 +1,7 @@
 const metricsController = {
   async getAllMetrics(req, res, next) {
-    const { promAddress } = req.param;
+    const { promAddress } = req.query;
+    console.log(promAddress);
     try {
       // CPU % metric
       const cpu = await fetch(

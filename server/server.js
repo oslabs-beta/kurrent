@@ -5,6 +5,7 @@ const userRoutes = require('./routes/userRoutes');
 const metricsRoutes = require('./routes/metricsRoutes');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 // process.env['NODE_NO_WARNINGS'] = 1; // Suppress all Node.js warnings
 
@@ -33,6 +34,15 @@ app.use(
 app.use('/users', userRoutes);
 // get metrics from prometheus server
 app.use('/metrics', metricsRoutes);
+
+app.use('/login', (req, res) => {
+  return res.redirect('/')
+})
+app.use('/', (req, res) => {
+  return res.sendFile(path.resolve(__dirname, '../client/index.html'))
+})
+
+// app.use('/', express.static(__dirname, '../client/index.'))
 
 // global error handler
 app.use((err, req, res, next) => {

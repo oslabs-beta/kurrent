@@ -133,28 +133,34 @@ const Metrics = () => {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ]);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const newBytesInValue = Math.floor(Math.random() * 100);
-  //     const newBytesOutValue = Math.floor(Math.random() * 100);
-  //     const newCpuValue = Math.floor(Math.random() * 100);
-  //     const newRamValue = Math.floor(Math.random() * 100);
-  //     const newTotalReqsPro = Math.floor(Math.random() * 100);
-  //     const newTotalMsg = Math.floor(Math.random() * 100);
-  //     const newTotalReqCon = Math.floor(Math.random() * 100);
-  //     const newTotalFail = Math.floor(Math.random() * 100);
-  //     setBytesInData([...bytesInData.slice(1), newBytesInValue]);
-  //     setBytesOutData([...bytesOutData.slice(1), newBytesOutValue]);
-  //     setCpuValue([...cpuValue.slice(1), newCpuValue]);
-  //     setRamValue([...ramValue.slice(1), newRamValue]);
-  //     setTotalReqsPro([...totalReqsPro.slice(1), newTotalReqsPro]);
-  //     setTotalMsg([...totalMsg.slice(1), newTotalMsg]);
-  //     setTotalReqCons([...totalReqCons.slice(1), newTotalReqCon]);
-  //     setTotalFail([...totalFail.slice(1), newTotalFail]);
-  //   }, 500);
-  //   return () => clearInterval(interval);
-  // });
+  const currentCluster = useSelector((state) => state.dashboard.currentCluster);
+  // possible error with the if statement
+  if (currentCluster !== '') {
+    useEffect(() => {
+      const interval = setInterval(async () => {
+        const response = await fetch(`/metrics?promAddress=${currentCluster}`);
+        const metrics = await response.json();
+        const newBytesInValue = metrics.bitsIn;
+        const newBytesOutValue = metrics.bitsOut;
+        const newCpuValue = metrics.cpu;
+        const newRamValue = metrics.ramUsage;
+        const newTotalReqsPro = metrics.prodReqTot;
+        const newTotalMsg = metrics.prodMessInTot;
+        const newTotalReqCon = metrics.consReqTot;
+        const newTotalFail = metrics.consFailedReqTot;
+        setBytesInData([...bytesInData.slice(1), newBytesInValue]);
+        setBytesOutData([...bytesOutData.slice(1), newBytesOutValue]);
+        setCpuValue([...cpuValue.slice(1), newCpuValue]);
+        setRamValue([...ramValue.slice(1), newRamValue]);
+        setTotalReqsPro([...totalReqsPro.slice(1), newTotalReqsPro]);
+        setTotalMsg([...totalMsg.slice(1), newTotalMsg]);
+        setTotalReqCons([...totalReqCons.slice(1), newTotalReqCon]);
+        setTotalFail([...totalFail.slice(1), newTotalFail]);
+      }, 10000);
+      return () => clearInterval(interval);
+    });
+  }
+  
 
   const bytesIn = {
     labels,
@@ -275,7 +281,7 @@ const Metrics = () => {
       x: { ticks: { color: '#black' } },
     },
     responsive: true,
-    animation: { duration: 1000 },
+    animation: { duration: 500 },
     maintainAspectRatio: false,
     elements: {
       point: {

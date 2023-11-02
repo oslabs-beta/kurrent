@@ -17,6 +17,7 @@ const initialState = {
   email: '',
   authType: 'login',
   passMatch: false,
+  isLoggedIn: false,
 };
 
 export const loginSlice = createSlice({
@@ -38,8 +39,11 @@ export const loginSlice = createSlice({
     setPassMatch: (state, action) => {
       state.password === action.payload ? state.passMatch = true : state.passMatch = false;
     },
+    setIsLoggedIn: (state, action) => {
+      state.isLoggedIn = action.payload;
+    }
   },
 });
 
-export const { switchAuth, setUsername, setPassword, setEmail, setPassMatch } = loginSlice.actions;
+export const { switchAuth, setUsername, setPassword, setEmail, setPassMatch, setIsLoggedIn } = loginSlice.actions;
 export default loginSlice.reducer;
