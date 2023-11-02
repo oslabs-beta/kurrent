@@ -31,7 +31,7 @@ import { useSelector } from 'react-redux';
 
 const Metrics = () => {
   const [labels, setLabels] = useState([
-    '-30s',
+    '-15s',
     '',
     '',
     '',
@@ -137,21 +137,23 @@ const Metrics = () => {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const response = await fetch(`/metrics?promAddress=${currentCluster}`);
+        const response = await fetch(
+          `/metrics/metrics?promAddress=${currentCluster}`
+        );
         if (!response.ok) {
           throw new Error(`Fetch failed with status ${response.status}`);
         }
 
         const metrics = await response.json();
         if (typeof metrics === 'object') {
-          const newBytesInValue = metrics.bitsIn || 0;
-          const newBytesOutValue = metrics.bitsOut || 0;
-          const newCpuValue = metrics.cpu || 0;
-          const newRamValue = metrics.ramUsage || 0;
-          const newTotalReqsPro = metrics.prodReqTot || 0;
-          const newTotalMsg = metrics.prodMessInTot || 0;
-          const newTotalReqCon = metrics.consReqTot || 0;
-          const newTotalFail = metrics.consFailedReqTot || 0;
+          const newBytesInValue = metrics.bytesIn / 1000 || 0;
+          const newBytesOutValue = metrics.bytesOut / 1000 || 0;
+          const newCpuValue = metrics.cpu;
+          const newRamValue = metrics.ramUsage / 1000000 || 0;
+          const newTotalReqsPro = metrics.prodReqTotal;
+          const newTotalMsg = metrics.prodMessInTotal;
+          const newTotalReqCon = metrics.consReqTot;
+          const newTotalFail = metrics.consFailReqTotal;
 
           setBytesInData([...bytesInData.slice(1), newBytesInValue]);
           setBytesOutData([...bytesOutData.slice(1), newBytesOutValue]);
@@ -165,10 +167,10 @@ const Metrics = () => {
       } catch (error) {
         console.error('Error fetching metrics:', error);
       }
-    }, 5000);
+    }, 500);
 
     return () => clearInterval(interval);
-  }, [currentCluster]);
+  });
 
   const bytesIn = {
     labels,
@@ -176,8 +178,8 @@ const Metrics = () => {
       {
         label: 'Bytes In',
         data: bytesInData,
-        fill: true,
-        borderColor: 'white',
+        fill: false,
+        borderColor: 'black',
         backgroundColor: 'white',
         tension: 0.4,
         labelColor: 'black',
@@ -190,8 +192,8 @@ const Metrics = () => {
       {
         label: 'Bytes Out',
         data: bytesOutData,
-        fill: true,
-        borderColor: 'white',
+        fill: false,
+        borderColor: 'black',
         tension: 0.4,
         backgroundColor: 'white',
         labelColor: 'black',
@@ -202,10 +204,10 @@ const Metrics = () => {
     labels,
     datasets: [
       {
-        label: 'CPU Usage',
+        label: 'CPU Usage %',
         data: cpuValue,
-        fill: true,
-        borderColor: 'white',
+        fill: false,
+        borderColor: 'black',
         tension: 0.4,
         backgroundColor: 'white',
         labelColor: 'black',
@@ -216,10 +218,10 @@ const Metrics = () => {
     labels,
     datasets: [
       {
-        label: 'Ram Usage',
+        label: 'Ram Usage MB',
         data: ramValue,
-        fill: true,
-        borderColor: 'white',
+        fill: false,
+        borderColor: 'black',
         tension: 0.4,
         backgroundColor: 'white',
         labelColor: 'black',
@@ -232,8 +234,8 @@ const Metrics = () => {
       {
         label: 'Total Requests',
         data: totalReqsPro,
-        fill: true,
-        borderColor: 'white',
+        fill: false,
+        borderColor: 'black',
         tension: 0.4,
         backgroundColor: 'white',
         labelColor: 'black',
@@ -246,8 +248,8 @@ const Metrics = () => {
       {
         label: 'Total Messages In',
         data: totalMsg,
-        fill: true,
-        borderColor: 'white',
+        fill: false,
+        borderColor: 'black',
         tension: 0.4,
         backgroundColor: 'white',
         labelColor: 'black',
@@ -260,8 +262,8 @@ const Metrics = () => {
       {
         label: 'Total Requests',
         data: totalReqCons,
-        fill: true,
-        borderColor: 'white',
+        fill: false,
+        borderColor: 'black',
         tension: 0.4,
         backgroundColor: 'white',
         labelColor: 'black',
@@ -274,8 +276,8 @@ const Metrics = () => {
       {
         label: 'Total Failed Requests',
         data: totalFail,
-        fill: true,
-        borderColor: 'white',
+        fill: false,
+        borderColor: 'black',
         tension: 0.4,
         backgroundColor: 'white',
         labelColor: 'black',
@@ -289,7 +291,7 @@ const Metrics = () => {
       x: { ticks: { color: '#black' } },
     },
     responsive: true,
-    animation: { duration: 500 },
+    animation: { duration: 100 },
     maintainAspectRatio: false,
     elements: {
       point: {

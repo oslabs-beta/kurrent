@@ -1,52 +1,75 @@
 const metricsController = {
   async getAllMetrics(req, res, next) {
     const { promAddress } = req.query;
-    console.log(promAddress);
+    if (promAddress === '') {
+      res.locals.metrics = {
+        cpu: 0,
+        bytesIn: 0,
+        bytesOut: 0,
+        ramUsage: 0,
+        latency: 0,
+        prodReqTotal: 0,
+        prodMessInTotal: 0,
+        consReqTot: 0,
+        consFailReqTotal: 0,
+      };
+      return next();
+    }
+    // console.log(req.query);
+    // console.log(promAddress);
     try {
       // CPU % metric
-      const cpu = await fetch(
+      let cpu = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(process_cpu_seconds_total[1m])) * 100`
       );
+      cpu = await cpu.json();
 
       // bytes In Total metric
-      const bytesIn = await fetch(
+      let bytesIn = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(kafka_server_brokertopicmetrics_bytesin_total[1m]))`
       );
+      bytesIn = await bytesIn.json();
 
       // bytes Out Total metric
-      const bytesOut = await fetch(
+      let bytesOut = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(kafka_server_brokertopicmetrics_bytesout_total[1m]))`
       );
+      bytesOut = await bytesOut.json();
 
       // ram Usage metric
-      const ramUsage = await fetch(
+      let ramUsage = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(process_resident_memory_bytes[1m]))`
       );
+      ramUsage = await ramUsage.json();
 
       // latency metric
-      const latency = await fetch(
+      let latency = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(kafka_network_requestmetrics_totaltimems{}[1m]) - rate(kafka_network_requestmetrics_localtimems{}[1m]))`
       );
+      latency = await latency.json();
 
       // production Request Total metric
-      const prodReqTotal = await fetch(
+      let prodReqTotal = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_totalproducerequests_total[1m])`
       );
+      prodReqTotal = await prodReqTotal.json();
 
       // productioin Messages In Total
-      const prodMessInTotal = await fetch(
+      let prodMessInTotal = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_messagesin_total[1m])`
       );
+      prodMessInTotal = await prodMessInTotal.json();
 
       // consumer requests total
-      const consReqTot = await fetch(
+      let consReqTot = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_totalfetchrequests_total[1m])`
       );
-
+      consReqTot = await consReqTot.json();
       // consumer failed request total
-      const consFailReqTotal = await fetch(
+      let consFailReqTotal = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_failedfetchrequests_total[1m])`
       );
+      consFailReqTotal = await consFailReqTotal.json();
 
       res.locals.metrics = {
         cpu: cpu.data.result[0].value[1],
@@ -62,7 +85,7 @@ const metricsController = {
       return next();
     } catch (error) {
       const errObj = {
-        log: 'Error in getAllMetrics middleware',
+        log: 'Error in getAllMetrics middleware:' + error,
         status: 400,
         message: 'Could not get metrics',
       };

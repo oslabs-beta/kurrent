@@ -23,26 +23,24 @@ import {
   setIsLoggedIn,
 } from '../reducers/authReducer.js';
 
-import {
-  setClusters,
-} from '../reducers/dashReducer.js'
+import { setClusters } from '../reducers/dashReducer.js';
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
 
-  useEffect(() => {
-    async function verifySession() {
-      const response = await fetch('/users');
-      if (response.status === 200 || response.status === 201) {
-        dispatch(setIsLoggedIn(true));
-        navigate('/');
-      }
-    }
-    verifySession();
-    // navigate('/main')
-  }, []);
+  // useEffect(() => {
+  //   async function verifySession() {
+  //     const response = await fetch('/users');
+  //     if (response.status === 200 || response.status === 201) {
+  //       dispatch(setIsLoggedIn(true));
+  //       navigate('/');
+  //     }
+  //   }
+  //   verifySession();
+  //   navigate('/main')
+  // }, []);
 
   let userExists = false;
 
@@ -56,7 +54,7 @@ const Login = () => {
     if (login.authType === 'register') {
       if (login.username === '') {
         postBody.username = login.email.split('@')[0];
-        dispatch(setUsername(postBody.username))
+        dispatch(setUsername(postBody.username));
       }
       postBody.email = login.email;
     }
@@ -71,8 +69,10 @@ const Login = () => {
         });
         const loginData = await response.json();
         if (response.status === 200) {
-
-          dispatch(setClusters(loginData.service_addresses));
+          if (login.authType === 'login') {
+            console.log('setting cluster to ', loginData.service_addresses);
+            dispatch(setClusters(loginData.service_addresses));
+          }
           dispatch(setIsLoggedIn(true));
           navigate('/');
         } else if (response.status === 400) {

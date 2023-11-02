@@ -49,7 +49,10 @@ const registerUser = async (req, res, next) => {
       httpOnly: true,
     });
 
-    res.status(201).json({ user_id: userId, username: username });
+    res.status(200).json({
+      user_id: userId,
+      username: username,
+    });
   } catch (error) {
     return next({
       log: 'Error in userController.registerUser middleware',
@@ -64,7 +67,8 @@ const loginUser = async (req, res, next) => {
 
   try {
     // Query the user by username to get the user_id
-    const userQuery = 'SELECT user_id, password, service_addresses FROM users WHERE username = $1';
+    const userQuery =
+      'SELECT user_id, password, service_addresses FROM users WHERE username = $1';
     const userResult = await pool.query(userQuery, [username]);
 
     if (userResult.rows.length === 0) {

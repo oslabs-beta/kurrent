@@ -6,17 +6,18 @@ import Metrics from '../components/Metrics.jsx';
 import ClusterNav from '../components/ClusterNav.jsx';
 import '../scss/main.scss';
 
-import { setIsLoggedIn } from '../reducers/authReducer.js';
-
+import { resetLog } from '../reducers/authReducer.js';
+import { resetDash } from '../reducers/dashReducer.js';
 const Main = () => {
-  const isLoggedIn = useSelector((state) => state.login.isLoggedIn)
+  const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
       const response = await fetch('/users/logout');
       if (response.status === 200) {
-        dispatch(setIsLoggedIn(false));
+        dispatch(resetDash());
+        dispatch(resetLog());
         return navigate('/login');
       }
     } catch (err) {
@@ -24,14 +25,16 @@ const Main = () => {
     }
   };
   useEffect(() => {
-    if (!isLoggedIn) navigate('/login')
+    if (!isLoggedIn) navigate('/login');
   }, []);
 
   return (
     <>
       <nav>
         <h1 className='kurrentTitle2'>Kurrent</h1>
-        <button id='signOut' onClick={handleLogout}>Sign Out</button>
+        <button id='signOut' onClick={handleLogout}>
+          Sign Out
+        </button>
       </nav>
       <div className='main-grid'>
         <div className='user-info'>

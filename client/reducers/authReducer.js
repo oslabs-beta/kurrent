@@ -25,7 +25,9 @@ export const loginSlice = createSlice({
   initialState,
   reducers: {
     switchAuth: (state) => {
-      state.authType === 'login' ? state.authType = 'register' : state.authType = 'login';
+      state.authType === 'login'
+        ? (state.authType = 'register')
+        : (state.authType = 'login');
     },
     setUsername: (state, action) => {
       state.username = action.payload;
@@ -37,13 +39,24 @@ export const loginSlice = createSlice({
       state.email = action.payload;
     },
     setPassMatch: (state, action) => {
-      state.password === action.payload ? state.passMatch = true : state.passMatch = false;
+      state.password === action.payload
+        ? (state.passMatch = true)
+        : (state.passMatch = false);
     },
     setIsLoggedIn: (state, action) => {
       state.isLoggedIn = action.payload;
-    }
+    },
+    resetLog: () => initialState,
   },
 });
 
-export const { switchAuth, setUsername, setPassword, setEmail, setPassMatch, setIsLoggedIn } = loginSlice.actions;
+export const {
+  switchAuth,
+  setUsername,
+  setPassword,
+  setEmail,
+  setPassMatch,
+  setIsLoggedIn,
+  resetLog,
+} = loginSlice.actions;
 export default loginSlice.reducer;

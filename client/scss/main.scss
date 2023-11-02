@@ -161,7 +161,6 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: 20%;
 }
 label {
   margin-top: 5%;
@@ -171,7 +170,6 @@ label {
   color: $lightWhite;
   text-shadow: 1px 1px 2px black, 0 0 1em $lightDarkBlue, 0 0 0.1em black;
   font-size: 1.4rem;
-  padding-left: 20%;
 }
 #add-port {
   height: 10%;
@@ -184,6 +182,19 @@ label {
   border-radius: 24px;
   border-color: #f6f6ee;
   border: none;
+}
+
+#add-port:hover {
+  box-shadow: 1px 1px 8px black;
+  box-shadow: inset 1px 1px 5px black;
+  border-color: #f6f6ee;
+  border-width: 0;
+}
+#cancel-port:hover {
+  box-shadow: 1px 1px 8px black;
+  box-shadow: inset 1px 1px 5px black;
+  border-color: #f6f6ee;
+  border-width: 0;
 }
 #cancel-port {
   height: 10%;
