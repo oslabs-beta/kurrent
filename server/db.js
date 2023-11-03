@@ -17,7 +17,8 @@ const pool = new Pool({connectionString: myURI});
 //   session_id serial PRIMARY KEY,
 //   user_id INT REFERENCES users(user_id),
 //   session_token VARCHAR(255) NOT NULL,
-//   login_time timestamp ,
+//   login_time timestamp,
+//   session_status VARCHAR(20) DEFAULT 'active'
 // );
 
 
