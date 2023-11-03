@@ -38,13 +38,13 @@ const registerUser = async (req, res, next) => {
     const currentDate = new Date();
     await pool.query(insertSessionQuery, [userId, sessionToken, currentDate]);
 
-    // Create and set a session for the new user
+    // // Create and set a session for the new user
     req.session.user = {
       id: userId,
       username: username,
     };
 
-    // Optionally, set a cookie to store the user's session ID
+    // // Optionally, set a cookie to store the user's session ID
     res.cookie('ssid', sessionToken, {
       httpOnly: true,
     });
@@ -65,6 +65,18 @@ const registerUser = async (req, res, next) => {
 const loginUser = async (req, res, next) => {
   const { username, password } = req.body;
 
+  // Check if the user is already authenticated
+  if (req.session.user) {
+    // User is already logged in, retrieve session information
+    const sessionUser = req.session.user;
+    // User is already logged in, send a response indicating that
+    return res.status(200).json({
+      message: 'User is already logged in',
+      service_addresses: sessionUser.service_addresses || [],
+      username: req.session.user.username,
+    });
+  }
+
   try {
     // Query the user by username to get the user_id
     const userQuery =
@@ -72,22 +84,52 @@ const loginUser = async (req, res, next) => {
     const userResult = await pool.query(userQuery, [username]);
 
     if (userResult.rows.length === 0) {
-      // Log that an invalid username or password was provided
       console.log('Invalid username or password');
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
     const user = userResult.rows[0];
+    const userId = user.user_id;
     const hashedPassword = user.password;
     const passwordMatch = await bcrypt.compare(password, hashedPassword);
 
     if (!passwordMatch) {
-      // Log that an invalid username or password was provided
       console.log('Invalid username or password');
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
-    // Create a session token
+    // Check if an active session already exists for the user
+    const activeSessionQuery = 'SELECT session_token FROM sessions WHERE user_id = $1 AND session_status = \'active\'';
+    const activeSessionResult = await pool.query(activeSessionQuery, [userId]);
+
+    if (activeSessionResult.rows.length > 0) {
+      // There is an active session, use the existing session token
+      const sessionToken = activeSessionResult.rows[0].session_token;
+
+      // Create and set a session for the logged-in user
+      req.session.user = {
+        id: userId,
+        username: username,
+        service_addresses: user.service_addresses, // Set service addresses here
+      };
+
+      // Optionally, set a cookie to store the user's session ID
+      res.cookie('ssid', sessionToken, {
+        httpOnly: true,
+      });
+
+      // Include service_addresses in the response
+      const serviceAddresses = user.service_addresses || [];
+
+      console.log('User already has an active session');
+      return res.status(200).json({
+        message: 'User already has an active session',
+        service_addresses: serviceAddresses,
+        username: username,
+      });
+    }
+
+    // If there is no active session, create a new session
     const sessionToken = generateSessionToken();
     console.log('Generated session token:', sessionToken);
 
@@ -96,15 +138,16 @@ const loginUser = async (req, res, next) => {
       'INSERT INTO sessions (user_id, session_token, login_time) VALUES ($1, $2, $3)';
     const currentDate = new Date();
     await pool.query(insertSessionQuery, [
-      user.user_id,
+      userId,
       sessionToken,
       currentDate,
     ]);
 
     // Create and set a session for the logged-in user
     req.session.user = {
-      id: user.user_id,
+      id: userId,
       username: username,
+      service_addresses: user.service_addresses, // Set service addresses here
     };
 
     // Optionally, set a cookie to store the user's session ID
@@ -115,9 +158,8 @@ const loginUser = async (req, res, next) => {
     // Include service_addresses in the response
     const serviceAddresses = user.service_addresses || [];
 
-    // Log the response being sent
     console.log('Login successful, sending response');
-    res.json({
+    res.status(200).json({
       message: 'Login successful',
       service_addresses: serviceAddresses,
       username: username,
@@ -131,6 +173,8 @@ const loginUser = async (req, res, next) => {
     });
   }
 };
+
+
 
 function generateSessionToken() {
   // Generate a random session token, you can use a library or custom logic here
@@ -155,8 +199,7 @@ const verifySession = async (req, res, next) => {
 
 const updateServiceAddresses = async (req, res, next) => {
   const username = req.params.username;
-  // console.log(username);
-  // const { username } = req.session.user
+
   const { service_addresses } = req.body;
   // console.log(service_addresses);
 
@@ -233,36 +276,56 @@ const getAdresses = async (req, res, next) => {
 //   // Return true if they are equal, otherwise return false
 //   return JSON.stringify(address1) === JSON.stringify(address2);
 // }
+
 const logout = async (req, res, next) => {
   try {
     if (req.session.user && req.session.user.id) {
       // Extract the user's ID from the session
       const userId = req.session.user.id;
 
-      // Query the sessions table to find the most recent session for the user
-      const session = await pool.query(
-        'SELECT session_id FROM sessions WHERE user_id = $1 ORDER BY login_time DESC LIMIT 1',
-        [userId]
-      );
+      // Find the most recent active session for the user
+      const activeSessionQuery = `
+        SELECT session_id 
+        FROM sessions 
+        WHERE user_id = $1 
+        AND session_status = 'active' 
+        ORDER BY login_time DESC 
+        LIMIT 1`;
 
-      // Check if a session was found
-      if (session.rows.length > 0) {
-        const sessionId = session.rows[0].session_id;
+      const activeSessionResult = await pool.query(activeSessionQuery, [userId]);
 
-        // Delete the session record from the sessions table
-        await pool.query('DELETE FROM sessions WHERE session_id = $1', [
-          sessionId,
-        ]);
+      if (activeSessionResult.rows.length > 0) {
+        const sessionId = activeSessionResult.rows[0].session_id;
+
+        // Update the session_status to 'inactive' or 'logged_out'
+        const updateSessionStatusQuery = `
+          UPDATE sessions 
+          SET session_status = 'inactive' 
+          WHERE session_id = $1`;
+
+        await pool.query(updateSessionStatusQuery, [sessionId]);
+
+        // Then, delete the session record
+        const deleteSessionQuery = `
+          DELETE FROM sessions 
+          WHERE session_id = $1`;
+
+        await pool.query(deleteSessionQuery, [sessionId]);
 
         // Clear the session cookie to log the user out
         res.clearCookie('ssid'); // Replace 'ssid' with your session cookie name
 
+         // Destroy the session
+         req.session.destroy();
+
         // Send a successful logout response
         return res.status(200).json({ message: 'Logout successful' });
       }
+
       // Handle the case where there is no active session for the user
       return res.status(401).json({ error: 'No active session found' });
     }
+
     // Handle the case where there is no active session for the user
     return res.status(401).json({ error: 'No active session found' });
   } catch (error) {
@@ -284,91 +347,5 @@ module.exports = {
   getAdresses,
 };
 
-// // controllers/userController.js
-// const pool = require('../db'); // You'll create the 'db.js' file to set up your database connection.
 
-// const registerUser = async (req, res) => {
-//   const { username, password, email } = req.body;
 
-//   try {
-//     // Check if the username already exists
-//     const user = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-
-//     if (user.rows.length > 0) {
-//       return res.status(400).json({ error: 'Username already exists' });
-//     }
-
-//     // Insert the new user into the database
-//     const newUser = await pool.query(
-//       'INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING *',
-//       [username, password, email]
-//     );
-
-//     res.json(newUser.rows[0]);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// };
-
-// const loginUser = async (req, res) => {
-//   const { username, password } = req.body;
-
-//   try {
-//     const user = await pool.query('SELECT * FROM users WHERE username = $1 AND password = $2', [
-//       username,
-//       password,
-//     ]);
-
-//     if (user.rows.length === 0) {
-//       return res.status(401).json({ error: 'Invalid username or password' });
-//     }
-
-//     res.json({ message: 'Login successful' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: 'Server error' });
-//   }
-// };
-
-// module.exports = { registerUser, loginUser };
-
-// const updateServiceAddresses = async (req, res, next) => {
-//   const { username } = req.params;
-//   const { service_addresses } = req.body;
-
-//   try {
-//     // Check if the user exists
-//     const user = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-
-//     if (user.rows.length === 0) {
-//       return res.status(404).json({ error: 'User not found' });
-//     }
-
-//     const existingAddresses = user.rows[0].service_addresses || [];
-
-//     // Check for duplicates in the new service addresses
-//     const duplicateAddresses = service_addresses.filter((address) => existingAddresses.includes(address));
-
-//     if (duplicateAddresses.length > 0) {
-//       return res.status(400).json({ error: 'Service addresses already exist', duplicates: duplicateAddresses });
-//     }
-
-//     // Merge the new service addresses with the existing ones
-//     const updatedAddresses = [...existingAddresses, ...service_addresses];
-
-//     // Update the service_addresses array for the user
-//     const updatedUser = await pool.query(
-//       'UPDATE users SET service_addresses = $1 WHERE username = $2 RETURNING *',
-//       [updatedAddresses, username]
-//     );
-
-//     res.json(updatedUser.rows[0]);
-//   } catch (error) {
-//     return next({
-//       log: 'Error in userController.updateServiceAddresses  middleware',
-//       status: 500,
-//       message: { err: error }
-//     })
-//   }
-// };
