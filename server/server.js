@@ -9,7 +9,6 @@ const path = require('path');
 
 // process.env['NODE_NO_WARNINGS'] = 1; // Suppress all Node.js warnings
 
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Use cookie-parser middleware to parse cookies
@@ -29,18 +28,19 @@ app.use(
   })
 );
 
-
 // get, set user data in db
 app.use('/users', userRoutes);
+
 // get metrics from prometheus server
+// required route: /metrics/metrics?promAddress=<prometheus address>
 app.use('/metrics', metricsRoutes);
 
 app.use('/login', (req, res) => {
-  return res.redirect('/')
-})
+  return res.redirect('/');
+});
 app.use('/', (req, res) => {
-  return res.sendFile(path.resolve(__dirname, '../client/index.html'))
-})
+  return res.sendFile(path.resolve(__dirname, '../client/index.html'));
+});
 
 // app.use('/', express.static(__dirname, '../client/index.'))
 
@@ -60,5 +60,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-
