@@ -28,6 +28,7 @@ ChartJS.register(
 
 import { setView } from '../reducers/dashReducer.js';
 import { useSelector } from 'react-redux';
+import { current } from '@reduxjs/toolkit';
 
 const Metrics = () => {
   const [labels, setLabels] = useState([
@@ -135,6 +136,7 @@ const Metrics = () => {
   ]);
   const currentCluster = useSelector((state) => state.dashboard.currentCluster);
   useEffect(() => {
+    if (!currentCluster.length) return;
     const interval = setInterval(async () => {
       try {
         const response = await fetch(
@@ -170,7 +172,7 @@ const Metrics = () => {
     }, 500);
 
     return () => clearInterval(interval);
-  });
+  }, [currentCluster]);
 
   const bytesIn = {
     labels,

@@ -2,18 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  setView
-} from '../reducers/dashReducer.js';
+import { setView } from '../reducers/dashReducer.js';
 
 const ClusterNav = () => {
   const dispatch = useDispatch();
-
+  const clusterView = useSelector((state) => state.dashboard.clusterView);
   return (
     <div id='clusterButtonContainer'>
-      <button id='clusterButtons' onClick={() => dispatch(setView('summary'))}>Cluster Overview</button>
-      <button id='clusterButtons' onClick={() => dispatch(setView('producers'))}>Producers</button>
-      <button id='clusterButtons' onClick={() => dispatch(setView('consumers'))}>Consumers</button>
+      <button
+        id='clusterButtons'
+        onClick={() => dispatch(setView('summary'))}
+        disabled={clusterView === 'summary'}
+      >
+        Cluster Overview
+      </button>
+      <button
+        id='clusterButtons'
+        onClick={() => dispatch(setView('producers'))}
+        disabled={clusterView === 'producers'}
+      >
+        Producers
+      </button>
+      <button
+        id='clusterButtons'
+        onClick={() => dispatch(setView('consumers'))}
+        disabled={clusterView === 'consumers'}
+      >
+        Consumers
+      </button>
     </div>
   );
 };
