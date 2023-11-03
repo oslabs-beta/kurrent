@@ -1,22 +1,44 @@
 const metricsController = {
   async getAllMetrics(req, res, next) {
+    // get prometheus address from the request query
     const { promAddress } = req.query;
-    if (promAddress === '') {
-      res.locals.metrics = {
-        cpu: 0,
-        bytesIn: 0,
-        bytesOut: 0,
-        ramUsage: 0,
-        latency: 0,
-        prodReqTotal: 0,
-        prodMessInTotal: 0,
-        consReqTot: 0,
-        consFailReqTotal: 0,
-      };
-      return next();
+
+    // helper function to check promAddress formatting
+    function formatIsCorrect(promAddress) {
+      let ip, port;
+      [ip, port] = promAddress.split(':');
+      let validIP = (validPort = false);
+      if (ip === 'localhost') {
+        console.log('local');
+        validIP = true;
+      } else if (
+        /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+          ip
+        )
+      ) {
+        validIP = true;
+      }
+
+      if (port.length === 4 && /[0-9]/g.test(port)) {
+        validPort = true;
+      }
+      if (validIP && validPort) {
+        return true;
+      } else {
+        return false;
+      }
     }
-    // console.log(req.query);
-    // console.log(promAddress);
+
+    // check formatting of provided prometheus address
+    if (!formatIsCorrect(promAddress)) {
+      const errObj = {
+        log: 'Error in getAllMetrics middleware:' + error,
+        status: 400,
+        message: 'Improper Prometheus Address',
+      };
+      return next(errObj);
+    }
+
     try {
       // CPU % metric
       let cpu = await fetch(
@@ -71,6 +93,7 @@ const metricsController = {
       );
       consFailReqTotal = await consFailReqTotal.json();
 
+      // Returned Object - each value is a single number value
       res.locals.metrics = {
         cpu: cpu.data.result[0].value[1],
         bytesIn: bytesIn.data.result[0].value[1],
