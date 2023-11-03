@@ -5,7 +5,6 @@ import User from '../components/User.jsx';
 import Metrics from '../components/Metrics.jsx';
 import ClusterNav from '../components/ClusterNav.jsx';
 import '../scss/main.scss';
-
 import { resetLog } from '../reducers/authReducer.js';
 import { resetDash } from '../reducers/dashReducer.js';
 const Main = () => {
