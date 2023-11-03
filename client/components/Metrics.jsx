@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
+
+//Importing related ChartJS components for the metrics display
 import {
   Chart as ChartJS,
-  BarElement,
-  ArcElement,
   LineElement,
   CategoryScale,
   LinearScale,
@@ -12,15 +12,13 @@ import {
   Filler,
 } from 'chart.js';
 
-import { Bar, Chart, Line, Pie } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
-  BarElement,
   CategoryScale,
   LinearScale,
   Tooltip,
   Legend,
-  ArcElement,
   LineElement,
   PointElement,
   Filler
@@ -30,7 +28,10 @@ import { setView } from '../reducers/dashReducer.js';
 import { useSelector } from 'react-redux';
 
 const Metrics = () => {
-  const [labels, setLabels] = useState([
+
+
+  //NOT COMMENTING FOR NOW AS THIS WILL ALL BE OFFLOADED TO SEPARATE COMPONENTS
+  const labels = [
     '-15s',
     '',
     '',
@@ -91,7 +92,7 @@ const Metrics = () => {
     '',
     '',
     'Now',
-  ]);
+  ];
 
   const [bytesInData, setBytesInData] = useState([
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -291,7 +292,7 @@ const Metrics = () => {
       x: { ticks: { color: '#black' } },
     },
     responsive: true,
-    animation: { duration: 100 },
+    animation: { duration: 1 },
     maintainAspectRatio: false,
     elements: {
       point: {
@@ -302,9 +303,10 @@ const Metrics = () => {
       fontColor: 'black',
     },
   };
-
+  //Creating dashboard constant set to our states dashboard.
   const dashboard = useSelector((state) => state.dashboard);
-
+  //Switch-Case syntax is used here to toggle between the different cluster viewing options.
+  //Each case will render a different series of metrics charts.
   switch (dashboard.clusterView) {
     case 'summary':
       return (
