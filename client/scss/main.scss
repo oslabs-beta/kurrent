@@ -80,12 +80,15 @@ nav {
   border-color: #f6f6ee;
   border: none;
 }
-#clusterButtons:hover {
+#clusterButtons:enabled:hover {
   box-shadow: 1px 1px 8px black;
   box-shadow: inset 1px 1px 5px black;
   border-color: #f6f6ee;
   border-width: 0;
   border: none;
+}
+#clusterButtons:disabled {
+  background-color: #a0c3ff;
 }
 .metrics {
   display: grid;

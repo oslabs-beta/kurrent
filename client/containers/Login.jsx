@@ -34,7 +34,9 @@ const Login = () => {
   //   async function verifySession() {
   //     const response = await fetch('/users');
   //     if (response.status === 200 || response.status === 201) {
+  //       const username = await response.json()
   //       dispatch(setIsLoggedIn(true));
+  //       dispatch(setUsername(username))
   //       navigate('/');
   //     }
   //   }
