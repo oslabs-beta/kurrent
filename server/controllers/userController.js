@@ -76,6 +76,7 @@ const loginUser = async (req, res, next) => {
 
   // Check if the user is already authenticated
   if (req.session.user) {
+    console.log('session already exists: loginUser middleware');
     // User is already logged in, retrieve session information
     const sessionUser = req.session.user;
     // User is already logged in, send a response indicating that
@@ -119,37 +120,38 @@ const loginUser = async (req, res, next) => {
       return next(errObj);
     }
 
+    // ------MOVED TO START SESSION IN SESSION CONTROLLER-------
     // Check if an active session already exists for the user
-    const activeSessionQuery =
-      "SELECT session_token FROM sessions WHERE user_id = $1 AND session_status = 'active'";
-    const activeSessionResult = await pool.query(activeSessionQuery, [userId]);
+    // const activeSessionQuery =
+    //   "SELECT session_token FROM sessions WHERE user_id = $1 AND session_status = 'active'";
+    // const activeSessionResult = await pool.query(activeSessionQuery, [userId]);
 
-    if (activeSessionResult.rows.length > 0) {
-      // There is an active session, use the existing session token
-      const sessionToken = activeSessionResult.rows[0].session_token;
+    // if (activeSessionResult.rows.length > 0) {
+    //   // There is an active session, use the existing session token
+    //   const sessionToken = activeSessionResult.rows[0].session_token;
 
-      // Create and set a session for the logged-in user
-      req.session.user = {
-        id: userId,
-        username: username,
-        service_addresses: user.service_addresses, // Set service addresses here
-      };
+    //   // Create and set a session for the logged-in user
+    //   req.session.user = {
+    //     id: userId,
+    //     username: username,
+    //     service_addresses: user.service_addresses, // Set service addresses here
+    //   };
 
-      // Optionally, set a cookie to store the user's session ID
-      res.cookie('ssid', sessionToken, {
-        httpOnly: true,
-      });
+    //   // Optionally, set a cookie to store the user's session ID
+    //   res.cookie('ssid', sessionToken, {
+    //     httpOnly: true,
+    //   });
 
-      // Include service_addresses in the response
-      const serviceAddresses = user.service_addresses || [];
+    //   // Include service_addresses in the response
+    //   const serviceAddresses = user.service_addresses || [];
 
-      console.log('User already has an active session');
-      return res.status(200).json({
-        message: 'User already has an active session',
-        service_addresses: serviceAddresses,
-        username: username,
-      });
-    }
+    //   console.log('User already has an active session');
+    //   return res.status(200).json({
+    //     message: 'User already has an active session',
+    //     service_addresses: serviceAddresses,
+    //     username: username,
+    //   });
+    // }
 
     //-----MOVED TO USING SESSION CONTROLLER MIDDLEWARE---------
     // If there is no active session, create a new session
