@@ -26,13 +26,19 @@ router.post(
   }
 );
 
+// update service addresses in db
 router.patch(
   '/update-service-addresses:username',
   sessionController.verifySession,
-  userController.updateServiceAddresses
+  userController.updateServiceAddresses,
+  (req, res) => {
+    return res.status(200);
+  }
 );
 // Logout route
 router.get('/logout', userController.logout);
+
+// get service addresses from db
 router.get(
   '/service-address:username',
   userController.getAdresses,

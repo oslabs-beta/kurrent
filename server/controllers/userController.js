@@ -119,7 +119,6 @@ const loginUser = async (req, res, next) => {
       return next(errObj);
     }
 
-    //----DO WE NEED THIS? IF THEY ARE LOGGING IN SHOULDN'T A SESSION NOT EXIST?-----
     // Check if an active session already exists for the user
     const activeSessionQuery =
       "SELECT session_token FROM sessions WHERE user_id = $1 AND session_status = 'active'";
@@ -235,7 +234,7 @@ const updateServiceAddresses = async (req, res, next) => {
     // console.log(userResult);
     if (userResult.rows.length === 0) {
       const errObj = {
-        log: 'Error in userController.updateServiceAddress middleware',
+        log: 'Error in userController.updateServiceAddress middleware: could not find user',
         status: 404,
         message: 'Could not find user',
       };
@@ -263,7 +262,7 @@ const updateServiceAddresses = async (req, res, next) => {
     existingAddresses.forEach((address) => {
       if (address === service_addresses) {
         const errObj = {
-          log: 'Error in userController.updateServiceAddress middleware',
+          log: 'Error in userController.updateServiceAddress middleware: address already exists',
           status: 401,
           message: 'Address already exists',
         };

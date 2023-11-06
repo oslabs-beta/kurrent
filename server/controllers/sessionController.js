@@ -55,7 +55,7 @@ sessionController.verifySession = async (req, res, next) => {
     if (!req.session.user || !req.session.user.id) {
       const errObj = {
         log: 'Error in sessionController.verifySession',
-        status: '401',
+        status: 401,
         message: { err: 'You must be logged in...' },
       };
       return next(errObj);
