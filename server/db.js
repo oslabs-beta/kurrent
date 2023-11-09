@@ -1,4 +1,7 @@
 // db.js
+require('dotenv').config();
+// console.log(process.env.DATABASE_URL);
+
 const { Pool } = require('pg');
 
 // I used this query to create table
@@ -9,7 +12,10 @@ const { Pool } = require('pg');
 //     password VARCHAR(255) NOT NULL,
 //     service_addresses text[][]
 // );
-const myURI = 'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij'
+// console.log(process.env.DATABASE_URL);
+// const myURI = process.env.DATABASE_URL;
+// console.log("myURI: ", process.env.DATABASE_URL);
+const myURI = "postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij";
 const pool = new Pool({connectionString: myURI});
 
 //I used this query to create sessions
