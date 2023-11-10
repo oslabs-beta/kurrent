@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-
-//Importing related ChartJS components for the metrics display
+import { setView } from '../reducers/dashReducer.js';
+import { useSelector } from 'react-redux';
+import { current } from '@reduxjs/toolkit';
 import {
   Chart as ChartJS,
   LineElement,
@@ -11,7 +12,7 @@ import {
   PointElement,
   Filler,
 } from 'chart.js';
-
+import { setData } from '../reducers/lineReducer.js';
 import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -24,14 +25,27 @@ ChartJS.register(
   Filler
 );
 
-import { setView } from '../reducers/dashReducer.js';
-import { useSelector } from 'react-redux';
-import { current } from '@reduxjs/toolkit';
+const lineOptions = {
+  scales: {
+    y: { ticks: { color: '#black' } },
+    x: { ticks: { color: '#black' } },
+  },
+  responsive: true,
+  animation: { duration: 1 },
+  maintainAspectRatio: false,
+  elements: {
+    point: {
+      radius: 0,
+    },
+  },
+  legend: {
+    fontColor: 'black',
+  },
+};
 
 const Metrics = () => {
-
-
-  //NOT COMMENTING FOR NOW AS THIS WILL ALL BE OFFLOADED TO SEPARATE COMPONENTS
+  const dashboard = useSelector((state) => state.dashboard);
+  const lineData = useSelector((state) => state.line);
   const labels = [
     '-15s',
     '',
@@ -62,125 +76,14 @@ const Metrics = () => {
     '',
     '',
     '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
     'Now',
   ];
-
-  const [bytesInData, setBytesInData] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ]);
-  const [bytesOutData, setBytesOutData] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ]);
-  const [cpuValue, setCpuValue] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ]);
-  const [ramValue, setRamValue] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ]);
-  const [totalReqsPro, setTotalReqsPro] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ]);
-  const [totalMsg, setTotalMsg] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ]);
-  const [totalReqCons, setTotalReqCons] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ]);
-  const [totalFail, setTotalFail] = useState([
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-  ]);
-  const currentCluster = useSelector((state) => state.dashboard.currentCluster);
-  useEffect(() => {
-    if (!currentCluster.length) return;
-    const interval = setInterval(async () => {
-      try {
-        const response = await fetch(
-          `/metrics/metrics?promAddress=${currentCluster}`
-        );
-        if (!response.ok) {
-          throw new Error(`Fetch failed with status ${response.status}`);
-        }
-
-        const metrics = await response.json();
-        if (typeof metrics === 'object') {
-          const newBytesInValue = metrics.bytesIn / 1000 || 0;
-          const newBytesOutValue = metrics.bytesOut / 1000 || 0;
-          const newCpuValue = metrics.cpu;
-          const newRamValue = metrics.ramUsage / 1000000 || 0;
-          const newTotalReqsPro = metrics.prodReqTotal;
-          const newTotalMsg = metrics.prodMessInTotal;
-          const newTotalReqCon = metrics.consReqTot;
-          const newTotalFail = metrics.consFailReqTotal;
-
-          setBytesInData([...bytesInData.slice(1), newBytesInValue]);
-          setBytesOutData([...bytesOutData.slice(1), newBytesOutValue]);
-          setCpuValue([...cpuValue.slice(1), newCpuValue]);
-          setRamValue([...ramValue.slice(1), newRamValue]);
-          setTotalReqsPro([...totalReqsPro.slice(1), newTotalReqsPro]);
-          setTotalMsg([...totalMsg.slice(1), newTotalMsg]);
-          setTotalReqCons([...totalReqCons.slice(1), newTotalReqCon]);
-          setTotalFail([...totalFail.slice(1), newTotalFail]);
-        }
-      } catch (error) {
-        console.error('Error fetching metrics:', error);
-      }
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [currentCluster]);
-
   const bytesIn = {
     labels,
     datasets: [
       {
         label: 'Bytes In',
-        data: bytesInData,
+        data: lineData.bytesIn.queue,
         fill: false,
         borderColor: 'black',
         backgroundColor: 'white',
@@ -194,7 +97,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Bytes Out',
-        data: bytesOutData,
+        data: lineData.bytesOut.queue,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -208,7 +111,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'CPU Usage %',
-        data: cpuValue,
+        data: lineData.cpu.queue,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -222,7 +125,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Ram Usage MB',
-        data: ramValue,
+        data: lineData.ram.queue,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -236,7 +139,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Requests',
-        data: totalReqsPro,
+        data: lineData.totReqPro.queue,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -250,7 +153,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Messages In',
-        data: totalMsg,
+        data: lineData.totMsg.queue,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -264,7 +167,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Requests',
-        data: totalReqCons,
+        data: lineData.totReqCon.queue,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -278,7 +181,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Failed Requests',
-        data: totalFail,
+        data: lineData.totFails.queue,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -288,27 +191,43 @@ const Metrics = () => {
     ],
   };
 
-  const lineOptions = {
-    scales: {
-      y: { ticks: { color: '#black' } },
-      x: { ticks: { color: '#black' } },
-    },
-    responsive: true,
-    animation: { duration: 1 },
-    maintainAspectRatio: false,
-    elements: {
-      point: {
-        radius: 0,
-      },
-    },
-    legend: {
-      fontColor: 'black',
-    },
-  };
-  //Creating dashboard constant set to our states dashboard.
-  const dashboard = useSelector((state) => state.dashboard);
   //Switch-Case syntax is used here to toggle between the different cluster viewing options.
   //Each case will render a different series of metrics charts.
+  const currentCluster = useSelector((state) => state.dashboard.currentCluster);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setData({
+        bytesIn: Math.floor(Math.random() * 100) + 1,
+        bytesOut: Math.floor(Math.random() * 100) + 1,
+        cpu: Math.floor(Math.random() * 100) + 1,
+        ram: Math.floor(Math.random() * 100) + 1,
+      });
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [currentCluster]);
+  // if (!currentCluster.length) return;
+  // const interval = setInterval(async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `/metrics/metrics?promAddress=${currentCluster}`
+  //     );
+  //     if (!response.ok) {
+  //       throw new Error(`Fetch failed with status ${response.status}`);
+  //     }
+
+  //     const metrics = await response.json();
+  //     if (typeof metrics === 'object') {
+  //       setData(metrics);
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching metrics:', error);
+  //   }
+  // }, 500);
+
+  // return () => clearInterval(interval);
+  // }, [currentCluster]);
+
   switch (dashboard.clusterView) {
     case 'summary':
       return (
