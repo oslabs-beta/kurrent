@@ -13,7 +13,6 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   username: '',
-  password: '',
   email: '',
   authType: 'login',
   passMatch: false,
@@ -25,25 +24,31 @@ export const loginSlice = createSlice({
   initialState,
   reducers: {
     switchAuth: (state) => {
-      state.authType === 'login' ? state.authType = 'register' : state.authType = 'login';
+      state.authType === 'login'
+        ? (state.authType = 'register')
+        : (state.authType = 'login');
     },
-    setUsername: (state, action) => {
-      state.username = action.payload;
-    },
-    setPassword: (state, action) => {
-      state.password = action.payload;
-    },
-    setEmail: (state, action) => {
-      state.email = action.payload;
+    setAuthInfo: (state, action) => {
+      state.username = action.payload.username;
+      state.authType === 'register'
+        ? (state.email = action.payload.email)
+        : (state.email = state.email);
     },
     setPassMatch: (state, action) => {
-      state.password === action.payload ? state.passMatch = true : state.passMatch = false;
+      state.passMatch = action.payload;
     },
     setIsLoggedIn: (state, action) => {
       state.isLoggedIn = action.payload;
-    }
+    },
+    resetLog: () => initialState,
   },
 });
 
-export const { switchAuth, setUsername, setPassword, setEmail, setPassMatch, setIsLoggedIn } = loginSlice.actions;
+export const {
+  switchAuth,
+  setAuthInfo,
+  setPassMatch,
+  setIsLoggedIn,
+  resetLog,
+} = loginSlice.actions;
 export default loginSlice.reducer;

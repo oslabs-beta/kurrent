@@ -1,7 +1,4 @@
 // db.js
-// require('dotenv').config();
-// console.log(process.env.DATABASE_URL);
-
 const { Pool } = require('pg');
 
 // I used this query to create table
@@ -12,11 +9,9 @@ const { Pool } = require('pg');
 //     password VARCHAR(255) NOT NULL,
 //     service_addresses text[][]
 // );
-// console.log(process.env.DATABASE_URL);
-// const myURI = process.env.DATABASE_URL;
-// console.log("myURI: ", process.env.DATABASE_URL);
-const myURI = "postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij";
-const pool = new Pool({connectionString: myURI});
+const myURI =
+  'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij';
+const pool = new Pool({ connectionString: myURI });
 
 //I used this query to create sessions
 // CREATE TABLE sessions (
@@ -27,14 +22,14 @@ const pool = new Pool({connectionString: myURI});
 //   session_status VARCHAR(20) DEFAULT 'active'
 // );
 
-
 // Attempt to connect to the database using the connection pool.
-pool.connect()
-  .then(() =>{
-    console.log("Database is connected")
+pool
+  .connect()
+  .then(() => {
+    console.log('Database is connected');
   })
   .catch((error) => {
     console.log('Database connection error: ', error);
-  })
+  });
 
 module.exports = pool;

@@ -16,50 +16,40 @@ import '../scss/login.scss';
 
 import {
   switchAuth,
-  setEmail,
-  setPassword,
-  setUsername,
+  setAuthInfo,
   setPassMatch,
   setIsLoggedIn,
 } from '../reducers/authReducer.js';
 
-import {
-  setClusters,
-} from '../reducers/dashReducer.js'
+import { setClusters } from '../reducers/dashReducer.js';
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
 
-  useEffect(() => {
-    async function verifySession() {
-      const response = await fetch('/users');
-      if (response.status === 200 || response.status === 201) {
-        dispatch(setIsLoggedIn(true));
-        navigate('/');
-      }
-    }
-    verifySession();
-    // navigate('/main')
-  }, []);
-
+  const confirmPass = (e) => {
+    let password = document.getElementById('password').value;
+    if (e.target.value === password) dispatch(setPassMatch(true));
+  };
   let userExists = false;
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     userExists = false;
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
     const loginEndpoint = `/users/${login.authType}`;
-    const postBody = {};
-    postBody.username = login.username;
-    postBody.password = login.password;
+    const postBody = { username, password };
     if (login.authType === 'register') {
+      let email = document.getElementById('email').value;
+      let confPass = document.getElementById('confPass').value;
+      postBody.email = email;
       if (login.username === '') {
-        postBody.username = login.email.split('@')[0];
-        dispatch(setUsername(postBody.username))
+        postBody.username = email.split('@')[0];
       }
-      postBody.email = login.email;
     }
+    dispatch(setAuthInfo(postBody));
     if (login.passMatch || login.authType === 'login') {
       try {
         const response = await fetch(loginEndpoint, {
@@ -71,8 +61,10 @@ const Login = () => {
         });
         const loginData = await response.json();
         if (response.status === 200) {
-
-          dispatch(setClusters(loginData.service_addresses));
+          if (login.authType === 'login') {
+            console.log('setting cluster to ', loginData.service_addresses);
+            dispatch(setClusters(loginData.service_addresses));
+          }
           dispatch(setIsLoggedIn(true));
           navigate('/');
         } else if (response.status === 400) {
@@ -92,18 +84,18 @@ const Login = () => {
           <form action='' className='submit-form'>
             <input
               type='text'
+              id='username'
               className='username'
               placeholder='username / email'
               autoComplete='off'
-              onChange={(e) => dispatch(setUsername(e.target.value))}
             />
             <br />
             <input
               type='password'
+              id='password'
               className='password'
               placeholder='password'
               autoComplete='off'
-              onChange={(e) => dispatch(setPassword(e.target.value))}
             />
             <button
               id='login'
@@ -135,34 +127,35 @@ const Login = () => {
           <form action='' className='submit-form' id='signUpForm'>
             <input
               type='text'
+              id='email'
               className='username'
               placeholder='email'
               autoComplete='off'
-              onChange={(e) => dispatch(setEmail(e.target.value))}
             />
             <br />
             <input
               type='text'
+              id='username'
               className='username'
               placeholder='username (optional)'
               autoComplete='off'
-              onChange={(e) => dispatch(setUsername(e.target.value))}
             />
             {userExists && <p>User already exists</p>}
             <br />
             <input
               type='password'
+              id='password'
               className='password'
               placeholder='password'
               autoComplete='off'
-              onChange={(e) => dispatch(setPassword(e.target.value))}
             />
             <input
               type='password'
+              id='confPass'
               className='password'
               placeholder='confirm password'
               autoComplete='off'
-              onChange={(e) => dispatch(setPassMatch(e.target.value))}
+              onChange={(e) => confirmPass(e)}
             />
             <button
               id='login'

@@ -11,28 +11,33 @@
 
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
-  
-};
+const initialState = {};
 
 export const metricsSlice = createSlice({
   name: 'metrics',
   initialState,
   reducers: {
     setClusters: (state, action) => {
-      state.clusters = action.payload
+      state.clusters = action.payload;
     },
     setCurrentCluster: (state, action) => {
-      state.currentCluster = action.payload
+      state.currentCluster = action.payload;
     },
     setView: (state, action) => {
       state.clusterView = action.payload;
     },
     setAddCluster: (state, action) => {
-      state.addingCluster = action.payload
+      state.addingCluster = action.payload;
     },
+    resetMetrics: () => initialState,
   },
 });
 
-export const { setCurrentCluster, setView, setAddCluster, setClusters } = metricsSlice.actions;
+export const {
+  setCurrentCluster,
+  setView,
+  setAddCluster,
+  setClusters,
+  resetMetrics,
+} = metricsSlice.actions;
 export default metricsSlice.reducer;

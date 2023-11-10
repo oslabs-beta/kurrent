@@ -31,37 +31,45 @@ const User = () => {
     const nickname = e.target.portName.value;
     const service_addresses = e.target.portNum.value;
     try {
-      const response = await fetch(`/users/update-service-addresses${username}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          nickname,
-          service_addresses,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await fetch(
+        `/users/update-service-addresses${username}`,
+        {
+          method: 'PATCH',
+          body: JSON.stringify({
+            nickname,
+            service_addresses,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       if (response.status === 200) {
         dispatch(setAddCluster(false));
-        dispatch(setClusters([...clusters, service_addresses]))
+        dispatch(setClusters([...clusters, service_addresses]));
       }
     } catch (err) {
-      console.err('Error during port addition: ', err);
+      console.error('Error during port addition: ', err);
     }
   };
 
   const clusterButtons = [];
-  if (Array.isArray(clusters)){
+  if (Array.isArray(clusters)) {
     clusters.forEach((cluster, idx) => {
       clusterButtons.push(
         <>
           <br />
-          <button onClick={() => dispatch(setCurrentCluster(cluster))} key={`port${idx}`}>
+          <button
+            className='savedClusterBtn'
+            onClick={() => dispatch(setCurrentCluster(cluster))}
+            key={`port${idx}`}
+          >
             Port {cluster}
           </button>
         </>
       );
-    });}
+    });
+  }
 
   return (
     <>
@@ -94,7 +102,12 @@ const User = () => {
           <button id='add-port' className='button1' type='submit'>
             Add
           </button>
-          <button id='cancel-port' onClick={() => dispatch(setAddCluster(false))}>Cancel</button>
+          <button
+            id='cancel-port'
+            onClick={() => dispatch(setAddCluster(false))}
+          >
+            Cancel
+          </button>
         </form>
       )}
       {clusterButtons}
