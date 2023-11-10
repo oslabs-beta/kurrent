@@ -26,30 +26,8 @@ app.use(
   })
 );
 
-// global error handler
-app.use((err, req, res, next) => {
-  const defaultErr = {
-    log: 'Express error handler caught unknown middleware error',
-    status: 500,
-    message: { err: 'An error occurred' },
-  };
-  const errorObj = Object.assign({}, defaultErr, err);
-  console.log(errorObj.log);
-  return res.status(errorObj.status).json(errorObj.message);
-});
-
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Include the new route to test session persistence
-app.get('/test-session', (req, res) => {
-  if (req.session.user && req.session.user.username) {
-    console.log('Username:', req.session.user.username);
-    res.json({ message: 'Session is active' });
-  } else {
-    res.json({ message: 'No active session found' });
-  }
-});
+// app.use(express.urlencoded({ extended: true }));
 
 
 // get, set user data in db
@@ -64,7 +42,20 @@ app.use('/', (req, res) => {
   return res.sendFile(path.resolve(__dirname, '../client/index.html'))
 })
 
-// app.use('/', express.static(__dirname, '../client/index.'))
+// global error handler
+app.use((err, req, res, next) => {
+  console.error('Express error handler caught an error:', err);
+
+  const defaultErr = {
+    log: 'Express error handler caught unknown middleware error',
+    status: 500,
+    message: { err: 'An error occurred' },
+  };
+  const errorObj = Object.assign({}, defaultErr, err);
+  console.log(errorObj.log);
+  return res.status(errorObj.status).json(errorObj.message);
+});
+
 
 
 
