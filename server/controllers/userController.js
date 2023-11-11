@@ -72,6 +72,7 @@ async function createUser(username, hashedPassword, email) {
   return insertUserResult.rows[0].user_id;
 }
 
+
 const loginUser = async (req, res, next) => {
   console.log('Request Body:', req.body);
   const { username, password } = req.body;

@@ -18,35 +18,58 @@ function setSSIDCookie(res, sessionToken) {
   });
 }
 
+// Example getSessionByToken function
+async function getSessionByToken(sessionToken) {
+  const getSessionQuery = 'SELECT * FROM sessions WHERE session_token = $1';
+  const result = await pool.query(getSessionQuery, [sessionToken]);
+  return result.rows[0];
+}
+
+// Example updateSession function
+async function updateSession(sessionId, sessionData) {
+  const updateSessionQuery = 'UPDATE sessions SET user_id = $1, session_token = $2, login_time = $3, session_status = $4 WHERE session_id = $5';
+  const { id, sessionToken, loginTime, sessionStatus } = sessionData;
+  await pool.query(updateSessionQuery, [id, sessionToken, loginTime, sessionStatus, sessionId]);
+}
+
+
 // Function to start a session
 async function startSession(req, sessionData) {
-  // Insert the session data into the sessions table
-  console.log('Starting session for user:', sessionData.id);
-  
   const currentDate = new Date();
-  console.log('Session Data:', sessionData);
+  const { id, sessionToken } = sessionData;
 
   try {
-    // Attempt to insert the session into the database
-    console.log('Before executing query');
-    await insertNewSession(sessionData.id, sessionData.sessionToken, currentDate);
-    console.log('Session inserted into the database successfully.');
+    // Check if a session with the provided session token already exists
+    const existingSession = await getSessionByToken(sessionToken);
+
+    if (existingSession) {
+      // If a session already exists, update the session data
+      await updateSession(existingSession.id, sessionData);
+      console.log('Session updated in the database successfully.');
+    } else {
+      // If no session exists, create a new session
+      await insertNewSession(id, sessionToken, currentDate);
+      console.log('New session inserted into the database successfully.');
+    }
 
     // Set the session for the user
     req.session.user = {
-      id: sessionData.id,
+      id: id,
       username: sessionData.username,
       service_addresses: sessionData.service_addresses || [],
     };
+
     console.log('Session set for the user:', req.session.user);
   } catch (error) {
     console.error('Error in session creation:', error.message);
-     // Handle specific error cases and provide meaningful error messages
-     if (error.code === 'unique_violation') {
+
+    // Handle specific error cases and provide meaningful error messages
+    if (error.code === 'unique_violation') {
       return Promise.reject(new Error('Session already exists for this user.'));
     }
+
     // Handle other cases as needed
-    return Promise.reject(new Error('Error creating session.'));
+    return Promise.reject(new Error('Error creating/updating session.'));
   }
 }
 
@@ -78,21 +101,6 @@ async function insertNewSession(userId, sessionToken, currentDate) {
     throw error; // Propagate the error to the caller
   }
 }
-// async function insertNewSession(userId, sessionToken, currentDate) {
-  
-//     const insertSessionQuery =
-//     'INSERT INTO sessions (user_id, session_token, login_time) VALUES ($1, $2, $3)';
-  
-//   console.log('Before executing query');
-//   try {
-//     const result = await pool.query(insertSessionQuery, [userId, sessionToken, currentDate]);
-//     console.log('After executing query. Result:', JSON.stringify(result.rows, null, 2));
-//   } catch (error) {
-//     console.error('Error executing query:', error);
-//   }
-//   console.log('After executing try-catch block');
-// }
-
 
 // Function to verify a user's session
 async function verifySession(req, res, next){
@@ -282,3 +290,49 @@ module.exports = { generateSessionToken, setSSIDCookie,
 // };
 
 // module.exports = sessionController;
+
+// async function startSession(req, sessionData) {
+//   // Insert the session data into the sessions table
+//   console.log('Starting session for user:', sessionData.id);
+  
+//   const currentDate = new Date();
+//   console.log('Session Data:', sessionData);
+
+//   try {
+//     // Attempt to insert the session into the database
+//     console.log('Before executing query');
+//     await insertNewSession(sessionData.id, sessionData.sessionToken, currentDate);
+//     console.log('Session inserted into the database successfully.');
+
+//     // Set the session for the user
+//     req.session.user = {
+//       id: sessionData.id,
+//       username: sessionData.username,
+//       service_addresses: sessionData.service_addresses || [],
+//     };
+//     console.log('Session set for the user:', req.session.user);
+//   } catch (error) {
+//     console.error('Error in session creation:', error.message);
+//      // Handle specific error cases and provide meaningful error messages
+//      if (error.code === 'unique_violation') {
+//       return Promise.reject(new Error('Session already exists for this user.'));
+//     }
+//     // Handle other cases as needed
+//     return Promise.reject(new Error('Error creating session.'));
+//   }
+// }
+
+// async function insertNewSession(userId, sessionToken, currentDate) {
+  
+//     const insertSessionQuery =
+//     'INSERT INTO sessions (user_id, session_token, login_time) VALUES ($1, $2, $3)';
+  
+//   console.log('Before executing query');
+//   try {
+//     const result = await pool.query(insertSessionQuery, [userId, sessionToken, currentDate]);
+//     console.log('After executing query. Result:', JSON.stringify(result.rows, null, 2));
+//   } catch (error) {
+//     console.error('Error executing query:', error);
+//   }
+//   console.log('After executing try-catch block');
+// }
