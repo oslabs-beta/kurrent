@@ -78,12 +78,13 @@ const Metrics = () => {
     '',
     'Now',
   ];
+  // console.log(lineData.bytesIn.items)
   const bytesIn = {
     labels,
     datasets: [
       {
         label: 'Bytes In',
-        data: Object.values(lineData.bytesIn.queue),
+        data: lineData.bytesIn.items,
         fill: false,
         borderColor: 'black',
         backgroundColor: 'white',
@@ -97,7 +98,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Bytes Out',
-        data: Object.values(lineData.bytesOut.queue),
+        data: lineData.bytesOut.items,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -111,7 +112,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'CPU Usage %',
-        data: Object.values(lineData.cpu.queue),
+        data: lineData.cpu.items,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -125,7 +126,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Ram Usage MB',
-        data: Object.values(lineData.ram.queue),
+        data: lineData.ram.items,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -139,7 +140,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Requests',
-        data: Object.values(lineData.totReqPro.queue),
+        data: lineData.totReqPro.items,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -153,7 +154,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Messages In',
-        data: Object.values(lineData.totMsg.queue),
+        data: lineData.totMsg.items,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -167,7 +168,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Requests',
-        data: Object.values(lineData.totReqCon.queue),
+        data: lineData.totReqCon.items,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -181,7 +182,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Failed Requests',
-        data: Object.values(lineData.totFails.queue),
+        data: lineData.totFails.items,
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -204,7 +205,7 @@ const Metrics = () => {
         cpu: Math.floor(Math.random() * 100) + 1,
         ram: Math.floor(Math.random() * 100) + 1,
       }));
-    }, 5000);
+    }, 500);
 
     return () => clearInterval(interval);
   }, [currentCluster]);

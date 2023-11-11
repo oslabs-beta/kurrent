@@ -1,25 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-class Queue {
-  constructor() {
-    this.nextOut = 0;
-    this.queue = {};
-    this.index = 0;
-  }
-  enqueue(val) {
-    this.queue[this.index] = val;
-    this.index++;
-  }
-  dequeue() {
-    this.queue.delete(this.nextOut);
-    this.nextOut++;
-  }
-}
+const createQueue = (size = 30) => ({
+  items: Array(size).fill(0),
+  size,
+});
 
-const lineQueue = new Queue();
-for (let i = 0; i < 30; i++) {
-  lineQueue.enqueue(0);
-}
+
+const enqueue = (queue, value) => {
+  queue.items.push(value);
+  if (queue.items.length > queue.size) {
+    queue.items.shift();
+  }
+  return queue;
+};
+
+const dequeue = (queue) => {
+  queue.items.shift();
+};
 
 // const stateCreator = () => {
 //   const output = {};
@@ -35,16 +32,27 @@ for (let i = 0; i < 30; i++) {
 //   }
 // }
 
+const initialQueue = createQueue();
+
 const initialState = {
-  bytesIn: { ...lineQueue },
-  bytesOut: { ...lineQueue },
-  cpu: { ...lineQueue },
-  ram: { ...lineQueue },
-  totReqPro: { ...lineQueue },
-  totMsg: { ...lineQueue },
-  totReqCon: { ...lineQueue },
-  totFails: { ...lineQueue },
+  bytesIn: initialQueue,
+  bytesOut: initialQueue,
+  cpu: initialQueue,
+  ram: initialQueue,
+  totReqPro: initialQueue,
+  totMsg: initialQueue,
+  totReqCon: initialQueue,
+  totFails: initialQueue,
 };
+
+const updateQueue = (queue, newValue) => {
+  const newQueue = new Queue();
+  newQueue.queue = { ...queue.queue } // This will copy properties but not the methods
+  newQueue.enqueue(newValue);
+  newQueue.dequeue();
+  return newQueue;
+};
+
 
 export const lineSlice = createSlice({
   name: 'line',
@@ -52,39 +60,9 @@ export const lineSlice = createSlice({
   reducers: {
     setData: (state, action) => {
       const data = action.payload;
-      console.log(data)
-      const newBytesIn = { ...state.bytesIn }.queue
-        .dequeue()
-        .enqueue(data.bytesIn / 1000);
-      state.bytesIn = newBytesIn;
-      const newCpuValue = { ...state.cpu }.queue
-        .dequeue()
-        .enqueue(data.cpu / 1000);
-      state.cpu = newCpuValue;
-      const newRamValue = { ...state.ram }.queue
-        .dequeue()
-        .enqueue(data.ramUsage / 1000000);
-      state.ram = newRamValue;
-      const newTotalReqsPro = { ...state.totReqPro }.queue
-        .dequeue()
-        .enqueue(data.prodReqTotal);
-      state.totReqPro = newTotalReqsPro;
-      const newTotalMsg = { ...state.totMsg }.queue
-        .dequeue()
-        .enqueue(data.prodMessInTotal);
-      state.totMsg = newTotalMsg;
-      const newTotalReqCon = { ...state.totReqCon }.queue
-        .dequeue()
-        .enqueue(data.consReqTot);
-      state.totReqCon = newTotalReqCon;
-      const newBytesOut = { ...state.bytesOut }.queue
-        .dequeue()
-        .enqueue(data.bytesOut);
-      state.bytesOut = newBytesOut;
-      const newTotFails = { ...state.totFails }.queue
-        .dequeue()
-        .enqueue(data.consFailReqTotal);
-      state.totFails = newTotFails;
+      for (let metric in data) {
+        state[metric] = enqueue(state[metric], data[metric])
+      }
     },
   },
 });
