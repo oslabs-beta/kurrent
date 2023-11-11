@@ -5,7 +5,6 @@ const createQueue = (size = 30) => ({
   size,
 });
 
-
 const enqueue = (queue, value) => {
   queue.items.push(value);
   if (queue.items.length > queue.size) {
@@ -28,7 +27,7 @@ const dequeue = (queue) => {
 //   }
 //   const dataset = {
 //     label: labels[j]
-//     
+//
 //   }
 // }
 
@@ -45,15 +44,6 @@ const initialState = {
   totFails: initialQueue,
 };
 
-const updateQueue = (queue, newValue) => {
-  const newQueue = new Queue();
-  newQueue.queue = { ...queue.queue } // This will copy properties but not the methods
-  newQueue.enqueue(newValue);
-  newQueue.dequeue();
-  return newQueue;
-};
-
-
 export const lineSlice = createSlice({
   name: 'line',
   initialState,
@@ -61,7 +51,7 @@ export const lineSlice = createSlice({
     setData: (state, action) => {
       const data = action.payload;
       for (let metric in data) {
-        state[metric] = enqueue(state[metric], data[metric])
+        state[metric] = enqueue(state[metric], data[metric]);
       }
     },
   },

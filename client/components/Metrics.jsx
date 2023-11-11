@@ -31,7 +31,7 @@ const lineOptions = {
     x: { ticks: { color: '#black' } },
   },
   responsive: true,
-  animation: { duration: 1 },
+  animation: { duration: 50 },
   maintainAspectRatio: false,
   elements: {
     point: {
@@ -46,151 +46,33 @@ const lineOptions = {
 const Metrics = () => {
   const dashboard = useSelector((state) => state.dashboard);
   const lineData = useSelector((state) => state.line);
-  const labels = [
-    '-15s',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    'Now',
-  ];
-  // console.log(lineData.bytesIn.items)
-  const bytesIn = {
-    labels,
-    datasets: [
-      {
-        label: 'Bytes In',
-        data: lineData.bytesIn.items,
-        fill: false,
-        borderColor: 'black',
-        backgroundColor: 'white',
-        tension: 0.4,
-        labelColor: 'black',
-      },
-    ],
-  };
-  const bytesOut = {
-    labels,
-    datasets: [
-      {
-        label: 'Bytes Out',
-        data: lineData.bytesOut.items,
-        fill: false,
-        borderColor: 'black',
-        tension: 0.4,
-        backgroundColor: 'white',
-        labelColor: 'black',
-      },
-    ],
-  };
-  const cpu = {
-    labels,
-    datasets: [
-      {
-        label: 'CPU Usage %',
-        data: lineData.cpu.items,
-        fill: false,
-        borderColor: 'black',
-        tension: 0.4,
-        backgroundColor: 'white',
-        labelColor: 'black',
-      },
-    ],
-  };
-  const ram = {
-    labels,
-    datasets: [
-      {
-        label: 'Ram Usage MB',
-        data: lineData.ram.items,
-        fill: false,
-        borderColor: 'black',
-        tension: 0.4,
-        backgroundColor: 'white',
-        labelColor: 'black',
-      },
-    ],
-  };
-  const reqPro = {
-    labels,
-    datasets: [
-      {
-        label: 'Total Requests',
-        data: lineData.totReqPro.items,
-        fill: false,
-        borderColor: 'black',
-        tension: 0.4,
-        backgroundColor: 'white',
-        labelColor: 'black',
-      },
-    ],
-  };
-  const msgPro = {
-    labels,
-    datasets: [
-      {
-        label: 'Total Messages In',
-        data: lineData.totMsg.items,
-        fill: false,
-        borderColor: 'black',
-        tension: 0.4,
-        backgroundColor: 'white',
-        labelColor: 'black',
-      },
-    ],
-  };
-  const reqCons = {
-    labels,
-    datasets: [
-      {
-        label: 'Total Requests',
-        data: lineData.totReqCon.items,
-        fill: false,
-        borderColor: 'black',
-        tension: 0.4,
-        backgroundColor: 'white',
-        labelColor: 'black',
-      },
-    ],
-  };
-  const fails = {
-    labels,
-    datasets: [
-      {
-        label: 'Total Failed Requests',
-        data: lineData.totFails.items,
-        fill: false,
-        borderColor: 'black',
-        tension: 0.4,
-        backgroundColor: 'white',
-        labelColor: 'black',
-      },
-    ],
-  };
+  const labels = new Array(29).fill('').concat('Now');
+
+  function createDataset(label, dataKey) {
+    return {
+      labels,
+      datasets: [
+        {
+          label: label,
+          data: lineData[dataKey].items,
+          fill: false,
+          borderColor: 'black',
+          tension: 0.2,
+          backgroundColor: 'white',
+          labelColor: 'black',
+        },
+      ],
+    };
+  }
+
+  const bytesIn = createDataset('Bytes In', 'bytesIn');
+  const bytesOut = createDataset('Bytes Out', 'bytesOut');
+  const cpu = createDataset('CPU Usage %', 'cpu');
+  const ram = createDataset('Ram Usage MB', 'ram');
+  const totReqPro = createDataset('Total Requests', 'totReqPro');
+  const totMsg = createDataset('Total Messages In', 'totMsg');
+  const totReqCon = createDataset('Total Requests', 'totReqCon');
+  const totFails = createDataset('Total Failed Requests', 'totFails');
 
   //Switch-Case syntax is used here to toggle between the different cluster viewing options.
   //Each case will render a different series of metrics charts.
@@ -198,13 +80,18 @@ const Metrics = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     const interval = setInterval(() => {
-      console.log('I am the interval')
-      dispatch(setData({
-        bytesIn: Math.floor(Math.random() * 100) + 1,
-        bytesOut: Math.floor(Math.random() * 100) + 1,
-        cpu: Math.floor(Math.random() * 100) + 1,
-        ram: Math.floor(Math.random() * 100) + 1,
-      }));
+      dispatch(
+        setData({
+          bytesIn: Math.floor(Math.random() * 100) + 1,
+          bytesOut: Math.floor(Math.random() * 100) + 1,
+          cpu: Math.floor(Math.random() * 100) + 1,
+          ram: Math.floor(Math.random() * 100) + 1,
+          totReqPro: Math.floor(Math.random() * 100) + 1,
+          totMsg: Math.floor(Math.random() * 100) + 1,
+          totReqCon: Math.floor(Math.random() * 100) + 1,
+          totFails: Math.floor(Math.random() * 100) + 1,
+        })
+      );
     }, 500);
 
     return () => clearInterval(interval);
@@ -271,14 +158,14 @@ const Metrics = () => {
           <div className='lineMetricBox'>
             <Line
               className='lineMetric'
-              data={reqPro}
+              data={totReqPro}
               options={lineOptions}
             ></Line>
           </div>
           <div className='lineMetricBox'>
             <Line
               className='lineMetric'
-              data={msgPro}
+              data={totMsg}
               options={lineOptions}
             ></Line>
           </div>
@@ -290,14 +177,14 @@ const Metrics = () => {
           <div className='lineMetricBox'>
             <Line
               className='lineMetric'
-              data={reqCons}
+              data={totReqCon}
               options={lineOptions}
             ></Line>
           </div>
           <div className='lineMetricBox'>
             <Line
               className='lineMetric'
-              data={fails}
+              data={totFails}
               options={lineOptions}
             ></Line>
           </div>
