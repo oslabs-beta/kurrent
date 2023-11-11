@@ -1,14 +1,3 @@
-/*
- * *************************************
- *
- * @module  Login.jsx
- * @author MichaelNewbold, jensenrs
- * @date 10/28/2023
- * @description Login container
- *
- * ************************************
- */
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';

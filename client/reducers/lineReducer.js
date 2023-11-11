@@ -13,24 +13,6 @@ const enqueue = (queue, value) => {
   return queue;
 };
 
-const dequeue = (queue) => {
-  queue.items.shift();
-};
-
-// const stateCreator = () => {
-//   const output = {};
-//   output.labels = [];
-//   for (let i = 0; i < 30; i++) {
-//     if (i === 0) output.labels.push('-15s');
-//     else if (i === 29) output.labels.push('Now');
-//     else output.labels.push('');
-//   }
-//   const dataset = {
-//     label: labels[j]
-//
-//   }
-// }
-
 const initialQueue = createQueue();
 
 const initialState = {

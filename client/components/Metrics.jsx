@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { setView } from '../reducers/dashReducer.js';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { current } from '@reduxjs/toolkit';
 import {
   Chart as ChartJS,
   LineElement,
