@@ -52,6 +52,7 @@ export const lineSlice = createSlice({
   reducers: {
     setData: (state, action) => {
       const data = action.payload;
+      console.log(data)
       const newBytesIn = { ...state.bytesIn }.queue
         .dequeue()
         .enqueue(data.bytesIn / 1000);

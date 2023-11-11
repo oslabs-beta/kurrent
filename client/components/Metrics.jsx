@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { setView } from '../reducers/dashReducer.js';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { current } from '@reduxjs/toolkit';
 import {
   Chart as ChartJS,
@@ -83,7 +83,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Bytes In',
-        data: lineData.bytesIn.queue,
+        data: Object.values(lineData.bytesIn.queue),
         fill: false,
         borderColor: 'black',
         backgroundColor: 'white',
@@ -97,7 +97,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Bytes Out',
-        data: lineData.bytesOut.queue,
+        data: Object.values(lineData.bytesOut.queue),
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -111,7 +111,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'CPU Usage %',
-        data: lineData.cpu.queue,
+        data: Object.values(lineData.cpu.queue),
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -125,7 +125,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Ram Usage MB',
-        data: lineData.ram.queue,
+        data: Object.values(lineData.ram.queue),
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -139,7 +139,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Requests',
-        data: lineData.totReqPro.queue,
+        data: Object.values(lineData.totReqPro.queue),
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -153,7 +153,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Messages In',
-        data: lineData.totMsg.queue,
+        data: Object.values(lineData.totMsg.queue),
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -167,7 +167,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Requests',
-        data: lineData.totReqCon.queue,
+        data: Object.values(lineData.totReqCon.queue),
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -181,7 +181,7 @@ const Metrics = () => {
     datasets: [
       {
         label: 'Total Failed Requests',
-        data: lineData.totFails.queue,
+        data: Object.values(lineData.totFails.queue),
         fill: false,
         borderColor: 'black',
         tension: 0.4,
@@ -194,15 +194,17 @@ const Metrics = () => {
   //Switch-Case syntax is used here to toggle between the different cluster viewing options.
   //Each case will render a different series of metrics charts.
   const currentCluster = useSelector((state) => state.dashboard.currentCluster);
+  const dispatch = useDispatch();
   useEffect(() => {
     const interval = setInterval(() => {
-      setData({
+      console.log('I am the interval')
+      dispatch(setData({
         bytesIn: Math.floor(Math.random() * 100) + 1,
         bytesOut: Math.floor(Math.random() * 100) + 1,
         cpu: Math.floor(Math.random() * 100) + 1,
         ram: Math.floor(Math.random() * 100) + 1,
-      });
-    }, 500);
+      }));
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [currentCluster]);
