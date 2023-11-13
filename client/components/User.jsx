@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -19,7 +18,6 @@ const User = () => {
   //     const response = await fetch(`/users/service-address${username}`);
   //     if (response.status === 200) {
   //       const savedPorts = await response.json();
-  //       console.log(savedPorts);
   //       dispatch(setClusters(savedPorts));
   //     }
   //   };
@@ -57,16 +55,15 @@ const User = () => {
   if (Array.isArray(clusters)) {
     clusters.forEach((cluster, idx) => {
       clusterButtons.push(
-        <>
+        <React.Fragment key={cluster}>
           <br />
           <button
             className='savedClusterBtn'
             onClick={() => dispatch(setCurrentCluster(cluster))}
-            key={`port${idx}`}
           >
             Port {cluster}
           </button>
-        </>
+        </React.Fragment>
       );
     });
   }

@@ -1,14 +1,3 @@
-/*
- * *************************************
- *
- * @module  authReducer
- * @author MichaelNewbold, jensenrs
- * @date 10/28/2023
- * @description reducer for login/signup
- *
- * ************************************
- */
-
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
