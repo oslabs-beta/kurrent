@@ -5,7 +5,7 @@ import User from '../components/User.jsx';
 import Metrics from '../components/Metrics.jsx';
 import ClusterNav from '../components/ClusterNav.jsx';
 import '../scss/main.scss';
-import { resetLog } from '../reducers/authReducer.js';
+import { resetLog, setIsLoggedIn } from '../reducers/authReducer.js';
 import { resetDash } from '../reducers/dashReducer.js';
 const Main = () => {
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
@@ -17,20 +17,23 @@ const Main = () => {
       if (response.status === 200) {
         dispatch(resetDash());
         dispatch(resetLog());
-        return navigate('/login');
+        return navigate('/');
       }
     } catch (err) {
       console.log('error: ', err);
     }
   };
-  useEffect(() => {
-    if (!isLoggedIn) navigate('/login');
-  }, []);
+
 
   return (
     <>
-      <nav>
-        <h1 className='kurrentTitle2'>Kurrent</h1>
+      <nav id='mainNav'>
+        {/* <h1 className='kurrentTitle2'>Kurrent</h1> */}
+        <img
+          src='../assets/kurrentLogo.png'
+          alt='Kurrent Logo'
+          className='navbar-Logo'
+        />
         <button id='signOut' onClick={handleLogout}>
           Sign Out
         </button>

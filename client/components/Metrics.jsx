@@ -39,6 +39,7 @@ const lineOptions = {
   legend: {
     fontColor: 'black',
   },
+  resize: true,
 };
 
 const Metrics = () => {
@@ -90,7 +91,7 @@ const Metrics = () => {
           totFails: Math.floor(Math.random() * 100) + 1,
         })
       );
-    }, 500);
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [currentCluster]);

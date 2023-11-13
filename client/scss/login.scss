@@ -24,11 +24,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
+  background-image: url('https://i.pinimg.com/originals/78/c8/4e/78c84ec9b61a89a573d1f9ef7f42570a.gif');
+  background-size: cover;
+  background-position: center;
 }
 .signUpTitle {
-  font-size: 3.5rem;
+  font-size: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -141,4 +144,20 @@ body {
   display: block;
   justify-content: center;
   text-align: center;
+}
+.inputInvalid {
+  margin: 0;
+  font-size: 70%;
+  margin-bottom: 2%;
+}
+#email {
+  margin-bottom: 4%;
+}
+#loginNav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(0deg, $lightDarkBlue 0%, $medDarkBlue 20%);
+  min-width: 100%;
+  position: fixed;
 }

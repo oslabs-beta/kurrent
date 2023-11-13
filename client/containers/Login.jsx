@@ -8,6 +8,8 @@ import {
   setAuthInfo,
   setPassMatch,
   setIsLoggedIn,
+  setUserExists,
+  setEmailValid,
 } from '../reducers/authReducer.js';
 
 import { setClusters } from '../reducers/dashReducer.js';
@@ -16,29 +18,45 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const login = useSelector((state) => state.login);
-
+  // Checking if password and confirm password match
   const confirmPass = (e) => {
     let password = document.getElementById('password').value;
     if (e.target.value === password) dispatch(setPassMatch(true));
+    else dispatch(setPassMatch(false));
   };
-  let userExists = false;
 
+  useEffect(() => {
+    async function verifySession() {
+      try {
+        const response = await fetch('/users');
+        if (response.status === 200) {
+          dispatch(setIsLoggedIn(true));
+          dispatch('/dashboard');
+        } else {
+          navigate('/');
+        }
+      } catch (err) {
+        console.error('An error occurred:', err);
+      }
+    }
+    verifySession();
+  }, []);
+
+  // Performs fetch request to user database to handle login/registration logic
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    userExists = false;
+    dispatch(setUserExists(''));
     let username = document.getElementById('username').value;
     let password = document.getElementById('password').value;
     const loginEndpoint = `/users/${login.authType}`;
     const postBody = { username, password };
     if (login.authType === 'register') {
       let email = document.getElementById('email').value;
-      let confPass = document.getElementById('confPass').value;
       postBody.email = email;
       if (login.username === '') {
         postBody.username = email.split('@')[0];
       }
     }
-    dispatch(setAuthInfo(postBody));
     if (login.passMatch || login.authType === 'login') {
       try {
         const response = await fetch(loginEndpoint, {
@@ -51,60 +69,84 @@ const Login = () => {
         const loginData = await response.json();
         if (response.status === 200) {
           if (login.authType === 'login') {
-            console.log('setting cluster to ', loginData.service_addresses);
             dispatch(setClusters(loginData.service_addresses));
+            dispatch(setAuthInfo(loginData));
           }
           dispatch(setIsLoggedIn(true));
-          navigate('/');
+          navigate('/dashboard');
         } else if (response.status === 400) {
-          userExists = true;
+          dispatch(setUserExists('User Already Exists'));
+        } else if (response.status === 401) {
+          dispatch(setUserExists('Invalid Username or Password'));
         }
       } catch (error) {
-        return `Error in login attempt. Check usename or password. ${error}`;
+        return `Error in login attempt. Check username or password. ${error}`;
       }
     }
+  };
+
+  const validEmailRegex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const handleEmailChange = (e) => {
+    const email = e.target.value;
+    dispatch(setEmailValid(validEmailRegex.test(email)));
   };
   //login page
   if (login.authType === 'login') {
     return (
-      <div className='loginPageContainer'>
-        <div className='login-container'>
-          <h1 className='kurrentTitle'>Kurrent</h1>
-          <form action='' className='submit-form'>
-            <input
-              type='text'
-              id='username'
-              className='username'
-              placeholder='username / email'
-              autoComplete='off'
-            />
-            <br />
-            <input
-              type='password'
-              id='password'
-              className='password'
-              placeholder='password'
-              autoComplete='off'
-            />
-            <button
-              id='login'
-              className='loginBtns'
-              type='submit'
-              onClick={handleFormSubmit}
-            >
-              Login
-            </button>
-            <a
-              id='signup'
-              className='loginBtns'
-              type='submit'
-              onClick={() => dispatch(switchAuth())}
-            >
-              Don't have an Account?
-            </a>
-          </form>
+      <>
+        <nav id='loginNav'>
+          <a href='#home'>Back to Home</a>
+          {/* <a href='#section2'>Section 2</a>
+          <a href='#section3'>Section 3</a> */}
+          <a href='#section4'>Meet the team</a>
+        </nav>
+        <div className='loginPageContainer' id='home'>
+          <div className='login-container'>
+            <h1 className='kurrentTitle'>Kurrent</h1>
+            <form action='' className='submit-form'>
+              <input
+                type='text'
+                id='username'
+                className='username'
+                placeholder='username / email'
+                autoComplete='off'
+              />
+              <br />
+              <input
+                type='password'
+                id='password'
+                className='password'
+                placeholder='password'
+                autoComplete='off'
+              />
+              <button
+                id='login'
+                className='loginBtns'
+                type='submit'
+                onClick={handleFormSubmit}
+              >
+                Login
+              </button>
+              {login.userExists !== '' && <p>{login.userExists}</p>}
+              <a
+                id='signup'
+                className='loginBtns'
+                type='submit'
+                onClick={() => {
+                  dispatch(switchAuth());
+                  dispatch(setUserExists(''));
+                }}
+              >
+                Don't have an Account?
+              </a>
+            </form>
+          </div>
         </div>
-      </div>
+        <div id='section2'></div>
+        <div id='section3'></div>
+        <div id='team'></div>
+      </>
     );
   }
   //signup page
@@ -114,22 +156,27 @@ const Login = () => {
         <div className='signUp-container'>
           <h1 className='signUpTitle'>Sign Up</h1>
           <form action='' className='submit-form' id='signUpForm'>
+            {login.userExists !== '' && <p>{login.userExists}</p>}
             <input
               type='text'
               id='email'
               className='username'
               placeholder='email'
               autoComplete='off'
+              onChange={handleEmailChange}
+              required
             />
-            <br />
+            {!login.isEmailValid && (
+              <p className='inputInvalid'>Invalid email address</p>
+            )}
             <input
               type='text'
               id='username'
               className='username'
               placeholder='username (optional)'
               autoComplete='off'
+              required
             />
-            {userExists && <p>User already exists</p>}
             <br />
             <input
               type='password'
@@ -151,7 +198,7 @@ const Login = () => {
               className='loginBtns'
               type='submit'
               onClick={handleFormSubmit}
-              disabled={!login.passMatch}
+              disabled={!(login.passMatch && login.isEmailValid)}
             >
               Create Account
             </button>
@@ -159,7 +206,10 @@ const Login = () => {
               id='routeLogin'
               className='loginBtns'
               type='submit'
-              onClick={() => dispatch(switchAuth())}
+              onClick={() => {
+                dispatch(switchAuth());
+                dispatch(setUserExists(''));
+              }}
             >
               Back to Login
             </a>
