@@ -7,11 +7,8 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 
-// process.env['NODE_NO_WARNINGS'] = 1; // Suppress all Node.js warnings
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// Use cookie-parser middleware to parse cookies
 app.use(cookieParser());
 
 const randomSecret = require('crypto').randomBytes(64).toString('hex');
@@ -35,14 +32,15 @@ app.use('/users', userRoutes);
 // required route: /metrics/metrics?promAddress=<prometheus address>
 app.use('/metrics', metricsRoutes);
 
+// login existing user
 app.use('/login', (req, res) => {
   return res.redirect('/');
 });
+
+// serve index.html
 app.use('/', (req, res) => {
   return res.sendFile(path.resolve(__dirname, '../client/index.html'));
 });
-
-// app.use('/', express.static(__dirname, '../client/index.'))
 
 // global error handler
 app.use((err, req, res, next) => {
@@ -53,7 +51,7 @@ app.use((err, req, res, next) => {
   };
   const errorObj = Object.assign({}, defaultErr, err);
   console.log(errorObj.log);
-  if(!res.headerSent){
+  if (!res.headerSent) {
     return res.status(errorObj.status).json(errorObj.message);
   }
 });
