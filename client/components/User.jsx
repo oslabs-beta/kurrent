@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -12,7 +12,7 @@ const User = () => {
   const username = useSelector((state) => state.login.username);
   const clusters = useSelector((state) => state.dashboard.clusters);
   const adding = useSelector((state) => state.dashboard.addingCluster);
-
+  const [isValid, setIsValid] = useState(false);
   // useEffect(() => {
   //   const clusterFetch = async () => {
   //     const response = await fetch(`/users/service-address${username}`);
@@ -26,15 +26,13 @@ const User = () => {
 
   const handleFromSubmit = async (e) => {
     e.preventDefault();
-    const nickname = e.target.portName.value;
     const service_addresses = e.target.portNum.value;
     try {
       const response = await fetch(
-        `/users/update-service-addresses${username}`,
+        `/users/update-service-addresses/${username}`,
         {
           method: 'PATCH',
           body: JSON.stringify({
-            nickname,
             service_addresses,
           }),
           headers: {
@@ -68,9 +66,36 @@ const User = () => {
     });
   }
 
+  const handleInputChange = (e) => {
+    setIsValid(formatIsCorrect(e.target.value));
+  };
+
+  //Checks the adding cluster input form and only enables the 'add' button until the input form matches our allowed configuration.
+  function formatIsCorrect(e) {
+    let ip, port;
+    [ip, port] = e.split(':');
+    let validIP = false,
+      validPort = false;
+
+    if (ip === 'localhost') {
+      validIP = true;
+    } else if (
+      /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+        ip
+      )
+    ) {
+      validIP = true;
+    }
+
+    if (port && port.length === 4 && /[0-9]/.test(port)) {
+      validPort = true;
+    }
+    return validIP && validPort;
+  }
+
   return (
     <>
-      <div id='clusterUserName'>{`${username}'s Cluster`}</div>
+      <div id='clusterUserName'>{`${username}'s Clusters`}</div>
       {!adding && (
         <button id='addCluster' onClick={() => dispatch(setAddCluster(true))}>
           Add a Cluster
@@ -78,25 +103,23 @@ const User = () => {
       )}
       {adding && (
         <form className='addPortForm' onSubmit={handleFromSubmit}>
-          <label>Port Nickname:</label>
-          <input
-            type='text'
-            name='portName'
-            className='port'
-            placeholder='optional'
-            autoComplete='off'
-          />
-          <br />
+          <hr />
           <label>Port Number:</label>
           <input
             type='text'
             name='portNum'
             className='port'
-            placeholder='required'
+            placeholder='localhost:port or IP address'
             autoComplete='off'
+            onChange={handleInputChange}
           />
           <br />
-          <button id='add-port' className='button1' type='submit'>
+          <button
+            id='add-port'
+            className='button1'
+            type='submit'
+            disabled={!isValid}
+          >
             Add
           </button>
           <button

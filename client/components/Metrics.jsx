@@ -39,6 +39,7 @@ const lineOptions = {
   legend: {
     fontColor: 'black',
   },
+  resize: true,
 };
 
 const Metrics = () => {

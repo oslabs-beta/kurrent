@@ -11,11 +11,12 @@ body {
   padding: 0;
   font-family: 'Comfortaa', sans-serif;
   background-color: $lightDarkBlue;
+  scroll-behavior: smooth;
 }
 button {
   font-family: 'Comfortaa', sans-serif;
 }
-nav {
+#mainNav {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -59,6 +60,9 @@ nav {
 .user-info {
   grid-area: menu;
   min-width: 10rem;
+  display: flexbox;
+  justify-content: center;
+  align-items: center;
 }
 .cluster-nav {
   grid-area: header;
@@ -110,19 +114,28 @@ nav {
 #clusterButtons:disabled {
   background-color: #a0c3ff;
 }
+#add-port:disabled {
+  background-color: #a0c3ffaa;
+  box-shadow: none;
+}
+#add-port:disabled:hover {
+  background-color: #a0c3ffaa;
+  box-shadow: none;
+  cursor: default;
+}
 .metrics {
   display: grid;
   grid-template-columns: 50% 50%;
   grid-template-rows: auto;
   gap: 10px;
-  width: 99%;
+  width: 98%;
   height: 93%;
   justify-items: center;
   align-items: center;
 }
 .lineMetricBox {
   width: 100%;
-  height: 100%;
+  height: 30vh;
 }
 .lineMetric {
   background-color: white;
@@ -145,12 +158,13 @@ h3 {
   text-shadow: 1px 1px 2px black, 0 0 1em $lightDarkBlue, 0 0 0.1em black;
   font-size: 1.4rem;
   font-weight: 600;
+  display: flex;
+  justify-content: center;
 }
 #addCluster {
-  height: 6%;
+  height: 5vh;
   width: 75%;
   font-size: 1rem;
-  margin: 5px;
   color: #252d98;
   background-color: rgba(246, 246, 238, 0.8);
   box-shadow: 1px 1px 5px #252d98;
@@ -221,7 +235,7 @@ label {
 }
 #cancel-port {
   height: 10%;
-  min-width: 45%;
+  min-width: 40%;
   font-size: 1.3rem;
   margin: 5px;
   color: #252d98;
@@ -234,7 +248,7 @@ label {
 }
 .savedClusterBtn {
   width: 90%;
-  height: 5%;
+  height: auto;
   font-size: 1.2rem;
   text-wrap: wrap;
   margin: 5px;
@@ -258,4 +272,9 @@ label {
   border-width: 0;
   border: none;
   background-color: rgba(246, 246, 238, 0.9);
+}
+.navbar-Logo {
+  height: 50px;
+  width: auto;
+  background-image: url('../assets/kurrentLogo.png');
 }

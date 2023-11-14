@@ -10,12 +10,12 @@ const registerUser = async (req, res, next) => {
 
   try {
     // Check if the username already exists
-    console.log("Checking if the user exists...");
+    console.log('Checking if the user exists...');
     const usernameExists = await checkIfUsernameExists(username);
-    console.log("UsernameExists:", usernameExists);
+    console.log('UsernameExists:', usernameExists);
 
     if (usernameExists) {
-      console.log("User not found");
+      console.log('User not found');
       return res.status(400).json({ error: 'Username already exists' });
     }
 
@@ -38,7 +38,7 @@ const registerUser = async (req, res, next) => {
     // Set the SSID (Session ID) cookie
     sessionController.setSSIDCookie(res, sessionData.sessionToken);
 
-    res.status(201).json({ user_id: userId, username: username });
+    res.status(200).json({ user_id: userId, username: username });
   } catch (error) {
     return next({
       log: 'Error in userController.registerUser middleware',
@@ -48,7 +48,7 @@ const registerUser = async (req, res, next) => {
   }
 };
 
-// Helper functions 
+// Helper functions
 
 async function checkIfUsernameExists(username) {
   const userCheckQuery = 'SELECT * FROM users WHERE username = $1';
@@ -72,19 +72,19 @@ async function createUser(username, hashedPassword, email) {
   return insertUserResult.rows[0].user_id;
 }
 
-
 const loginUser = async (req, res, next) => {
   console.log('Request Body:', req.body);
   const { username, password } = req.body;
 
   try {
     // Check if the user exists in the database
-    console.log("Checking if the user exists...");
-    const user = await getUserByUsername(username);
-    console.log("User:", user);
+    console.log('Checking if the user exists by username...');
+    const user = await getUserByCredential(username.toLowerCase());
+    console.log('Credential:', username.toLowerCase());
+    console.log('User:', user);
 
     if (!user) {
-      console.log("User not found");
+      console.log('User not found');
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
@@ -92,12 +92,14 @@ const loginUser = async (req, res, next) => {
     const isPasswordValid = await verifyPassword(password, user.password);
 
     if (!isPasswordValid) {
-      console.log("Password is not valid");
+      console.log('Password is not valid');
       return res.status(401).json({ error: 'Invalid username or password' });
     }
 
     // Check if the user has an active session
-    const activeSession = await sessionController.getActiveSession(user.user_id);
+    const activeSession = await sessionController.getActiveSession(
+      user.user_id
+    );
     console.log('Active session: ', activeSession);
 
     if (activeSession) {
@@ -109,11 +111,10 @@ const loginUser = async (req, res, next) => {
       };
 
       // Start the session using the sessionController
-      
-        console.log('Before calling startSession');
-        await sessionController.startSession(req, sessionData);
-        console.log('After calling startSession');
-     
+
+      console.log('Before calling startSession');
+      await sessionController.startSession(req, sessionData);
+      console.log('After calling startSession');
 
       // Fetch service_addresses from the user's record using a helper function
       const serviceAddresses = await fetchServiceAddresses(user.user_id);
@@ -127,14 +128,13 @@ const loginUser = async (req, res, next) => {
     }
 
     // If there is no active session, generate a new one
-    console.log("No active session found, generating a new session");
+    console.log('No active session found, generating a new session');
     const sessionToken = sessionController.generateSessionToken();
     const currentDate = new Date();
 
     // Insert the session data into the sessions table
 
     //   await sessionController.insertNewSession(user.user_id, sessionToken, currentDate);
-   
 
     const sessionData = {
       id: user.user_id,
@@ -146,7 +146,7 @@ const loginUser = async (req, res, next) => {
     console.log('Before calling startSession');
     await sessionController.startSession(req, sessionData);
     console.log('After calling startSession');
-      
+
     // Set the SSID (Session ID) cookie using the sessionController
     sessionController.setSSIDCookie(res, sessionData.sessionToken);
 
@@ -160,6 +160,7 @@ const loginUser = async (req, res, next) => {
       service_addresses: serviceAddresses,
     });
   } catch (error) {
+    console.error('Error in userController.loginUser middleware:', error);
     return next({
       log: 'Error in userController.loginUser middleware',
       status: 500,
@@ -170,21 +171,29 @@ const loginUser = async (req, res, next) => {
 
 // Helper function to fetch service_addresses from the user's record
 async function fetchServiceAddresses(userId) {
-  const getUserServiceAddressesQuery = 'SELECT service_addresses FROM users WHERE user_id = $1';
+  const getUserServiceAddressesQuery =
+    'SELECT service_addresses FROM users WHERE user_id = $1';
   const result = await pool.query(getUserServiceAddressesQuery, [userId]);
   return result.rows[0].service_addresses || [];
 }
-// Helper function to get user by username
-async function getUserByUsername(username) {
-  const getUserQuery = 'SELECT * FROM users WHERE username = $1';
-  const result = await pool.query(getUserQuery, [username]);
-  // Log the result and the SQL query
-  console.log('getUserByUsername Result:', JSON.stringify(result.rows[0], null, 2));
-  console.log('SQL Query:', getUserQuery);
+// Helper function to get user by username or email
+async function getUserByCredential(credential) {
+  console.log('Credential:', credential);
+  const getUserQuery =
+    'SELECT * FROM users WHERE LOWER(username) = LOWER($1) OR LOWER(email) = LOWER($1)';
+  try {
+    const result = await pool.query(getUserQuery, [credential]);
+    console.log(
+      'getUserByCredential Result:',
+      JSON.stringify(result.rows, null, 2)
+    );
 
-  return result.rows[0];
+    return result.rows[0] || null;
+  } catch (error) {
+    console.error('Error in getUserByCredential:', error);
+    throw error;
+  }
 }
-
 // Helper function to verify the password against the hashed password in the database
 async function verifyPassword(plainPassword, hashedPassword) {
   return bcrypt.compare(plainPassword, hashedPassword);
@@ -193,7 +202,6 @@ async function verifyPassword(plainPassword, hashedPassword) {
 const updateServiceAddresses = async (req, res, next) => {
   const username = req.params.username;
   const { service_addresses } = req.body;
-
   try {
     if (!req.session.user || !req.session.user.id) {
       return res.status(401).json({ error: 'You must be logged in...' });
@@ -210,18 +218,19 @@ const updateServiceAddresses = async (req, res, next) => {
     const existingAddresses = userResult.rows[0].service_addresses || [];
 
     // Check for duplicates in the new service_addresses
-    const duplicates = service_addresses.some(address =>
-      existingAddresses.some(existingAddress => JSON.stringify(existingAddress) === JSON.stringify(address))
+    const duplicates = existingAddresses.some(
+      (existingAddress) =>
+        JSON.stringify(existingAddress) === JSON.stringify(service_addresses)
     );
 
     if (duplicates) {
-      return res.status(400).json({ error: 'Duplicate service addresses found' });
+      return res
+        .status(400)
+        .json({ error: 'Duplicate service addresses found' });
     }
 
     // Normalize the format of the incoming service_addresses
-    const normalizedAddresses = service_addresses.map(address =>
-      Array.isArray(address) ? address : [address]
-    );
+    const normalizedAddresses = [service_addresses];
 
     // Merge the new service addresses with the existing ones
     const updatedAddresses = existingAddresses.concat(normalizedAddresses);
@@ -234,7 +243,7 @@ const updateServiceAddresses = async (req, res, next) => {
     res.json({ message: 'Service addresses updated successfully' });
   } catch (error) {
     return next({
-      log: 'Error in userController.updateServiceAddresses middleware',
+      log: `Error in userController.updateServiceAddresses middleware: ${error}`,
       status: 500,
       message: 'An error occurred during service address update.',
     });
@@ -265,9 +274,6 @@ const logout = (req, res, next) => {
   }
 };
 
-
-
-
 const deleteSessionEntry = (sessionToken, callback) => {
   if (!sessionToken) {
     console.error('Session token is undefined');
@@ -287,11 +293,7 @@ const deleteSessionEntry = (sessionToken, callback) => {
   });
 };
 
-
-
-
-module.exports = {registerUser, loginUser, updateServiceAddresses, logout}
-
+module.exports = { registerUser, loginUser, updateServiceAddresses, logout };
 
 // const pool = require('../db');
 // const bcrypt = require('bcrypt');
@@ -621,11 +623,11 @@ module.exports = {registerUser, loginUser, updateServiceAddresses, logout}
 
 //       // Find the most recent active session for the user
 //       const activeSessionQuery = `
-//         SELECT session_id 
-//         FROM sessions 
-//         WHERE user_id = $1 
-//         AND session_status = 'active' 
-//         ORDER BY login_time DESC 
+//         SELECT session_id
+//         FROM sessions
+//         WHERE user_id = $1
+//         AND session_status = 'active'
+//         ORDER BY login_time DESC
 //         LIMIT 1`;
 
 //       const activeSessionResult = await pool.query(activeSessionQuery, [
@@ -637,15 +639,15 @@ module.exports = {registerUser, loginUser, updateServiceAddresses, logout}
 
 //         // Update the session_status to 'inactive' or 'logged_out'
 //         const updateSessionStatusQuery = `
-//           UPDATE sessions 
-//           SET session_status = 'inactive' 
+//           UPDATE sessions
+//           SET session_status = 'inactive'
 //           WHERE session_id = $1`;
 
 //         await pool.query(updateSessionStatusQuery, [sessionId]);
 
 //         // Then, delete the session record
 //         const deleteSessionQuery = `
-//           DELETE FROM sessions 
+//           DELETE FROM sessions
 //           WHERE session_id = $1`;
 
 //         await pool.query(deleteSessionQuery, [sessionId]);

@@ -1,4 +1,5 @@
 const metricsController = {
+  
   async getAllMetrics(req, res, next) {
     // get prometheus address from the request query
     const { promAddress } = req.query;
