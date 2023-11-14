@@ -1,7 +1,6 @@
-// db.js
 const { Pool } = require('pg');
 
-// I used this query to create table
+// use this query to create table
 // CREATE TABLE users (
 //     user_id serial PRIMARY KEY,
 //     email VARCHAR(255) NOT NULL,
@@ -13,7 +12,7 @@ const myURI =
   'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij';
 const pool = new Pool({ connectionString: myURI });
 
-//I used this query to create sessions
+// use this query to create sessions table
 // CREATE TABLE sessions (
 //   session_id serial PRIMARY KEY,
 //   user_id INT REFERENCES users(user_id),
