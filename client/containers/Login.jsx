@@ -96,14 +96,18 @@ const Login = () => {
     return (
       <>
         <nav id='loginNav'>
-          <a href='#home'>Back to Home</a>
-          {/* <a href='#section2'>Section 2</a>
-          <a href='#section3'>Section 3</a> */}
-          <a href='#section4'>Meet the team</a>
+          <a href='#home' className='navTag'>
+            Back to Home
+          </a>
+          <a href='#about' className='navTag'>
+            About Kurrent
+          </a>
+          <a href='#team' className='navTag'>
+            Meet the team
+          </a>
         </nav>
         <div className='loginPageContainer' id='home'>
           <div className='login-container'>
-            <h1 className='kurrentTitle'>Kurrent</h1>
             <form action='' className='submit-form'>
               <input
                 type='text'
@@ -143,9 +147,77 @@ const Login = () => {
             </form>
           </div>
         </div>
-        <div id='section2'></div>
-        <div id='section3'></div>
-        <div id='team'></div>
+        <div id='about'>
+          <span className='aboutSpan'>
+            <h1 className='aboutTitle'>Why Kurrent?</h1>
+          </span>
+          <span className='demoSpan'>
+            <div className='aboutText'>
+              <h4>
+                Kurrent is a premier visualization tool that empowers users to view their Kafka clusters in real time.
+              </h4>
+              <p>
+                Simply create an account, add your port number, and tab between the different display metrics.
+              </p>
+            </div>
+            <div className='aboutImg'></div>
+          </span>
+        </div>
+        <div id='team'>
+          <span className='loginSpan'>
+            <h1 className='teamHeader'>Meet the team!</h1>
+          </span>
+          <div className='teamContainer'>
+            <div className='memberCard'>
+              {/* image? */}
+              <span className='cardSpan'>
+                <h3 className='teamHeader'>Garrett Byrne</h3>
+              </span>
+              <a href='' className='socials'>
+                LinkedIn
+              </a>
+              <a href='' className='socials'>
+                Github
+              </a>
+            </div>
+            <div className='memberCard'>
+              {/* image? */}
+              <span className='cardSpan'>
+                <h3 className='teamHeader'>Jensen Schmidt</h3>
+              </span>
+              <a href='' className='socials'>
+                LinkedIn
+              </a>
+              <a href='' className='socials'>
+                Github
+              </a>
+            </div>
+            <div className='memberCard'>
+              {/* image? */}
+              <span className='cardSpan'>
+                <h3 className='teamHeader'>Michael Newbold</h3>
+              </span>
+              <a href='' className='socials'>
+                LinkedIn
+              </a>
+              <a href='' className='socials'>
+                Github
+              </a>
+            </div>
+            <div className='memberCard'>
+              {/* image? */}
+              <span className='cardSpan'>
+                <h3 className='teamHeader'>Swarna Muralidharan</h3>
+              </span>
+              <a href='' className='socials'>
+                LinkedIn
+              </a>
+              <a href='' className='socials'>
+                Github
+              </a>
+            </div>
+          </div>
+        </div>
       </>
     );
   }

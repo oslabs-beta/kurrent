@@ -91,7 +91,7 @@ const Metrics = () => {
           totFails: Math.floor(Math.random() * 100) + 1,
         })
       );
-    }, 5000);
+    }, 500);
 
     return () => clearInterval(interval);
   }, [currentCluster]);

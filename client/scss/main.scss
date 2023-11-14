@@ -60,6 +60,9 @@ button {
 .user-info {
   grid-area: menu;
   min-width: 10rem;
+  display: flexbox;
+  justify-content: center;
+  align-items: center;
 }
 .cluster-nav {
   grid-area: header;
@@ -155,12 +158,13 @@ h3 {
   text-shadow: 1px 1px 2px black, 0 0 1em $lightDarkBlue, 0 0 0.1em black;
   font-size: 1.4rem;
   font-weight: 600;
+  display: flex;
+  justify-content: center;
 }
 #addCluster {
   height: 5vh;
   width: 75%;
   font-size: 1rem;
-  margin: 5px;
   color: #252d98;
   background-color: rgba(246, 246, 238, 0.8);
   box-shadow: 1px 1px 5px #252d98;
@@ -272,5 +276,5 @@ label {
 .navbar-Logo {
   height: 50px;
   width: auto;
-    background-image: url('../assets/kurrentLogo.png');
+  background-image: url('../assets/kurrentLogo.png');
 }
