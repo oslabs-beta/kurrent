@@ -6,10 +6,12 @@ const metricsRoutes = require('./routes/metricsRoutes');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const cors = require('cors');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
 
 const randomSecret = require('crypto').randomBytes(64).toString('hex');
 app.use(
@@ -18,10 +20,10 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      secure: false, // Adjust to true in a production environment with HTTPS
+      secure: true,
       httpOnly: true, // Make the cookie accessible only via HTTP requests (recommended)
       path: '/', // Cookie is valid for all routes
-      sameSite: 'strict',
+      sameSite: 'None',
     },
   })
 );
