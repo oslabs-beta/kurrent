@@ -27,6 +27,7 @@ const Login = () => {
     else dispatch(setPassMatch(false));
   };
   //checking for existing sessions to redirect users straight to the dashboard
+  //can set up conditional for checking if a cookie with name ssid exists before running the verifySession to reduce calls to the server
   useEffect(() => {
     async function verifySession() {
       try {
