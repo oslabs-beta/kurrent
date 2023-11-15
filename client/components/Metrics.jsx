@@ -64,10 +64,10 @@ const Metrics = () => {
     };
   }
   //Each metric to be used calls upon the helper function passing in the desired label, and the dataKey used in the backend
-  const bytesIn = createDataset('Bytes In KB', 'bytesIn');
-  const bytesOut = createDataset('Bytes Out KB', 'bytesOut');
-  const cpu = createDataset('CPU Usage %', 'cpu');
-  const ram = createDataset('Ram Usage MB', 'ram');
+  const bytesIn = createDataset('Bytes In (KB)', 'bytesIn');
+  const bytesOut = createDataset('Bytes Out (KB)', 'bytesOut');
+  const cpu = createDataset('CPU Usage (%)', 'cpu');
+  const ram = createDataset('Ram Usage (MB)', 'ram');
   const totReqPro = createDataset('Total Requests', 'totReqPro');
   const totMsg = createDataset('Total Messages In', 'totMsg');
   const totReqCon = createDataset('Total Requests', 'totReqCon');
