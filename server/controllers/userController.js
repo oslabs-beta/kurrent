@@ -81,7 +81,7 @@ const loginUser = async (req, res, next) => {
     }
 
     // Save service_addresses from the user's record
-    const serviceAddresses = user.serviceAddresses || []
+    const serviceAddresses = user.service_addresses || []
     res.locals.serviceAddresses = serviceAddresses;
     res.locals.userId = user.user_id
 
