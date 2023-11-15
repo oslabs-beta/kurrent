@@ -14,7 +14,6 @@ function setSSIDCookie(req, res, next) {
       secure: true,
       httpOnly: true,
       sameSite: 'None',
-      secure,
     });
     return next();
   } catch (error) {
