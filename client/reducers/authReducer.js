@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+//creating our initial state for authentication
 const initialState = {
   username: '',
   email: '',
@@ -9,7 +9,7 @@ const initialState = {
   userExists: false,
   isEmailValid: false,
 };
-
+//Our login slice logic for login page conditional rendering and authentication
 export const loginSlice = createSlice({
   name: 'login',
   initialState,
@@ -21,9 +21,7 @@ export const loginSlice = createSlice({
     },
     setAuthInfo: (state, action) => {
       state.username = action.payload.username;
-      state.authType === 'register'
-        ? (state.email = action.payload.email)
-        : (state.email = state.email);
+      state.email = action.payload.email;
     },
     setPassMatch: (state, action) => {
       state.passMatch = action.payload;
@@ -40,7 +38,7 @@ export const loginSlice = createSlice({
     },
   },
 });
-
+//exporting our login slice
 export const {
   switchAuth,
   setAuthInfo,

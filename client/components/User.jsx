@@ -13,42 +13,36 @@ const User = () => {
   const clusters = useSelector((state) => state.dashboard.clusters);
   const adding = useSelector((state) => state.dashboard.addingCluster);
   const [isValid, setIsValid] = useState(false);
-  // useEffect(() => {
-  //   const clusterFetch = async () => {
-  //     const response = await fetch(`/users/service-address${username}`);
-  //     if (response.status === 200) {
-  //       const savedPorts = await response.json();
-  //       dispatch(setClusters(savedPorts));
-  //     }
-  //   };
-  //   clusterFetch();
-  // }, []);
 
+  //handleFromSubmit function is used to send a patch request to the backend for when a user adds a new port for viewing
   const handleFromSubmit = async (e) => {
     e.preventDefault();
     const service_addresses = e.target.portNum.value;
-    try {
-      const response = await fetch(
-        `/users/update-service-addresses/${username}`,
-        {
-          method: 'PATCH',
-          body: JSON.stringify({
-            service_addresses,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    if (!clusters.includes(service_addresses)) {
+      try {
+        const response = await fetch(
+          `/users/update-service-addresses/${username}`,
+          {
+            method: 'PATCH',
+            body: JSON.stringify({
+              service_addresses,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        if (response.status === 200) {
+          dispatch(setAddCluster(false));
+          dispatch(setClusters([...clusters, service_addresses]));
         }
-      );
-      if (response.status === 200) {
-        dispatch(setAddCluster(false));
-        dispatch(setClusters([...clusters, service_addresses]));
+      } catch (err) {
+        console.error('Error during port addition: ', err);
       }
-    } catch (err) {
-      console.error('Error during port addition: ', err);
     }
   };
 
+  //Loop through clusters array and render any existing ports to the page
   const clusterButtons = [];
   if (Array.isArray(clusters)) {
     clusters.forEach((cluster, idx) => {
@@ -65,7 +59,7 @@ const User = () => {
       );
     });
   }
-
+  //On input change, update setIsValid to check if the port input matches the allowed format
   const handleInputChange = (e) => {
     setIsValid(formatIsCorrect(e.target.value));
   };
@@ -92,10 +86,10 @@ const User = () => {
     }
     return validIP && validPort;
   }
-
+  //Render the User section of the dashboard
   return (
     <>
-      <div id='clusterUserName'>{`${username}'s Clusters`}</div>
+      <div id='clusterUserName'>{`${username} Clusters`}</div>
       {!adding && (
         <button id='addCluster' onClick={() => dispatch(setAddCluster(true))}>
           Add a Cluster

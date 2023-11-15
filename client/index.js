@@ -6,10 +6,10 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import Dashboard from './Dashboard.jsx';
 import store from './store.js';
-
+//Creating the router componenet to switch between the app
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: '*',
     element: <App />,
   },
   {
