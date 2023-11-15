@@ -6,6 +6,8 @@ import { setView } from '../reducers/dashReducer.js';
 const ClusterNav = () => {
   const dispatch = useDispatch();
   const clusterView = useSelector((state) => state.dashboard.clusterView);
+  //Render the different cluster view options
+  //Dynamically disable buttons if they are the currently selected clusterView
   return (
     <div id='clusterButtonContainer'>
       <button

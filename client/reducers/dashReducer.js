@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+//creating the initial state for our dashboard reducer
 const initialState = {
   currentCluster: '',
   clusterView: 'summary',
@@ -7,6 +7,7 @@ const initialState = {
   clusters: [],
 };
 
+//creating our slice for the dashboard, allowing the user to switch between cluster views
 export const dashboardSlice = createSlice({
   name: 'dashboard',
   initialState,
@@ -26,7 +27,7 @@ export const dashboardSlice = createSlice({
     resetDash: () => initialState,
   },
 });
-
+//exporting out cluster view slice
 export const {
   setCurrentCluster,
   setView,

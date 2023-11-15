@@ -7,10 +7,12 @@ import ClusterNav from '../components/ClusterNav.jsx';
 import '../scss/main.scss';
 import { resetLog, setIsLoggedIn } from '../reducers/authReducer.js';
 import { resetDash } from '../reducers/dashReducer.js';
+import kurrentLogo from '../assets/kurrentBG2.png';
 const Main = () => {
   const isLoggedIn = useSelector((state) => state.login.isLoggedIn);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  //logout function that will clear the users session and cookies and redirect to the landing page
   const handleLogout = async () => {
     try {
       const response = await fetch('/users/logout');
@@ -24,16 +26,10 @@ const Main = () => {
     }
   };
 
-
   return (
     <>
       <nav id='mainNav'>
-        {/* <h1 className='kurrentTitle2'>Kurrent</h1> */}
-        <img
-          src='../assets/kurrentLogo.png'
-          alt='Kurrent Logo'
-          className='navbar-Logo'
-        />
+        <img src={kurrentLogo} alt='Kurrent Logo' className='nav-logo' />
         <button id='signOut' onClick={handleLogout}>
           Sign Out
         </button>

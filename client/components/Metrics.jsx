@@ -12,7 +12,7 @@ import {
 } from 'chart.js';
 import { setData } from '../reducers/lineReducer.js';
 import { Line } from 'react-chartjs-2';
-
+//Registering our chartJS elements for use in rendering
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -22,7 +22,7 @@ ChartJS.register(
   PointElement,
   Filler
 );
-
+//Global options for the chartJS elements
 const lineOptions = {
   scales: {
     y: { ticks: { color: '#black' } },
@@ -46,7 +46,7 @@ const Metrics = () => {
   const dashboard = useSelector((state) => state.dashboard);
   const lineData = useSelector((state) => state.line);
   const labels = new Array(29).fill('').concat('Now');
-
+  //creates data objects for use in our specific metrics elements
   function createDataset(label, dataKey) {
     return {
       labels,
@@ -63,7 +63,7 @@ const Metrics = () => {
       ],
     };
   }
-
+  //Each metric to be used calls upon the helper function passing in the desired label, and the dataKey used in the backend
   const bytesIn = createDataset('Bytes In', 'bytesIn');
   const bytesOut = createDataset('Bytes Out', 'bytesOut');
   const cpu = createDataset('CPU Usage %', 'cpu');
@@ -73,10 +73,9 @@ const Metrics = () => {
   const totReqCon = createDataset('Total Requests', 'totReqCon');
   const totFails = createDataset('Total Failed Requests', 'totFails');
 
-  //Switch-Case syntax is used here to toggle between the different cluster viewing options.
-  //Each case will render a different series of metrics charts.
   const currentCluster = useSelector((state) => state.dashboard.currentCluster);
   const dispatch = useDispatch();
+  //Update state every 500ms to display new metrics
   useEffect(() => {
     const interval = setInterval(() => {
       dispatch(
@@ -117,6 +116,7 @@ const Metrics = () => {
   // return () => clearInterval(interval);
   // }, [currentCluster]);
 
+  //Switch case statement is used here to change which charts are rendered based off the clusterView in our dashboard reducer.
   switch (dashboard.clusterView) {
     case 'summary':
       return (
