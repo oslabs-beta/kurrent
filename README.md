@@ -68,6 +68,8 @@ session_status VARCHAR(20) DEFAULT 'active')`
 
 2. Connect Your Prometheus Server: Connecting your Prometheus server is as simple as clicking the "Add a Cluster" button, typing in you server address with the server ip address and prometheus exposed port number, and clicking the "Add" button. You should now see your address listed below. Simply click this address to see your metrics updating on the dashboard.
 
+![AddServer](/client/assets/AddServer.gif)
+
 3. View Your Metrics: By default you will first see the overall health metrics of your cluster. By selecting the "Producer" or "Consumer" buttons, the dashboard will display metrics related to each, allowing you to see the impact of producers and consumers on your cluster health.
 
 ![Connect](/client/assets/Connect.gif)
