@@ -70,7 +70,11 @@ session_status VARCHAR(20) DEFAULT 'active')`
 
 3. View Your Metrics: By default you will first see the overall health metrics of your cluster. By selecting the "Producer" or "Consumer" buttons, the dashboard will display metrics related to each, allowing you to see the impact of producers and consumers on your cluster health.
 
+![Connect](/client/assets/Connect.gif)
+
 4. Sign Out: When you are done monitoring your cluster for the day or want to signin to a new account, simply click the "Sign Out" button to return to the landing page.
+
+![Signout](/client/assets/SignOut.gif)
 
 ## Contribute
 

@@ -68,10 +68,13 @@ const Metrics = () => {
   const bytesOut = createDataset('Bytes Out (KB)', 'bytesOut');
   const cpu = createDataset('CPU Usage (%)', 'cpu');
   const ram = createDataset('Ram Usage (MB)', 'ram');
-  const totReqPro = createDataset('Total Requests', 'totReqPro');
-  const totMsg = createDataset('Total Messages In', 'totMsg');
-  const totReqCon = createDataset('Total Requests', 'totReqCon');
-  const totFails = createDataset('Total Failed Requests', 'totFails');
+  const totReqPro = createDataset('Total Requests (requests/s)', 'totReqPro');
+  const totMsg = createDataset('Total Messages In (messages/s)', 'totMsg');
+  const totReqCon = createDataset('Total Requests (requests/s)', 'totReqCon');
+  const totFails = createDataset(
+    'Total Failed Requests (requests/s)',
+    'totFails'
+  );
 
   const currentCluster = useSelector((state) => state.dashboard.currentCluster);
   const dispatch = useDispatch();
