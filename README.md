@@ -45,7 +45,7 @@ user_id serial PRIMARY KEY,
 email VARCHAR(255) NOT NULL,
 username VARCHAR(255),
 password VARCHAR(255) NOT NULL,
-service_addresses text[][])`
+service_addresses text[])`
   - `CREATE TABLE sessions (
 session_id serial PRIMARY KEY,
 user_id INT REFERENCES users(user_id),
