@@ -59,6 +59,16 @@ session_status VARCHAR(20) DEFAULT 'active')`
 
 ---
 
+## Using Kurrent
+
+1. Create a User Account: Before you can use Kurrent, you'll first need to sign up a new account. You can do this using your email, an optional username, and a password.
+
+2. Connect Your Prometheus Server: Connecting your Prometheus server is as simple as clicking the "Add a Cluster" button, typing in you server address with the server ip address and prometheus exposed port number, and clicking the "Add" button. You should now see your address listed below. Simply click this address to see your metrics updating on the dashboard.
+
+3. View Your Metrics: By default you will first see the overall health metrics of your cluster. By selecting the "Producer" or "Consumer" buttons, the dashboard will display metrics related to each, allowing you to see the impact of producers and consumers on your cluster health.
+
+4. Sign Out: When you are done monitoring your cluster for the day or want to signin to a new account, simply click the "Sign Out" button to return to the landing page.
+
 ## Contribute
 
 If you'd like to contribute to the project and improve its current functionality or add a feature, please fork the repository and submit a pull request. Some of our planned future features include:
@@ -74,7 +84,6 @@ If you'd like to contribute to the project and improve its current functionality
 <table>
   <tr>
     <td align="center">
-      <img src="" width="140px;" alt="a photo of Garrett Byrne"/>
       <br />
       <sub><b>Garrett Byrne</b></sub>
       <br />
@@ -82,21 +91,18 @@ If you'd like to contribute to the project and improve its current functionality
       <a href="https://github.com/G-Byrne">GitHub</a>
     </td>
      <td align="center">
-      <img src="" width="140px;" alt="a photo of Jensen Schmidt"/>
       <br />
       <sub><b>Jensen Schmidt</b></sub>
       <br />
       <a href="">Linkedin</a> |
       <a href="">GitHub</a>
     </td> <td align="center">
-      <img src="" width="140px;" alt="a photo of Michael Newbold"/>
       <br />
       <sub><b>Michael Newbold</b></sub>
       <br />
       <a href="">Linkedin</a> |
       <a href="">GitHub</a>
     </td> <td align="center">
-      <img src="" width="140px;" alt="a photo of Swarna Muralidharan"/>
       <br />
       <sub><b>Swarna Muralidharan</b></sub>
       <br />
