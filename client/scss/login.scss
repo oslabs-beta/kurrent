@@ -35,7 +35,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: -1;
+  z-index: -2;
   background: linear-gradient(#6b7ba478, #40568b);
   border-radius: inherit;
 }
@@ -60,6 +60,9 @@ body {
   border-radius: 36px;
   width: 20%;
   height: 35%;
+  animation: fadeIn 2s ease forwards;
+  position: absolute;
+  top: 8%;
 }
 //Container for sign up elements
 .signUp-container {
@@ -71,6 +74,7 @@ body {
   border-radius: 36px;
   width: 20%;
   height: 42%;
+  animation: fadeIn 1s ease forwards;
 }
 //Password and username input form elements and hover effects
 .password,
@@ -179,6 +183,7 @@ body {
   width: 100%;
   position: fixed;
   z-index: 1000;
+  animation: fadeIn 1s ease forwards;
 }
 //a-tag container in navbar
 .loginNavRef {
@@ -311,9 +316,10 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 5rem;
+  font-size: 2.5rem;
   margin: 0;
   text-shadow: 1px 1px 2px black;
+  margin-bottom: 1%;
 }
 //Demo gif styling
 #metricsGif {
@@ -352,4 +358,45 @@ h4 {
   color: $lightWhite;
   font-size: large;
   font-weight: 100;
+}
+#title {
+  position: absolute;
+  top: 42%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -3;
+  font-size: 20vw;
+  text-align: center;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(#6b7ba478, rgba(0, 0, 0, 1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: moveDownText 1s ease forwards;
+  text-shadow: 1px 1px 1px rgb(255, 255, 255), 1px 1px 0.05em rgba(0, 0, 0, 0.9);
+  height: 20%;
+}
+
+@keyframes moveDownText {
+  from {
+    transform: translateY(20%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
