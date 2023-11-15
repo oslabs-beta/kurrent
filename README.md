@@ -64,6 +64,8 @@ session_status VARCHAR(20) DEFAULT 'active')`
 
 1. Create a User Account: Before you can use Kurrent, you'll first need to sign up a new account. You can do this using your email, an optional username, and a password.
 
+![Signup](/client/assets/SignUp.gif)
+
 2. Connect Your Prometheus Server: Connecting your Prometheus server is as simple as clicking the "Add a Cluster" button, typing in you server address with the server ip address and prometheus exposed port number, and clicking the "Add" button. You should now see your address listed below. Simply click this address to see your metrics updating on the dashboard.
 
 3. View Your Metrics: By default you will first see the overall health metrics of your cluster. By selecting the "Producer" or "Consumer" buttons, the dashboard will display metrics related to each, allowing you to see the impact of producers and consumers on your cluster health.
@@ -76,6 +78,7 @@ If you'd like to contribute to the project and improve its current functionality
 
 - Typescript migration
 - User defined alerts
+- User customizable dashboard. Choose what metrics to see over a chosen timeframe
 - Open Authorization
 - More testing coverage
 - Save and compare metrics from past runs or between different clusters
