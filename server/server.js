@@ -21,6 +21,7 @@ app.use(
       secure: false, // Adjust to true in a production environment with HTTPS
       httpOnly: true, // Make the cookie accessible only via HTTP requests (recommended)
       path: '/', // Cookie is valid for all routes
+      sameSite: 'strict',
     },
   })
 );
@@ -32,9 +33,9 @@ app.use('/users', userRoutes);
 // required route: /metrics/metrics?promAddress=<prometheus address>
 app.use('/metrics', metricsRoutes);
 
-// login existing user
-app.use('/login', (req, res) => {
-  return res.redirect('/');
+// redirect get requests to initial login for universal client-side rendering handling
+app.get('/*', (req, res) => {
+  res.redirect('/');
 });
 
 // serve index.html
@@ -45,7 +46,7 @@ app.use('/', (req, res) => {
 // global error handler
 app.use((err, req, res, next) => {
   const defaultErr = {
-    log: 'Express error handler caught unknown middleware error',
+    log: 'Express error handler caught unknown middleware error: ' + err,
     status: 500,
     message: { err: 'An error occurred' },
   };

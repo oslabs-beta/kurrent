@@ -8,10 +8,21 @@ function generateSessionToken() {
 }
 
 // Function to set the SSID (Session ID) cookie
-function setSSIDCookie(res, sessionToken) {
-  res.cookie('ssid', sessionToken, {
-    httpOnly: true,
-  });
+function setSSIDCookie(req, res, next) {
+  try {
+    res.cookie('ssid', res.locals.sessionToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: false,
+    });
+    return next();
+  } catch (error) {
+    return next({
+      log: `Error in sessionController.setSSIDCookie middleware: ${error}`,
+      status: 500,
+      message: 'An error occurred when attempting to set a cookie',
+    });
+  }
 }
 
 // get session from db by session token
@@ -25,21 +36,29 @@ async function getSessionByToken(sessionToken) {
 async function updateSession(sessionId, sessionData) {
   const updateSessionQuery =
     'UPDATE sessions SET user_id = $1, session_token = $2, login_time = $3, session_status = $4 WHERE session_id = $5';
-  const { id, sessionToken, loginTime, sessionStatus } = sessionData;
+  const { id, sessionToken, loginTime } = sessionData;
   await pool.query(updateSessionQuery, [
     id,
     sessionToken,
     loginTime,
-    sessionStatus,
+    'active',
     sessionId,
   ]);
 }
 
 // start new session in db
-async function startSession(req, sessionData) {
+async function startSession(req, res, next) {
   const currentDate = new Date();
-  const { id, sessionToken } = sessionData;
-
+  let sessionToken = req.cookies.ssid;
+  if (!sessionToken) {
+    sessionToken = generateSessionToken();
+  }
+  res.locals.sessionToken = sessionToken;
+  const sessionData = {
+    id: res.locals.userId,
+    sessionToken: sessionToken,
+    loginTime: currentDate,
+  };
   try {
     // Check if a session with the provided session token already exists
     const existingSession = await getSessionByToken(sessionToken);
@@ -49,32 +68,31 @@ async function startSession(req, sessionData) {
       await updateSession(existingSession.id, sessionData);
     } else {
       // If no session exists, create a new session
-      await insertNewSession(id, sessionToken, currentDate);
+      await insertNewSession(res.locals.userId, sessionToken, currentDate);
     }
 
     // Set the session for the user
     req.session.user = {
-      id: id,
-      username: sessionData.username,
-      service_addresses: sessionData.service_addresses || [],
+      id: res.locals.id,
+      username: res.locals.username,
     };
+    return next();
   } catch (error) {
     // Handle specific error cases and provide meaningful error messages
-    if (error.code === 'unique_violation') {
-      return Promise.reject(new Error('Session already exists for this user.'));
-    }
-
-    // Handle other cases as needed
-    return Promise.reject(new Error('Error creating/updating session.'));
+    return next({
+      log: `Error in sessionController.startSession middleware: ${error}`,
+      status: 500,
+      message: 'An error occurred when attempting to start your session',
+    });
   }
 }
 
 // get active user session from db
-async function getActiveSession(userId) {
+async function getActiveSession(sessionToken) {
   try {
     const getSessionQuery =
-      'SELECT * FROM sessions WHERE user_id = $1 AND session_status = $2';
-    const result = await pool.query(getSessionQuery, [userId, 'active']);
+      'SELECT * FROM sessions WHERE session_token = $1 AND session_status = $2';
+    const result = await pool.query(getSessionQuery, [sessionToken, 'active']);
     return result.rows[0];
   } catch (error) {
     throw error; // Propagate the error to the caller
@@ -95,47 +113,39 @@ async function insertNewSession(userId, sessionToken, currentDate) {
 // verify user session in db
 async function verifySession(req, res, next) {
   const ssid = req.cookies.ssid;
-  const username = req.params.username;
   // no ssid cookie
   if (!ssid) {
     return next({
       log: 'Error in verifySession: no ssid',
       status: 401,
-      message: { err: 'You must be logged in...' },
+      message: { err: 'No active session' },
     });
   }
 
   try {
     // Get the user's session token from the database
     const sessionTokenQuery =
-      'SELECT session_token FROM sessions INNER JOIN users ON sessions.user_id = users.user_id WHERE users.username = $1 AND session_status = $2';
+      'SELECT * FROM sessions INNER JOIN users ON sessions.user_id = users.user_id WHERE sessions.session_token = $1 AND session_status = $2';
     const sessionTokenResult = await pool.query(sessionTokenQuery, [
-      username,
+      ssid,
       'active',
     ]);
-
     if (sessionTokenResult.rows.length > 0) {
-      const sessionToken = sessionTokenResult.rows[0].session_token;
-
-      if (ssid === sessionToken) {
-        return next();
-      } else {
-        return next({
-          log: 'Error in verifySession: ssid does not match session token',
-          status: 401,
-          message: { err: 'You must be logged in...' },
-        });
-      }
+      res.locals.username = sessionTokenResult.rows[0].username;
+      res.locals.email = sessionTokenResult.rows[0].email;
+      res.locals.serviceAddresses =
+        sessionTokenResult.rows[0].service_addresses;
+      return next();
     } else {
       return next({
         log: 'Error in verifySession: no active session for user',
         status: 401,
-        message: { err: 'You must be logged in...' },
+        message: { err: 'No active session' },
       });
     }
   } catch (error) {
     return next({
-      log: 'Error in sessionController.verifySession middleware',
+      log: 'Error in sessionController.verifySession middleware: ' + error,
       status: 500,
       message: 'An error occurred during session verification.',
     });

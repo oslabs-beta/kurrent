@@ -21,9 +21,7 @@ export const loginSlice = createSlice({
     },
     setAuthInfo: (state, action) => {
       state.username = action.payload.username;
-      state.authType === 'register'
-        ? (state.email = action.payload.email)
-        : (state.email = state.email);
+      state.email = action.payload.email;
     },
     setPassMatch: (state, action) => {
       state.passMatch = action.payload;

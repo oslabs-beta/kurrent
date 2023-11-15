@@ -31,7 +31,10 @@ const Login = () => {
         const response = await fetch('/users');
         if (response.status === 200) {
           dispatch(setIsLoggedIn(true));
-          dispatch('/dashboard');
+          navigate('/dashboard');
+          const authData = await response.json();
+          dispatch(setAuthInfo(authData))
+          dispatch(setClusters(authData.service_addresses))
         } else {
           navigate('/');
         }
@@ -53,7 +56,7 @@ const Login = () => {
     if (login.authType === 'register') {
       let email = document.getElementById('email').value;
       postBody.email = email;
-      if (login.username === '') {
+      if (login.username == '') {
         postBody.username = email.split('@')[0];
       }
     }
@@ -70,8 +73,8 @@ const Login = () => {
         if (response.status === 200) {
           if (login.authType === 'login') {
             dispatch(setClusters(loginData.service_addresses));
-            dispatch(setAuthInfo(loginData));
           }
+          dispatch(setAuthInfo(loginData));
           dispatch(setIsLoggedIn(true));
           navigate('/dashboard');
         } else if (response.status === 400) {

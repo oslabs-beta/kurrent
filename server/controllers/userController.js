@@ -1,16 +1,16 @@
 const pool = require('../db');
 const bcrypt = require('bcrypt');
-const sessionController = require('./sessionController');
 
 // login new user, save user data to db, start new session, set cookies
 const registerUser = async (req, res, next) => {
   const { username, password, email } = req.body;
-
+  console.log(req.body)
+  res.locals.username = req.body.username;
   try {
     // Check if the username already exists
-    const usernameExists = await checkIfUsernameExists(username);
+    const usernameExists = await checkIfUsernameExists(username, email);
     if (usernameExists) {
-      return res.status(400).json({ error: 'Username already exists' });
+      return res.status(400).json({ error: 'Username or email already exists' });
     }
 
     // Hash the password before storing it in the database
@@ -18,24 +18,12 @@ const registerUser = async (req, res, next) => {
 
     // Insert the new user into the users table with the hashed password
     const userId = await createUser(username, hashedPassword, email);
+    res.locals.userId = userId
 
-    // Create a session for the new user
-    const sessionData = {
-      id: userId,
-      username: username,
-      sessionToken: sessionController.generateSessionToken(),
-    };
-
-    // Start the session using the sessionController
-    sessionController.startSession(req, sessionData);
-
-    // Set the SSID (Session ID) cookie
-    sessionController.setSSIDCookie(res, sessionData.sessionToken);
-
-    res.status(200).json({ user_id: userId, username: username });
+    return next();
   } catch (error) {
     return next({
-      log: 'Error in userController.registerUser middleware',
+      log: 'Error in userController.registerUser middleware: ' + error,
       status: 500,
       message: 'An error occurred during user registration.',
     });
@@ -43,9 +31,9 @@ const registerUser = async (req, res, next) => {
 };
 
 // check if username already in DB
-async function checkIfUsernameExists(username) {
-  const userCheckQuery = 'SELECT * FROM users WHERE username = $1';
-  const userCheckResult = await pool.query(userCheckQuery, [username]);
+async function checkIfUsernameExists(username, email) {
+  const userCheckQuery = 'SELECT * FROM users WHERE username = $1 OR email = $2';
+  const userCheckResult = await pool.query(userCheckQuery, [username, email]);
   return userCheckResult.rows.length > 0;
 }
 
@@ -70,72 +58,34 @@ async function createUser(username, hashedPassword, email) {
 // login existing user, set new session in db, set cookie
 const loginUser = async (req, res, next) => {
   const { username, password } = req.body;
-
+  res.locals.username = username;
   try {
     // Check if the user exists in the database
     const user = await getUserByCredential(username.toLowerCase());
     if (!user) {
-      return res.status(401).json({ error: 'Invalid username or password' });
+      return next({
+        log: 'Incorrect credentials attempted for login',
+        status: 401,
+        message: 'Incorrect username or password'
+      })
     }
 
     // Verify the password against the hashed password in the database
     const isPasswordValid = await verifyPassword(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid username or password' });
+      return next({
+        log: 'Incorrect credentials attempted for login',
+        status: 401,
+        message: 'Incorrect username or password'
+      })
     }
 
-    // Check if the user has an active session
-    const activeSession = await sessionController.getActiveSession(
-      user.user_id
-    );
+    // Save service_addresses from the user's record
+    const serviceAddresses = user.serviceAddresses || []
+    res.locals.serviceAddresses = serviceAddresses;
+    res.locals.userId = user.user_id
 
-    // Create a session for the new user
-    if (activeSession) {
-      const sessionData = {
-        id: user.user_id,
-        username: user.username,
-        sessionToken: activeSession.session_token,
-      };
-
-      // Start the session using the sessionController
-      await sessionController.startSession(req, sessionData);
-
-      // Fetch service_addresses from the user's record using a helper function
-      const serviceAddresses = await fetchServiceAddresses(user.user_id);
-
-      return res.status(200).json({
-        user_id: user.user_id,
-        username: user.username,
-        session_token: activeSession.session_token,
-        service_addresses: serviceAddresses,
-      });
-    }
-
-    // If there is no active session, generate a new one
-    const sessionToken = sessionController.generateSessionToken();
-
-    // Create a session for the new user
-    const sessionData = {
-      id: user.user_id,
-      username: user.username,
-      sessionToken: sessionToken,
-    };
-
-    // Start the session using the sessionController
-    await sessionController.startSession(req, sessionData);
-
-    // Set the SSID (Session ID) cookie using the sessionController
-    sessionController.setSSIDCookie(res, sessionData.sessionToken);
-
-    // Fetch service_addresses from the user's record
-    const serviceAddresses = await fetchServiceAddresses(user.user_id);
-
-    return res.status(200).json({
-      user_id: user.user_id,
-      username: user.username,
-      session_token: sessionToken,
-      service_addresses: serviceAddresses,
-    });
+    return next();
   } catch (error) {
     console.error('Error in userController.loginUser middleware:', error);
     return next({
@@ -146,13 +96,6 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-// Helper function to fetch service_addresses from the user's record
-async function fetchServiceAddresses(userId) {
-  const getUserServiceAddressesQuery =
-    'SELECT service_addresses FROM users WHERE user_id = $1';
-  const result = await pool.query(getUserServiceAddressesQuery, [userId]);
-  return result.rows[0].service_addresses || [];
-}
 // Helper function to get user by username or email
 async function getUserByCredential(credential) {
   const getUserQuery =
@@ -177,7 +120,7 @@ const updateServiceAddresses = async (req, res, next) => {
   const { service_addresses } = req.body;
   try {
     // check if user is logged in
-    if (!req.session.user || !req.session.user.id) {
+    if (!req.cookies.ssid) {
       return res.status(401).json({ error: 'You must be logged in...' });
     }
 
@@ -197,9 +140,11 @@ const updateServiceAddresses = async (req, res, next) => {
         JSON.stringify(existingAddress) === JSON.stringify(service_addresses)
     );
     if (duplicates) {
-      return res
-        .status(400)
-        .json({ error: 'Duplicate service addresses found' });
+      return next({
+        log: 'Error in userController.updateServiceAddress middleware: address already exists.',
+        status: 400,
+        message: 'This service address already exists.',
+      });
     }
 
     // Normalize the format of the incoming service_addresses
@@ -236,7 +181,7 @@ const logout = (req, res, next) => {
       // Clear the SSID (Session ID) cookie in the response
       res.clearCookie('ssid');
 
-      res.status(200).json({ message: 'User logged out' });
+      return next();
     });
   } else {
     // If no session token is found
@@ -244,7 +189,7 @@ const logout = (req, res, next) => {
   }
 };
 
-// delete session from db
+// delete session from session db
 const deleteSessionEntry = (sessionToken, callback) => {
   // check valid sessionToken passed
   if (!sessionToken) {

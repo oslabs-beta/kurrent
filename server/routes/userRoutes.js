@@ -1,33 +1,58 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
+const sessionController = require('../controllers/sessionController');
 
 // login and save new user to db
-router.post('/register', (req, res, next) => {
-  console.log('Entering register route...');
-  userController.registerUser(req, res, next);
-  console.log('Exiting register route...');
-});
+router.post(
+  '/register',
+  userController.registerUser,
+  sessionController.startSession,
+  sessionController.setSSIDCookie,
+  (req, res) => {
+    return res
+      .status(200)
+      .json({ user_id: res.locals.userId, username: res.locals.username });
+  }
+);
 
 // login existing user
-router.post('/login', (req, res, next) => {
-  console.log('Entering login route...');
-  userController.loginUser(req, res, next);
-  console.log('Exiting login route...');
-});
+router.post(
+  '/login',
+  userController.loginUser,
+  sessionController.startSession,
+  sessionController.setSSIDCookie,
+  (req, res) => {
+    return res.status(200).json({
+      user_id: res.locals.user_id,
+      username: res.locals.username,
+      session_token: res.locals.session_token,
+      service_addresses: res.locals.serviceAddresses,
+    });
+  }
+);
 
 // update users prometheus server addresses in DB
-router.patch('/update-service-addresses/:username', (req, res, next) => {
-  console.log('Entering update service addresses route...');
-  userController.updateServiceAddresses(req, res, next);
-  console.log('Entering update service addresses route...');
+router.patch(
+  '/update-service-addresses/:username',
+  userController.updateServiceAddresses,
+  (req, res) => {return res.status(200)}
+);
+
+router.get('/', sessionController.verifySession, (req, res) => {
+  return res
+    .status(200)
+    .json({
+      username: res.locals.username,
+      service_addresses: res.locals.serviceAddresses,
+      email: res.locals.email,
+    });
 });
 
 // logout user, remove current session from DB
-router.get('/logout', (req, res, next) => {
-  console.log('Entering logout route...');
-  userController.logout(req, res, next);
-  console.log('Exiting logout route...');
-});
+router.get('/logout', userController.logout, (req, res) => {
+  return res.status(200).json({msg: 'Successfully logged out'})
+}
+);
 
 module.exports = router;

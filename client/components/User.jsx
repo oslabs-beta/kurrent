@@ -13,39 +13,31 @@ const User = () => {
   const clusters = useSelector((state) => state.dashboard.clusters);
   const adding = useSelector((state) => state.dashboard.addingCluster);
   const [isValid, setIsValid] = useState(false);
-  // useEffect(() => {
-  //   const clusterFetch = async () => {
-  //     const response = await fetch(`/users/service-address${username}`);
-  //     if (response.status === 200) {
-  //       const savedPorts = await response.json();
-  //       dispatch(setClusters(savedPorts));
-  //     }
-  //   };
-  //   clusterFetch();
-  // }, []);
 
   const handleFromSubmit = async (e) => {
     e.preventDefault();
     const service_addresses = e.target.portNum.value;
-    try {
-      const response = await fetch(
-        `/users/update-service-addresses/${username}`,
-        {
-          method: 'PATCH',
-          body: JSON.stringify({
-            service_addresses,
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
+    if (!clusters.includes(service_addresses)) {
+      try {
+        const response = await fetch(
+          `/users/update-service-addresses/${username}`,
+          {
+            method: 'PATCH',
+            body: JSON.stringify({
+              service_addresses,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        if (response.status === 200) {
+          dispatch(setAddCluster(false));
+          dispatch(setClusters([...clusters, service_addresses]));
         }
-      );
-      if (response.status === 200) {
-        dispatch(setAddCluster(false));
-        dispatch(setClusters([...clusters, service_addresses]));
+      } catch (err) {
+        console.error('Error during port addition: ', err);
       }
-    } catch (err) {
-      console.error('Error during port addition: ', err);
     }
   };
 
