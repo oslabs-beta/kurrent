@@ -58,7 +58,7 @@ session_status VARCHAR(20) DEFAULT 'active')`
     - `npm run dev`
   - Once the application is running, navigate to localhost:8080, create an account, and connect your Prometheus server with its ip:port address
 
----
+## If you just want to test out our tool and don't have a running Kafka cluster, feel free to look at the provided Demo Kafka Broker directory and its readme for instructions on how to start up a local Kafka broker using Docker.
 
 ## Using Kurrent
 
