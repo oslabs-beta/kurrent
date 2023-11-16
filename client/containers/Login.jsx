@@ -27,6 +27,7 @@ const Login = () => {
     else dispatch(setPassMatch(false));
   };
   //checking for existing sessions to redirect users straight to the dashboard
+  //can set up conditional for checking if a cookie with name ssid exists before running the verifySession to reduce calls to the server
   useEffect(() => {
     async function verifySession() {
       try {
@@ -35,8 +36,8 @@ const Login = () => {
           dispatch(setIsLoggedIn(true));
           navigate('/dashboard');
           const authData = await response.json();
-          dispatch(setAuthInfo(authData))
-          dispatch(setClusters(authData.service_addresses))
+          dispatch(setAuthInfo(authData));
+          dispatch(setClusters(authData.service_addresses));
         } else {
           navigate('/');
         }
@@ -116,8 +117,9 @@ const Login = () => {
           </div>
         </nav>
         <div className='loginPageContainer' id='home'>
+          <h1 id='title'>Kurrent</h1>
           <div className='login-container'>
-            <h1 id='titlePage'>Kurrent</h1>
+            {/* <h1 id='titlePage'>Log in</h1> */}
             <form action='' className='submit-form'>
               <input
                 type='text'
@@ -288,7 +290,7 @@ const Login = () => {
               <div className='memberInfo'>
                 <h3 className='memberName'>Swarna Muralidharan</h3>
                 <a
-                  href='www.linkedin.com/in/swarna-muralidharan-52a57b29b'
+                  href='https://www.linkedin.com/in/swarna-muralidharan-52a57b29b'
                   className='socials'
                 >
                   <svg

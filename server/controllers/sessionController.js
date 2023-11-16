@@ -11,9 +11,9 @@ function generateSessionToken() {
 function setSSIDCookie(req, res, next) {
   try {
     res.cookie('ssid', res.locals.sessionToken, {
+      secure: true,
       httpOnly: true,
-      sameSite: 'strict',
-      secure: false,
+      sameSite: 'None',
     });
     return next();
   } catch (error) {
