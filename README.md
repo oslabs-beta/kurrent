@@ -64,7 +64,7 @@ If you're interested in the containerized version of Kurrent, it does exist!
 
 - In your terminal, type
   - `docker pull kurrentio/kurrent:latest`
-- An imgae of Kurrent will be installed onto your machine! From there, you can bypass the signup portion of the next section.
+- An image of Kurrent will be installed onto your machine! From there, you can bypass the signup portion of the next section.
   - Keep in mind, your containerized image of Kurrent may not be able to access localhost. To alleviate this, when adding your ports on the client side of the Kurrent image you can use `machine-ip-address:port`, and replace the ip and port address to your prometheus configured endpoints.
   - Contributions to the Docker branch of Kurrent are also greatly welcomed.
 
