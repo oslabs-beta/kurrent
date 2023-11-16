@@ -1,6 +1,5 @@
 // __tests__/userController.test.js
 
-
 const userController = require('../server/controllers/userController');
 const db = require('../server/db');
 

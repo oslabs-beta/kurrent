@@ -14,7 +14,6 @@ const registerUser = async (req, res, next) => {
 
     // Hash the password before storing it in the database
     const hashedPassword = await hashPassword(password);
-    console.log('Hashed Password:', hashedPassword);
     // Insert the new user into the users table with the hashed password
     const userId = await createUser(username, hashedPassword, email);
     res.locals.userId = userId

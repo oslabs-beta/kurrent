@@ -14,6 +14,9 @@
     "testEnvironment": "node",
     "transform": {
       "^.+\\.js$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "pg": "<rootDir>/__tests__/__mocks__/pg.js"
     }
   },
   "devDependencies": {
