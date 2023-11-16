@@ -105,7 +105,7 @@ const Metrics = () => {
       } catch (error) {
         console.error('Error fetching metrics:', error);
       }
-    }, 500);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, [currentCluster]);

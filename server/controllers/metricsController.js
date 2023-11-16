@@ -1,3 +1,5 @@
+const fetch = require('node-fetch-commonjs')
+
 const metricsController = {
   
   async getAllMetrics(req, res, next) {
