@@ -1,58 +1,66 @@
+const webpack = require('webpack');
 const path = require('path');
-const HtmlWebPackPlugin = require('html-webpack-plugin');
-const htmlPlugin = new HtmlWebPackPlugin({
-  template: './client/index.html',
-  filename: './index.html',
-});
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 module.exports = {
-  entry: './client/index.js',
-  devServer: {
-    host: '0.0.0.0',
-    port: 8080,
-    hot: true,
-    historyApiFallback: true,
-    static: {
-      directory: path.resolve(__dirname, 'dist'),
-      publicPath: '/',
-    },
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    proxy: {
-      '/**': {
-        target: 'http://localhost:3000/',
-      },
-    },
-  },
+  entry: [
+    // entry point of our app
+    './client/index.js',
+  ],
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/',
     filename: 'bundle.js',
   },
-  mode: process.env.NODE_ENV,
+  devtool: 'eval-source-map',
+  mode: 'development',
+  devServer: {
+    // Required for Docker to work with dev server
+    host: '0.0.0.0',
+    //host: localhost,
+    port: 8080,
+    //enable HMR on the devServer
+    hot: true,
+    // fallback to root for other urls
+    historyApiFallback: true,
+
+    static: {
+      // match the output path
+      directory: path.resolve(__dirname, 'dist'),
+      //match the output 'publicPath'
+      publicPath: '/',
+    },
+
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    // proxy is required in order to make api calls to express server while using hot-reload webpack server
+    // routes api fetch requests from localhost:8080/api/* (webpack dev server) to localhost:3000/api/* (where our Express server is running)
+    proxy: {
+      '/**': {
+        target: 'http://localhost:3000/',
+        secure: false,
+      },
+    },
+  },
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env', '@babel/preset-react'],
-          },
         },
       },
       {
-        test: /\.s[ac]ss$/i,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
-      },
-      {
-        test: /\.css$/,
+        test: /.(css|scss)$/,
+        exclude: /node_modules/,
         use: ['style-loader', 'css-loader'],
-      },
-      {
-        test: /\.(png|svg|jpg|jpeg|gif)$/i,
-        type: 'asset/resource',
       },
     ],
   },
-  plugins: [htmlPlugin],
+  plugins: [
+    new HtmlWebpackPlugin({
+      favicon: path.resolve(__dirname, './client/assets/otter.ico'),
+      template: './client/index.html',
+    }),
+  ],
 };

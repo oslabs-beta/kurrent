@@ -31,9 +31,7 @@ app.use(
 app.use('/metrics', metricsRoutes);
 
 // serve index.html
-app.use('/', (req, res) => {
-  return res.sendFile(path.resolve(__dirname, '../client/index.html'));
-});
+app.use(express.static(path.join(__dirname, '../dist/')));
 
 // global error handler
 app.use((err, req, res, next) => {

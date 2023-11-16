@@ -1,10 +1,8 @@
-//Custom Colors:
 $lightWhite: #f6f6ee;
 $darkBlue: #252d98;
 $medDarkBlue: #4e5fba;
 $lightDarkBlue: #7791dc;
 $lightBlue: #a0c3ff;
-//setting margin, padding, fonts, background gradients, and scrolling behavior for the general page
 html,
 body {
   margin: 0;
@@ -14,11 +12,9 @@ body {
   scroll-behavior: smooth;
   height: 100vh;
 }
-//applying the font to all buttons
 button {
   font-family: 'Comfortaa', sans-serif;
 }
-//Main page nav styling
 #mainNav {
   display: flex;
   justify-content: space-between;
@@ -29,7 +25,6 @@ button {
   margin-bottom: 0.5%;
   box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.35);
 }
-//Sign out button in nav styling
 #signOut {
   display: flex;
   justify-content: center;
@@ -51,7 +46,6 @@ button {
   background-color: white;
 }
 
-//Splitting the User section, cluster selection section, and metrics section
 .user-info {
   grid-area: menu;
   max-width: 15rem;
@@ -75,14 +69,12 @@ button {
   height: 100%;
 }
 
-//Cluster view container styling
 #clusterButtonContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0;
 }
-//Cluster buttons styling
 #clusterButtons {
   height: 3rem;
   width: 100%;
@@ -109,7 +101,6 @@ button {
 #clusterButtons:disabled {
   background-color: #a0c3ff;
 }
-//User add port disabled styling
 #add-port:disabled {
   background-color: #a0c3ffaa;
   box-shadow: none;
@@ -119,7 +110,6 @@ button {
   box-shadow: none;
   cursor: default;
 }
-//Metrics display styling
 .metrics {
   display: grid;
   grid-template-columns: 50% 50%;
@@ -139,7 +129,6 @@ button {
   border-radius: 24px;
   box-shadow: 1px 1px 5px black;
 }
-//h3 "Metrics" styling
 h3 {
   margin: 5px;
   font-size: 2rem;
@@ -150,7 +139,6 @@ h3 {
   justify-content: center;
   font-weight: 200;
 }
-//username for cluster in Users
 #clusterUserName {
   color: $lightWhite;
   text-shadow: 1px 1px 2px black, 0 0 1em $lightDarkBlue, 0 0 0.1em black;
@@ -160,7 +148,6 @@ h3 {
   justify-content: center;
   margin: 3%;
 }
-//Add a cluster button in User section
 #addCluster {
   height: 5vh;
   width: 100%;
@@ -187,7 +174,6 @@ h3 {
 #addCluster:active {
   background-color: rgba(246, 246, 238, 0.92);
 }
-//Port input form styling
 .port {
   display: flex;
   align-items: center;
@@ -206,7 +192,6 @@ label {
   font-size: 1.4rem;
   margin: 5px;
 }
-//Add port and cancel port styling
 #add-port {
   height: 10%;
   width: 40%;
@@ -252,7 +237,6 @@ label {
   border: none;
   padding: 5px;
 }
-//Button representing saved port styling
 .savedClusterBtn {
   width: 100%;
   height: auto;
@@ -280,8 +264,10 @@ label {
   border: none;
   background-color: rgba(246, 246, 238, 0.9);
 }
-//Image used in navbar styling
 .nav-logo {
   height: 100%;
   width: auto;
+}
+body {
+  background-color: #7791dc;
 }
