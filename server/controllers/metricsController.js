@@ -1,5 +1,4 @@
 const metricsController = {
-  
   async getAllMetrics(req, res, next) {
     // get prometheus address from the request query
     const { promAddress } = req.query;
@@ -10,7 +9,6 @@ const metricsController = {
       [ip, port] = promAddress.split(':');
       let validIP = (validPort = false);
       if (ip === 'localhost') {
-        console.log('local');
         validIP = true;
       } else if (
         /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
@@ -97,9 +95,9 @@ const metricsController = {
       // Returned Object - each value is a single number value
       res.locals.metrics = {
         cpu: cpu.data.result[0].value[1],
-        bytesIn: bytesIn.data.result[0].value[1],
-        bytesOut: bytesOut.data.result[0].value[1],
-        ramUsage: ramUsage.data.result[0].value[1],
+        bytesIn: bytesIn.data.result[0].value[1] / 1000,
+        bytesOut: bytesOut.data.result[0].value[1] / 1000,
+        ramUsage: ramUsage.data.result[0].value[1] / 1000000,
         latency: latency.data.result[0].value[1],
         prodReqTotal: prodReqTotal.data.result[0].value[1],
         prodMessInTotal: prodMessInTotal.data.result[0].value[1],
