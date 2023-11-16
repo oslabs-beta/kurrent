@@ -1,6 +1,6 @@
 # General
 .DS_Store
-
+prometheus/
 # dependencies
 node_modules/
 
@@ -22,3 +22,6 @@ coverage/
 
 # env file
 .env
+
+# prometheus folder
+prometheus/

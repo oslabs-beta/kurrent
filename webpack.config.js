@@ -14,16 +14,8 @@ module.exports = {
       publicPath: '/',
     },
     proxy: {
-      '/home/**': {
+      '/**': {
         target: 'http://localhost:3000/',
-      },
-      '/database/**': {
-        target: 'http://localhost:3000/',
-        secure: false,
-      },
-      '/verifySession/**': {
-        target: 'http://localhost:3000/',
-        secure: false,
       },
     },
   },
@@ -52,6 +44,10 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
       },
     ],
   },
