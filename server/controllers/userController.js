@@ -4,21 +4,21 @@ const bcrypt = require('bcrypt');
 // login new user, save user data to db, start new session, set cookies
 const registerUser = async (req, res, next) => {
   const { username, password, email } = req.body;
-  console.log(req.body)
   res.locals.username = req.body.username;
   try {
     // Check if the username already exists
     const usernameExists = await checkIfUsernameExists(username, email);
     if (usernameExists) {
-      return res.status(400).json({ error: 'Username or email already exists' });
+      return res
+        .status(400)
+        .json({ error: 'Username or email already exists' });
     }
 
     // Hash the password before storing it in the database
     const hashedPassword = await hashPassword(password);
-
     // Insert the new user into the users table with the hashed password
     const userId = await createUser(username, hashedPassword, email);
-    res.locals.userId = userId
+    res.locals.userId = userId;
 
     return next();
   } catch (error) {
@@ -32,7 +32,8 @@ const registerUser = async (req, res, next) => {
 
 // check if username already in DB
 async function checkIfUsernameExists(username, email) {
-  const userCheckQuery = 'SELECT * FROM users WHERE username = $1 OR email = $2';
+  const userCheckQuery =
+    'SELECT * FROM users WHERE username = $1 OR email = $2';
   const userCheckResult = await pool.query(userCheckQuery, [username, email]);
   return userCheckResult.rows.length > 0;
 }
@@ -66,8 +67,8 @@ const loginUser = async (req, res, next) => {
       return next({
         log: 'Incorrect credentials attempted for login',
         status: 401,
-        message: 'Incorrect username or password'
-      })
+        message: 'Incorrect username or password',
+      });
     }
 
     // Verify the password against the hashed password in the database
@@ -76,14 +77,14 @@ const loginUser = async (req, res, next) => {
       return next({
         log: 'Incorrect credentials attempted for login',
         status: 401,
-        message: 'Incorrect username or password'
-      })
+        message: 'Incorrect username or password',
+      });
     }
 
     // Save service_addresses from the user's record
-    const serviceAddresses = user.service_addresses || []
+    const serviceAddresses = user.service_addresses || [];
     res.locals.serviceAddresses = serviceAddresses;
-    res.locals.userId = user.user_id
+    res.locals.userId = user.user_id;
 
     return next();
   } catch (error) {
@@ -209,4 +210,13 @@ const deleteSessionEntry = (sessionToken, callback) => {
   });
 };
 
-module.exports = { registerUser, loginUser, updateServiceAddresses, logout };
+module.exports = {
+  registerUser,
+  loginUser,
+  updateServiceAddresses,
+  logout,
+  getUserByCredential,
+  checkIfUsernameExists,
+  hashPassword,
+  createUser,
+};

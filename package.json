@@ -9,6 +9,13 @@
     "dev": "concurrently \"nodemon server/server.js\" \"NODE_ENV=development webpack serve --open\"",
     "test": "jest --verbose"
   },
+  "jest": {
+    "testMatch": ["**/__tests__/**/*.js", "**/?(*.)+(spec|test).js"],
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.23.0",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
