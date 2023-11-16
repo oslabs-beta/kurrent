@@ -30,8 +30,8 @@ describe('setSSIDCookie', () => {
 
     expect(res.cookie).toHaveBeenCalledWith('ssid', 'a1b2c3d4e5f6', {
       httpOnly: true,
-      sameSite: 'strict',
-      secure: false,
+      sameSite: 'None',
+      secure: true,
     });
     expect(next).toHaveBeenCalled();
     expect(middleware).toBeUndefined();
