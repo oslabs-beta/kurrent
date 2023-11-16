@@ -324,7 +324,7 @@ body {
 //Demo gif styling
 #metricsGif {
   height: auto;
-  width: 100%;
+  width: 80%;
 }
 //LinkedIn and Github styling
 svg {
@@ -341,18 +341,32 @@ svg:active {
 }
 //Github url in the ABOUT section
 #Github {
+  color: $lightWhite;
+  font-size: 2rem;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 5px;
+}
+#Github:hover {
+  animation: shadowFade 100ms ease forwards;
+}
+.link-container {
   display: flex;
   justify-content: center;
-  margin: 0;
-  color: $lightWhite;
-  margin-bottom: 0;
+  margin: 2%;
 }
-
 //about section text styling
 h4 {
   color: $lightWhite;
   font-size: large;
-  font-weight: 500;
+  font-weight: 400;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 24px;
+  padding: 1%;
+  margin: 1%;
+  border: 1px solid;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.6);
 }
 .aboutPTag {
   color: $lightWhite;
@@ -399,4 +413,68 @@ h4 {
   to {
     opacity: 1;
   }
+}
+@keyframes shadowFade {
+  from {
+    text-shadow: none;
+  }
+  to {
+    text-shadow: 1px 1px 10px black;
+  }
+}
+@media screen and (max-width: 800px) {
+  #loginNav {
+    width: 100%;
+  }
+  .loginNavRef {
+    width: 90vw;
+  }
+  .aboutTitle {
+    padding-top: 10%;
+    width: 100%;
+    font-size: 2.5rem;
+    margin-bottom: 2%;
+  }
+  #Github {
+    margin-bottom: 2%;
+  }
+  .demoSpan {
+    display: flex;
+  }
+  .teamHeader {
+    padding-top: 10%;
+  }
+}
+
+//About summary text
+.aboutSum {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.aboutSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+ul {
+  list-style: inside;
+  margin: 0;
+}
+li {
+  color: $lightWhite;
+  margin: 1%;
+  font-weight: 100;
+  text-wrap: wrap;
+}
+.topLi {
+  margin-top: 0;
+}
+.metricSpan {
+  width: 100%;
+}
+hr {
+  margin: auto;
+  width: 95%;
+  margin-top: 1%;
 }

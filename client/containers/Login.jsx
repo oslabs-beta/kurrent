@@ -163,32 +163,52 @@ const Login = () => {
           <span className='aboutSpan'>
             <h1 className='aboutTitle'>About Kurrent</h1>
           </span>
-          <a id='Github' href='https://github.com/oslabs-beta/kurrent'>
-            Check out our GitHub!
-          </a>
-          <span className='demoSpan'>
-            <div className='aboutText'>
-              <h4>
-                Kurrent is an open-source project providing real-time Apache
-                Kafka metrics data monitoring. Our tool is dedicated to
-                providing developers an easy and intuitive means for monitoring
-                the health and throughput of their Kafta cluster.
-              </h4>
-              <hr />
-              <p className='aboutPTag'>
-                Simply create an account, add and select your port number, and
-                tab between the different display metrics.
-              </p>
-              <hr />
-              <img src={savingPortGif} alt='' />
-            </div>
-            <div className='aboutImg'>
+          <div className='aboutSum'>
+            <h4>
+              Kurrent is an open-source project providing real-time Apache Kafka
+              metrics data monitoring. Our tool is dedicated to providing
+              developers an easy and intuitive means for monitoring the health
+              and throughput of their Kafka cluster.
+            </h4>
+          </div>
+          <ul>
+            <li className='topLi'>
+              User profile: Sign up and login to your profile to store your
+              Prometheus server connections for easy navigation between all your
+              Kafka instances.
+            </li>
+            <li>
+              Real-Time Metrics: View your metrics in real-time with Kurrents
+              intuitive dashboard charts to monitor the ongoing health of your
+              cluster through testing or real-time use.
+            </li>
+            <li>
+              Prometheus Integration: Kurrent provides a sample Prometheus yaml
+              to make it easy to setup your Kafka clusters for metrics
+              monitoring
+            </li>
+          </ul>
+          <div class='link-container'>
+            <a id='Github' href='https://github.com/oslabs-beta/kurrent'>
+              Check out our GitHub!
+            </a>
+          </div>
+          <hr />
+          <div className='aboutSection'>
+            <p className='aboutPTag'>
+              Simply create an account, add and select your port number, and tab
+              between the different display metrics.
+            </p>
+            <img src={savingPortGif} alt='' />
+          </div>
+          <hr />
+          <span className='metricSpan'>
+            <div className='aboutSection'>
               <h4>
                 Real-Time Metrics: View your metrics in real-time with Kurrents
                 intuitive dashboard charts to monitor the ongoing health of your
                 cluster through testing or real-time use.
               </h4>
-              <hr />
               <img
                 src={metricsDemoGif}
                 alt='metrics demo gif'
