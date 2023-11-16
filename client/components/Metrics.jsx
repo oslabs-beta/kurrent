@@ -80,23 +80,6 @@ const Metrics = () => {
   const dispatch = useDispatch();
   //Update state every 500ms to display new metrics
   useEffect(() => {
-    //   const interval = setInterval(() => {
-    //     dispatch(
-    //       setData({
-    //         bytesIn: Math.floor(Math.random() * 100) + 1,
-    //         bytesOut: Math.floor(Math.random() * 100) + 1,
-    //         cpu: Math.floor(Math.random() * 100) + 1,
-    //         ram: Math.floor(Math.random() * 100) + 1,
-    //         totReqPro: Math.floor(Math.random() * 100) + 1,
-    //         totMsg: Math.floor(Math.random() * 100) + 1,
-    //         totReqCon: Math.floor(Math.random() * 100) + 1,
-    //         totFails: Math.floor(Math.random() * 100) + 1,
-    //       })
-    //     );
-    //   }, 500);
-
-    //   return () => clearInterval(interval);
-    // }, [currentCluster]);
     if (!currentCluster.length) return;
     const interval = setInterval(async () => {
       try {
