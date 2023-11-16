@@ -58,6 +58,16 @@ session_status VARCHAR(20) DEFAULT 'active')`
     - `npm run dev`
   - Once the application is running, navigate to localhost:8080, create an account, and connect your Prometheus server with its ip:port address
 
+#
+
+If you're interested in the containerized version of Kurrent, it does exist!
+
+- In your terminal, type
+  - `docker pull kurrentio/kurrent:latest`
+- An imgae of Kurrent will be installed onto your machine! From there, you can bypass the signup portion of the next section.
+  - Keep in mind, your containerized image of Kurrent may not be able to access localhost. To alleviate this, when adding your ports on the client side of the Kurrent image you can use `machine-ip-address:port`, and replace the ip and port address to your prometheus configured endpoints.
+  - Contributions to the Docker branch of Kurrent are also greatly welcomed.
+
 ## If you just want to test out our tool and don't have a running Kafka cluster, feel free to look at the provided Demo Kafka Broker directory and its readme for instructions on how to start up a local Kafka broker using Docker.
 
 ## Using Kurrent
