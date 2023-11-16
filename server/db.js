@@ -1,4 +1,20 @@
 const { Pool } = require('pg');
+require('dotenv').config();
+
+const myURI = process.env.DB_URI ;  
+const pool = new Pool({ connectionString: myURI });
+
+// Attempt to connect to the database using the connection pool.
+pool
+  .connect()
+  .then(() => {
+      console.log('Database is connected');
+  })
+  .catch((error) => {
+    console.log('Database connection error: ', error);
+  });
+
+module.exports = pool;
 
 // use this query to create table
 // CREATE TABLE users (
@@ -8,9 +24,6 @@ const { Pool } = require('pg');
 //     password VARCHAR(255) NOT NULL,
 //     service_addresses text[][]
 // );
-const myURI =
-  'postgres://owpkxuij:RCy03blF6Cmvz4cUiYQFEUZujP8ublao@castor.db.elephantsql.com/owpkxuij';
-const pool = new Pool({ connectionString: myURI });
 
 // use this query to create sessions table
 // CREATE TABLE sessions (
@@ -20,15 +33,3 @@ const pool = new Pool({ connectionString: myURI });
 //   login_time timestamp,
 //   session_status VARCHAR(20) DEFAULT 'active'
 // );
-
-// Attempt to connect to the database using the connection pool.
-pool
-  .connect()
-  .then(() => {
-    console.log('Database is connected');
-  })
-  .catch((error) => {
-    console.log('Database connection error: ', error);
-  });
-
-module.exports = pool;

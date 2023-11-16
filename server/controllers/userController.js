@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt');
 // login new user, save user data to db, start new session, set cookies
 const registerUser = async (req, res, next) => {
   const { username, password, email } = req.body;
-  console.log(req.body)
   res.locals.username = req.body.username;
   try {
     // Check if the username already exists
@@ -15,7 +14,7 @@ const registerUser = async (req, res, next) => {
 
     // Hash the password before storing it in the database
     const hashedPassword = await hashPassword(password);
-
+    console.log('Hashed Password:', hashedPassword);
     // Insert the new user into the users table with the hashed password
     const userId = await createUser(username, hashedPassword, email);
     res.locals.userId = userId
@@ -209,4 +208,12 @@ const deleteSessionEntry = (sessionToken, callback) => {
   });
 };
 
-module.exports = { registerUser, loginUser, updateServiceAddresses, logout };
+module.exports = { 
+  registerUser, 
+  loginUser, 
+  updateServiceAddresses, 
+  logout, 
+  getUserByCredential , 
+  checkIfUsernameExists, 
+  hashPassword, 
+  createUser};
