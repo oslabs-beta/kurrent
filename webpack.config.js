@@ -7,23 +7,18 @@ const htmlPlugin = new HtmlWebPackPlugin({
 module.exports = {
   entry: './client/index.js',
   devServer: {
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 8080,
+    hot: true,
+    historyApiFallback: true,
     static: {
       directory: path.resolve(__dirname, 'dist'),
       publicPath: '/',
     },
+    headers: { 'Access-Control-Allow-Origin': '*' },
     proxy: {
-      '/home/**': {
+      '/**': {
         target: 'http://localhost:3000/',
-      },
-      '/database/**': {
-        target: 'http://localhost:3000/',
-        secure: false,
-      },
-      '/verifySession/**': {
-        target: 'http://localhost:3000/',
-        secure: false,
       },
     },
   },
@@ -32,7 +27,7 @@ module.exports = {
     publicPath: '/',
     filename: 'bundle.js',
   },
-  mode: 'development',
+  mode: process.env.NODE_ENV,
   module: {
     rules: [
       {
@@ -52,6 +47,10 @@ module.exports = {
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
       },
     ],
   },
