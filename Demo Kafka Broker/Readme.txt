@@ -14,6 +14,8 @@ To set up this kafka broker to run on your machine:
     - This builds and starts the kafka cluster
 
 3. Start the prometheus server
+    - download prometheus for your machine and move the un-zipped folder to the Demo Kafka Broker folder
+    - ensure your prometheus.yml matches the example provided in the top level directory of this repo
     - navigate to the prometheus folder
     - in the terminal type: ./prometheus --config.file=prometheus.yml
 
