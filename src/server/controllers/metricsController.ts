@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import path from 'path';
+import { Metric } from '../../types';
 
 type Controller = {
   getAllMetrics: RequestHandler;
@@ -41,57 +42,48 @@ export const metricsController: Controller = {
     // try block for fetching kafka metrics using promQL
     try {
       // CPU % metric
-      let cpu = await fetch(
+      const cpu: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(process_cpu_seconds_total[1m])) * 100`
-      );
-      cpu = await cpu.json();
+      ).then((res) => res.json());
 
       // bytes In Total metric
-      let bytesIn = await fetch(
+      const bytesIn: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(kafka_server_brokertopicmetrics_bytesin_total[1m]))`
-      );
-      bytesIn = await bytesIn.json();
+      ).then((res) => res.json());
 
       // bytes Out Total metric
-      let bytesOut = await fetch(
+      const bytesOut: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(kafka_server_brokertopicmetrics_bytesout_total[1m]))`
-      );
-      bytesOut = await bytesOut.json();
+      ).then((res) => res.json());
 
       // ram Usage metric
-      let ramUsage = await fetch(
+      const ramUsage: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(process_resident_memory_bytes[1m]))`
-      );
-      ramUsage = await ramUsage.json();
+      ).then((res) => res.json());
 
       // latency metric
-      let latency = await fetch(
+      const latency: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(kafka_network_requestmetrics_totaltimems{}[1m]) - rate(kafka_network_requestmetrics_localtimems{}[1m]))`
-      );
-      latency = await latency.json();
+      ).then((res) => res.json());
 
       // production Request Total metric
-      let prodReqTotal = await fetch(
+      const prodReqTotal: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_totalproducerequests_total[1m])`
-      );
-      prodReqTotal = await prodReqTotal.json();
+      ).then((res) => res.json());
 
-      // productioin Messages In Total
-      let prodMessInTotal = await fetch(
+      // production Messages In Total
+      const prodMessInTotal: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_messagesin_total[1m])`
-      );
-      prodMessInTotal = await prodMessInTotal.json();
+      ).then((res) => res.json());
 
       // consumer requests total
-      let consReqTot = await fetch(
+      const consReqTot: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_totalfetchrequests_total[1m])`
-      );
-      consReqTot = await consReqTot.json();
+      ).then((res) => res.json());
       // consumer failed request total
-      let consFailReqTotal = await fetch(
+      const consFailReqTotal: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_failedfetchrequests_total[1m])`
-      );
-      consFailReqTotal = await consFailReqTotal.json();
+      ).then((res) => res.json());
 
       // Returned Object - each value is a single number value
       res.locals.metrics = {
@@ -115,3 +107,5 @@ export const metricsController: Controller = {
     }
   },
 };
+
+export default metricsController;

@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction, RequestHandler, Router } from "express";
-import metricsController from "./controllers/metricsController";
+import metricsController from "../controllers/metricsController";
 
 const router: Router = express.Router();
 
