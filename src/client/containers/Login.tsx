@@ -49,15 +49,15 @@ const Login = () => {
   }, []);
 
   // Performs fetch request to user database to handle login/registration logic
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
     dispatch(setUserExists(''));
-    let username = document.getElementById('username').value;
-    let password = document.getElementById('password').value;
+    const username = (document.getElementById('username') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement).value;
     const loginEndpoint = `/users/${login.authType}`;
-    const postBody = { username, password };
+    const postBody = { username, password, email: null };
     if (login.authType === 'register') {
-      let email = document.getElementById('email').value;
+      const email = (document.getElementById('email') as HTMLInputElement).value;
       postBody.email = email;
       if (login.username == '') {
         postBody.username = email.split('@')[0];
@@ -120,7 +120,7 @@ const Login = () => {
           <h1 id='title'>Kurrent</h1>
           <div className='login-container'>
             {/* <h1 id='titlePage'>Log in</h1> */}
-            <form action='' className='submit-form'>
+            <form action='' className='submit-form' onSubmit={handleFormSubmit}>
               <input
                 type='text'
                 id='username'
@@ -140,7 +140,6 @@ const Login = () => {
                 id='login'
                 className='loginBtns'
                 type='submit'
-                onClick={handleFormSubmit}
               >
                 Login
               </button>
@@ -188,7 +187,7 @@ const Login = () => {
               monitoring
             </li>
           </ul>
-          <div class='link-container'>
+          <div className='link-container'>
             <a id='Github' href='https://github.com/oslabs-beta/kurrent'>
               Check out our GitHub!
             </a>

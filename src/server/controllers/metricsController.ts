@@ -16,7 +16,8 @@ export const metricsController: Controller = {
     const { promAddress } = req.query;
 
     // helper function to check the promAddress formatting
-    const formatIsCorrect = (promAddress): boolean => {
+    const formatIsCorrect = (promAddress?: string): boolean => {
+      if (!promAddress) return false;
       const [ip, port]: string[] = promAddress.split(':');
       let validIP: boolean = false,
         validPort: boolean = false;
@@ -31,7 +32,7 @@ export const metricsController: Controller = {
       if (port.length === 4 && /[0-9]/g.test(port)) validPort = true;
       return validIP && validPort;
     };
-    if (!formatIsCorrect(promAddress)) {
+    if (!formatIsCorrect(promAddress?.toString())) {
       return next({
         log: 'Error in getAllMetrics middleware: Improper address formatting',
         status: 400,

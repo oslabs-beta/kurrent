@@ -1,14 +1,14 @@
-import { Pool } from 'pg'
+import { Pool } from 'pg';
 require('dotenv').config();
 
-const myURI = process.env.DB_URI ;  
+const myURI = process.env.DB_URI;
 const pool = new Pool({ connectionString: myURI });
 
 // Attempt to connect to the database using the connection pool.
 pool
   .connect()
   .then(() => {
-      console.log('Database is connected');
+    console.log('Database is connected');
   })
   .catch((error) => {
     console.log('Database connection error: ', error);

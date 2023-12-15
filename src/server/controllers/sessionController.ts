@@ -66,11 +66,11 @@ export const sessionController: Controller = {
         ]);
       }
 
-      // Set the session for the user
-      req.session.user = {
-        id: res.locals.id,
-        username: res.locals.username,
-      };
+      // // Set the session for the user
+      // req.session.user = {
+      //   id: res.locals.id,
+      //   username: res.locals.username,
+      // };
       return next();
     } catch (error) {
       // Handle specific error cases and provide meaningful error messages
