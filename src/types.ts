@@ -6,6 +6,6 @@ export type ServerError = {
 
 export type Metric = {
   data: {
-    result: [{}]
-  }
+    result: [{ value: number[] }];
+  };
 };
