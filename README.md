@@ -4,7 +4,7 @@ Apache Kafka cluster metrics visualizer
 
 ### Kurrent is an open-source project providing real-time Apache Kafka metrics data monitoring. Our tool is dedicated to providing developers an easy and intuitive means for monitoring the health and throughput of their Kafka cluster.
 
----
+## ![logo](/client/assets/kurrentBG2.png)
 
 # Features
 
@@ -58,6 +58,16 @@ session_status VARCHAR(20) DEFAULT 'active')`
     - `npm run dev`
   - Once the application is running, navigate to localhost:8080, create an account, and connect your Prometheus server with its ip:port address
 
+#
+
+If you're interested in the containerized version of Kurrent, it does exist!
+
+- In your terminal, type
+  - `docker pull kurrentio/kurrent:latest`
+- An image of Kurrent will be installed onto your machine! From there, you can bypass the signup portion of the next section.
+  - Keep in mind, your containerized image of Kurrent may not be able to access localhost. To alleviate this, when adding your ports on the client side of the Kurrent image you can use `machine-ip-address:port`, and replace the ip and port address to your prometheus configured endpoints.
+  - Contributions to the Docker branch of Kurrent are also greatly welcomed.
+
 ## If you just want to test out our tool and don't have a running Kafka cluster, feel free to look at the provided Demo Kafka Broker directory and its readme for instructions on how to start up a local Kafka broker using Docker.
 
 ## Using Kurrent
@@ -104,20 +114,20 @@ If you'd like to contribute to the project and improve its current functionality
       <br />
       <sub><b>Jensen Schmidt</b></sub>
       <br />
-      <a href="">Linkedin</a> |
-      <a href="">GitHub</a>
+      <a href="https://www.linkedin.com/in/jensen-schmidt/">Linkedin</a> |
+      <a href="https://github.com/jensenrs">GitHub</a>
     </td> <td align="center">
       <br />
       <sub><b>Michael Newbold</b></sub>
       <br />
-      <a href="">Linkedin</a> |
-      <a href="">GitHub</a>
+      <a href="https://www.linkedin.com/in/mjnewbold/">Linkedin</a> |
+      <a href="https://github.com/MichaelNewbold">GitHub</a>
     </td> <td align="center">
       <br />
       <sub><b>Swarna Muralidharan</b></sub>
       <br />
-      <a href="">Linkedin</a> |
-      <a href="">GitHub</a>
+      <a href="https://www.linkedin.com/in/swarna-muralidharan-52a57b29b">Linkedin</a> |
+      <a href="https://github.com/swarna2072">GitHub</a>
     </td>     
   </tr>
 </table>
