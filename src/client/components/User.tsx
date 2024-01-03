@@ -1,23 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
   setAddCluster,
   setClusters,
   setCurrentCluster,
-} from '../reducers/dashReducer.js';
+} from '../reducers/dashReducer';
+import { StateStoreType } from '../../types';
 
 const User = () => {
   const dispatch = useDispatch();
-  const username = useSelector((state) => state.login.username);
-  const clusters = useSelector((state) => state.dashboard.clusters);
-  const adding = useSelector((state) => state.dashboard.addingCluster);
+  const username = useSelector((state: StateStoreType) => state.login.username);
+  const clusters = useSelector((state: StateStoreType) => state.dashboard.clusters);
+  const adding = useSelector((state: StateStoreType) => state.dashboard.addingCluster);
   const [isValid, setIsValid] = useState(false);
 
   //handleFromSubmit function is used to send a patch request to the backend for when a user adds a new port for viewing
-  const handleFromSubmit = async (e) => {
+  const handleFromSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const service_addresses = e.target.portNum.value;
+    const service_addresses: string = e.currentTarget.portNum.value;
     if (!clusters.includes(service_addresses)) {
       try {
         const response = await fetch(
@@ -43,7 +44,7 @@ const User = () => {
   };
 
   //Loop through clusters array and render any existing ports to the page
-  const clusterButtons = [];
+  const clusterButtons: ReactElement[] = [];
   if (Array.isArray(clusters)) {
     clusters.forEach((cluster, idx) => {
       clusterButtons.push(
@@ -60,14 +61,14 @@ const User = () => {
     });
   }
   //On input change, update setIsValid to check if the port input matches the allowed format
-  const handleInputChange = (e) => {
-    setIsValid(formatIsCorrect(e.target.value));
+  const handleInputChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setIsValid(formatIsCorrect(e.currentTarget.value));
   };
 
   //Checks the adding cluster input form and only enables the 'add' button until the input form matches our allowed configuration.
-  function formatIsCorrect(e) {
+  const formatIsCorrect = (str: string) => {
     let ip, port;
-    [ip, port] = e.split(':');
+    [ip, port] = str.split(':');
     let validIP = false,
       validPort = false;
 

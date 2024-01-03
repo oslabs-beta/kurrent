@@ -1,15 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { LineStateType } from '../../types';
 //Creating a queue to handle the metrics flow
-const createQueue = (size = 30) => ({
-  items: Array(size).fill(0),
-  size,
-});
+const createQueue = (size = 30): number[] => {
+  return Array(size).fill(0);
+};
 //Enqueue helper function which will push new metric values onto the queue and if the queue size is greater than 30, we will shift the first item in our queue
-const enqueue = (queue, value) => {
-  queue.items.push(value);
-  if (queue.items.length > queue.size) {
-    queue.items.shift();
-  }
+const enqueue = (queue: number[], value: number) => {
+  queue.push(value);
+  queue.shift();
   return queue;
 };
 
@@ -25,15 +23,30 @@ const initialState = {
   totReqCon: initialQueue,
   totFails: initialQueue,
 };
+
+type data = {
+  bytesIn: number;
+  bytesOut: number;
+  cpu: number;
+  ram: number;
+  totReqPro: number;
+  totMsg: number;
+  totReqCon: number;
+  totFails: number;
+};
+
 //exporting the line slice where we iterate through our incomming data and add on the new metric into our queue
 export const lineSlice = createSlice({
   name: 'line',
   initialState,
   reducers: {
     setData: (state, action) => {
-      const data = action.payload;
+      const data: data = action.payload;
       for (let metric in data) {
-        state[metric] = enqueue(state[metric], data[metric]);
+        state[metric as keyof LineStateType] = enqueue(
+          state[metric as keyof LineStateType],
+          data[metric as keyof data]
+        );
       }
     },
   },

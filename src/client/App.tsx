@@ -1,8 +1,8 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 
-import Login from './containers/Login.jsx';
-import Main from './containers/Main.jsx'
+import Login from './containers/Login';
+import Main from './containers/Main'
 
 const App = () => {
   return (

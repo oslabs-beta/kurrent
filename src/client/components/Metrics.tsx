@@ -10,8 +10,9 @@ import {
   PointElement,
   Filler,
 } from 'chart.js';
-import { setData } from '../reducers/lineReducer.js';
+import { setData } from '../reducers/lineReducer';
 import { Line } from 'react-chartjs-2';
+import { StateStoreType } from '../../types';
 //Registering our chartJS elements for use in rendering
 ChartJS.register(
   CategoryScale,
@@ -43,17 +44,33 @@ const lineOptions = {
 };
 
 const Metrics = () => {
-  const dashboard = useSelector((state) => state.dashboard);
-  const lineData = useSelector((state) => state.line);
-  const labels = new Array(29).fill('').concat('Now');
+  const dashboard = useSelector((state: StateStoreType) => state.dashboard);
+  const lineData = useSelector((state: StateStoreType) => state.line);
+  const labels: string[] = new Array(29).fill('').concat('Now');
+
+  // create type for dataset:
+  type Dataset = {
+    labels: string[];
+    datasets: [
+      {
+        label: string;
+        data: number[];
+        fill: boolean;
+        borderColor: string;
+        tension: number;
+        backgroundColor: string;
+        labelColor: string;
+      }
+    ];
+  };
   //creates data objects for use in our specific metrics elements
-  function createDataset(label, dataKey) {
+  const createDataset = (label: string, dataKey: keyof typeof lineData): Dataset => {
     return {
       labels,
       datasets: [
         {
           label: label,
-          data: lineData[dataKey].items,
+          data: lineData[dataKey],
           fill: false,
           borderColor: 'black',
           tension: 0.2,
@@ -62,7 +79,7 @@ const Metrics = () => {
         },
       ],
     };
-  }
+  };
   //Each metric to be used calls upon the helper function passing in the desired label, and the dataKey used in the backend
   const bytesIn = createDataset('Bytes In (KB)', 'bytesIn');
   const bytesOut = createDataset('Bytes Out (KB)', 'bytesOut');
@@ -76,7 +93,9 @@ const Metrics = () => {
     'totFails'
   );
 
-  const currentCluster = useSelector((state) => state.dashboard.currentCluster);
+  const currentCluster = useSelector(
+    (state: StateStoreType) => state.dashboard.currentCluster
+  );
   const dispatch = useDispatch();
   //Update state every 500ms to display new metrics
   useEffect(() => {

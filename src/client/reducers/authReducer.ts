@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { AuthStateType } from '../../types';
 //creating our initial state for authentication
-const initialState = {
+const initialState: AuthStateType = {
   username: '',
   email: '',
   authType: 'login',
   passMatch: false,
   isLoggedIn: false,
-  userExists: false,
+  userExists: '',
   isEmailValid: false,
 };
 //Our login slice logic for login page conditional rendering and authentication
