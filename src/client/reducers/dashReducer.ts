@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { DashStateType } from '../../types';
 //creating the initial state for our dashboard reducer
-const initialState = {
+const initialState: DashStateType = {
   currentCluster: '',
   clusterView: 'summary',
   addingCluster: false,

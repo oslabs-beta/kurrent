@@ -1,11 +1,11 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 const htmlPlugin = new HtmlWebPackPlugin({
-  template: './client/index.html',
+  template: './src/client/index.html',
   filename: './index.html',
 });
 module.exports = {
-  entry: './client/index.js',
+  entry: './src/client/index.tsx',
   devServer: {
     host: 'localhost',
     port: 8080,
@@ -25,8 +25,18 @@ module.exports = {
     filename: 'bundle.js',
   },
   mode: 'development',
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+  },
   module: {
     rules: [
+      {
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'ts-loader',
+        },
+      },
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,

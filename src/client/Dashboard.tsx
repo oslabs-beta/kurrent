@@ -1,5 +1,5 @@
 import React from 'react';
-import Main from './containers/Main.jsx';
+import Main from './containers/Main.js';
 
 const Dashboard = () => {
   return <Main />;

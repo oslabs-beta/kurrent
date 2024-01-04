@@ -1,96 +1,90 @@
-const metricsController = {
-  async getAllMetrics(req, res, next) {
-    // get prometheus address from the request query
+import { Request, Response, NextFunction, RequestHandler } from 'express';
+import path from 'path';
+import { Metric } from '../../types';
+
+type Controller = {
+  getAllMetrics: RequestHandler;
+};
+
+export const metricsController: Controller = {
+  async getAllMetrics(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    // retrieve the prometheus address from the request query
     const { promAddress } = req.query;
 
-    // helper function to check promAddress formatting
-    function formatIsCorrect(promAddress) {
-      let ip, port;
-      [ip, port] = promAddress.split(':');
-      let validIP = (validPort = false);
-      if (ip === 'localhost') {
-        validIP = true;
-      } else if (
+    // helper function to check the promAddress formatting
+    const formatIsCorrect = (promAddress?: string): boolean => {
+      if (!promAddress) return false;
+      const [ip, port]: string[] = promAddress.split(':');
+      let validIP: boolean = false,
+        validPort: boolean = false;
+      if (ip === 'localhost') validIP = true;
+      else if (
         /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
           ip
         )
       ) {
         validIP = true;
       }
-
-      if (port.length === 4 && /[0-9]/g.test(port)) {
-        validPort = true;
-      }
-      if (validIP && validPort) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    // check formatting of provided prometheus address
-    if (!formatIsCorrect(promAddress)) {
-      const errObj = {
-        log: 'Error in getAllMetrics middleware:' + error,
+      if (port.length === 4 && /[0-9]/g.test(port)) validPort = true;
+      return validIP && validPort;
+    };
+    if (!formatIsCorrect(promAddress?.toString())) {
+      return next({
+        log: 'Error in getAllMetrics middleware: Improper address formatting',
         status: 400,
-        message: 'Improper Prometheus Address',
-      };
-      return next(errObj);
+        message: 'Improper Prometheus Address Input',
+      });
     }
 
+    // try block for fetching kafka metrics using promQL
     try {
       // CPU % metric
-      let cpu = await fetch(
+      const cpu: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(process_cpu_seconds_total[1m])) * 100`
-      );
-      cpu = await cpu.json();
+      ).then((res) => res.json());
 
       // bytes In Total metric
-      let bytesIn = await fetch(
+      const bytesIn: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(kafka_server_brokertopicmetrics_bytesin_total[1m]))`
-      );
-      bytesIn = await bytesIn.json();
+      ).then((res) => res.json());
 
       // bytes Out Total metric
-      let bytesOut = await fetch(
+      const bytesOut: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(kafka_server_brokertopicmetrics_bytesout_total[1m]))`
-      );
-      bytesOut = await bytesOut.json();
+      ).then((res) => res.json());
 
       // ram Usage metric
-      let ramUsage = await fetch(
+      const ramUsage: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(process_resident_memory_bytes[1m]))`
-      );
-      ramUsage = await ramUsage.json();
+      ).then((res) => res.json());
 
       // latency metric
-      let latency = await fetch(
+      const latency: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=sum(rate(kafka_network_requestmetrics_totaltimems{}[1m]) - rate(kafka_network_requestmetrics_localtimems{}[1m]))`
-      );
-      latency = await latency.json();
+      ).then((res) => res.json());
 
       // production Request Total metric
-      let prodReqTotal = await fetch(
+      const prodReqTotal: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_totalproducerequests_total[1m])`
-      );
-      prodReqTotal = await prodReqTotal.json();
+      ).then((res) => res.json());
 
-      // productioin Messages In Total
-      let prodMessInTotal = await fetch(
+      // production Messages In Total
+      const prodMessInTotal: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_messagesin_total[1m])`
-      );
-      prodMessInTotal = await prodMessInTotal.json();
+      ).then((res) => res.json());
 
       // consumer requests total
-      let consReqTot = await fetch(
+      const consReqTot: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_totalfetchrequests_total[1m])`
-      );
-      consReqTot = await consReqTot.json();
+      ).then((res) => res.json());
       // consumer failed request total
-      let consFailReqTotal = await fetch(
+      const consFailReqTotal: Metric = await fetch(
         `http://${promAddress}/api/v1/query?query=rate(kafka_server_brokertopicmetrics_failedfetchrequests_total[1m])`
-      );
-      consFailReqTotal = await consFailReqTotal.json();
+      ).then((res) => res.json());
 
       // Returned Object - each value is a single number value
       res.locals.metrics = {
@@ -106,14 +100,13 @@ const metricsController = {
       };
       return next();
     } catch (error) {
-      const errObj = {
+      return next({
         log: 'Error in getAllMetrics middleware:' + error,
         status: 400,
         message: 'Could not get metrics',
-      };
-      return next(errObj);
+      });
     }
   },
 };
 
-module.exports = metricsController;
+export default metricsController;

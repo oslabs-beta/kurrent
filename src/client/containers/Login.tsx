@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { FormEvent, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import '../scss/login.scss';
@@ -12,18 +12,21 @@ import {
   setIsLoggedIn,
   setUserExists,
   setEmailValid,
-} from '../reducers/authReducer.js';
+} from '../reducers/authReducer';
 
-import { setClusters } from '../reducers/dashReducer.js';
+import { setClusters } from '../reducers/dashReducer';
+import { StateStoreType } from '../../types';
 //Login logic
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const login = useSelector((state) => state.login);
+  const login = useSelector((state: StateStoreType) => state.login);
   // Checking if password and confirm password match
-  const confirmPass = (e) => {
-    let password = document.getElementById('password').value;
-    if (e.target.value === password) dispatch(setPassMatch(true));
+  const confirmPass = (e: React.FormEvent<HTMLInputElement>) => {
+    let password = (document.getElementById('password') as HTMLInputElement)
+      .value;
+    if (e.currentTarget && e.currentTarget.value === password)
+      dispatch(setPassMatch(true));
     else dispatch(setPassMatch(false));
   };
   //checking for existing sessions to redirect users straight to the dashboard
@@ -49,19 +52,20 @@ const Login = () => {
   }, []);
 
   // Performs fetch request to user database to handle login/registration logic
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     dispatch(setUserExists(''));
-    let username = document.getElementById('username').value;
-    let password = document.getElementById('password').value;
+    const username = (document.getElementById('username') as HTMLInputElement)
+      .value;
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
     const loginEndpoint = `/users/${login.authType}`;
-    const postBody = { username, password };
-    if (login.authType === 'register') {
-      let email = document.getElementById('email').value;
-      postBody.email = email;
-      if (login.username == '') {
-        postBody.username = email.split('@')[0];
-      }
+    let email: string = '';
+    if (login.authType === 'register')
+      email = (document.getElementById('email') as HTMLInputElement).value;
+    const postBody = { username, password, email: email };
+    if (login.authType === 'register' && login.username === '') {
+      postBody.username = email.split('@')[0];
     }
     if (login.passMatch || login.authType === 'login') {
       try {
@@ -94,8 +98,8 @@ const Login = () => {
   const validEmailRegex =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   //We dispatch either a true or false value based off our validEmailRegex test
-  const handleEmailChange = (e) => {
-    const email = e.target.value;
+  const handleEmailChange = (e: React.FormEvent<HTMLInputElement>) => {
+    const email = e.currentTarget.value;
     dispatch(setEmailValid(validEmailRegex.test(email)));
   };
   //login page
@@ -120,7 +124,11 @@ const Login = () => {
           <h1 id='title'>Kurrent</h1>
           <div className='login-container'>
             {/* <h1 id='titlePage'>Log in</h1> */}
-            <form action='' className='submit-form'>
+            <form
+              action=''
+              className='submit-form'
+              onSubmit={(e) => handleFormSubmit(e)}
+            >
               <input
                 type='text'
                 id='username'
@@ -136,12 +144,7 @@ const Login = () => {
                 placeholder='password'
                 autoComplete='off'
               />
-              <button
-                id='login'
-                className='loginBtns'
-                type='submit'
-                onClick={handleFormSubmit}
-              >
+              <button id='login' className='loginBtns' type='submit'>
                 Login
               </button>
               {login.userExists !== '' && <p>{login.userExists}</p>}
@@ -188,7 +191,7 @@ const Login = () => {
               monitoring
             </li>
           </ul>
-          <div class='link-container'>
+          <div className='link-container'>
             <a id='Github' href='https://github.com/oslabs-beta/kurrent'>
               Check out our GitHub!
             </a>
