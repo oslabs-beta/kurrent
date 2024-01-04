@@ -5,8 +5,8 @@ import express, {
   RequestHandler,
   Router,
 } from 'express';
-import {userController} from '../controllers/userController';
-import {sessionController} from '../controllers/sessionController';
+import { userController } from '../controllers/userController';
+import { sessionController } from '../controllers/sessionController';
 
 const router: Router = express.Router();
 
@@ -25,7 +25,7 @@ router.post(
 
 // login existing user
 router.post(
-  'login',
+  '/login',
   userController.loginUser,
   sessionController.startSession,
   sessionController.setSSIDCookie,
@@ -34,7 +34,7 @@ router.post(
       user_id: res.locals.user_id,
       username: res.locals.username,
       session_token: res.locals.session_token,
-      service_addresses: res.locals.serviceAdresses,
+      service_addresses: res.locals.serviceAddresses,
     });
   }
 );
@@ -43,8 +43,21 @@ router.post(
 router.patch(
   '/update-service-addresses/:username',
   userController.updateServiceAddresses,
+  (req: Request, res: Response, next: NextFunction) => {
+    console.log('in the function after updateServiceAddresses');
+    return next();
+  },
   (req: Request, res: Response): Response => {
-    return res.status(200);
+    console.log('this is right before returning the response');
+    return res.status(200).json({ msg: 'Service Address successfully added' });
+  }
+);
+
+router.get(
+  '/logout',
+  userController.logout,
+  (req: Request, res: Response): Response => {
+    return res.status(200).json({ msg: 'Successfully logged out' });
   }
 );
 
@@ -54,17 +67,9 @@ router.get(
   (req: Request, res: Response): Response => {
     return res.status(200).json({
       username: res.locals.username,
-      service_addresses: res.locals.serviceAdresses,
+      service_addresses: res.locals.serviceAddresses,
       email: res.locals.email,
     });
-  }
-);
-
-router.get(
-  'logout',
-  userController.logout,
-  (req: Request, res: Response): Response => {
-    return res.status(200).json({ msg: 'Successfully logged out' });
   }
 );
 

@@ -11,8 +11,12 @@ import { StateStoreType } from '../../types';
 const User = () => {
   const dispatch = useDispatch();
   const username = useSelector((state: StateStoreType) => state.login.username);
-  const clusters = useSelector((state: StateStoreType) => state.dashboard.clusters);
-  const adding = useSelector((state: StateStoreType) => state.dashboard.addingCluster);
+  const clusters = useSelector(
+    (state: StateStoreType) => state.dashboard.clusters
+  );
+  const adding = useSelector(
+    (state: StateStoreType) => state.dashboard.addingCluster
+  );
   const [isValid, setIsValid] = useState(false);
 
   //handleFromSubmit function is used to send a patch request to the backend for when a user adds a new port for viewing
@@ -86,7 +90,7 @@ const User = () => {
       validPort = true;
     }
     return validIP && validPort;
-  }
+  };
   //Render the User section of the dashboard
   return (
     <>

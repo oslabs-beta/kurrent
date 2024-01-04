@@ -39,7 +39,6 @@ const Login = () => {
           dispatch(setIsLoggedIn(true));
           navigate('/dashboard');
           const authData = await response.json();
-          console.log(authData);
           dispatch(setAuthInfo(authData));
           dispatch(setClusters(authData.service_addresses));
         } else {
@@ -61,7 +60,9 @@ const Login = () => {
     const password = (document.getElementById('password') as HTMLInputElement)
       .value;
     const loginEndpoint = `/users/${login.authType}`;
-    const email = (document.getElementById('email') as HTMLInputElement).value;
+    let email: string = '';
+    if (login.authType === 'register')
+      email = (document.getElementById('email') as HTMLInputElement).value;
     const postBody = { username, password, email: email };
     if (login.authType === 'register' && login.username === '') {
       postBody.username = email.split('@')[0];

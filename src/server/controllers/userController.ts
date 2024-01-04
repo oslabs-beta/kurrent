@@ -164,7 +164,6 @@ export const userController: Controller = {
         'UPDATE users SET service_addresses = $1 WHERE username = $2',
         [updatedAddresses, username]
       );
-
       return next();
     } catch (error) {
       return next({
@@ -179,6 +178,7 @@ export const userController: Controller = {
     try {
       // Get the session token from the request cookies
       const sessionToken: string = req.cookies.ssid;
+      console.log(sessionToken);
       // retrieve associated session from the database
       await pool.query('DELETE FROM sessions WHERE session_token = $1', [
         sessionToken,
